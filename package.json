@@ -1,0 +1,68 @@
+{
+	"name": "sanchalit-apps",
+	"version": "0.1.0",
+	"private": false,
+	"description": "Sanchalit application suite",
+	"scripts": {
+		"build": "npm run build:web",
+		"build:chromium": "NODE_ENV=production BUILD_TARGET=chromium webpack",
+		"build:firefox": "NODE_ENV=production BUILD_TARGET=firefox webpack",
+		"build:safari": "NODE_ENV=production BUILD_TARGET=safari webpack",
+		"build:web": "NODE_ENV=production BUILD_TARGET=web webpack",
+		"dev": "npm run dev:web",
+		"dev:chromium": "NODE_ENV=development BUILD_TARGET=chromium webpack --watch",
+		"dev:firefox": "NODE_ENV=development BUILD_TARGET=firefox webpack --watch",
+		"dev:safari": "NODE_ENV=development BUILD_TARGET=safari webpack --watch",
+		"dev:web": "NODE_ENV=development BUILD_TARGET=web webpack serve"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/abhijeetpandit7/sanchalit-apps.git"
+	},
+	"author": "Abhijeet Pandit",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/abhijeetpandit7/sanchalit-apps/issues"
+	},
+	"homepage": "https://github.com/abhijeetpandit7/sanchalit-apps#readme",
+	"dependencies": {
+		"@sentry/browser": "^6.11.0",
+		"axios": "^0.24.0",
+		"core-js": "^3.19.0",
+		"moment": "^2.29.1",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2",
+		"regenerator-runtime": "^0.13.9"
+	},
+	"devDependencies": {
+		"@babel/preset-env": "^7.15.8",
+		"@babel/preset-react": "^7.14.5",
+		"@types/chrome": "0.0.154",
+		"@types/jest": "^26.0.24",
+		"@types/node": "^13.11.0",
+		"@types/react": "^17.0.16",
+		"@types/react-dom": "^17.0.9",
+		"babel-loader": "^8.2.3",
+		"clean-webpack-plugin": "^4.0.0-alpha.0",
+		"copy-webpack-plugin": "^9.0.1",
+		"css-loader": "^6.2.0",
+		"dotenv": "^10.0.0",
+		"file-loader": "^6.2.0",
+		"html-webpack-plugin": "^5.3.2",
+		"jest": "^27.0.6",
+		"mini-css-extract-plugin": "^2.2.0",
+		"prettier": "2.3.2",
+		"raw-loader": "^4.0.2",
+		"ts-jest": "^27.0.4",
+		"ts-loader": "^9.2.5",
+		"typescript": "^4.3.5",
+		"typescript-react-intl": "^0.4.1",
+		"url-loader": "^4.1.1",
+		"webpack": "^5.48.0",
+		"webpack-cli": "^4.7.2",
+		"webpack-dev-server": "^3.11.2",
+		"webpack-extension-reloader": "^1.1.4",
+		"workbox-webpack-plugin": "^6.2.0"
+	}
+}
+
