@@ -1,5 +1,5 @@
 import React from "react";
-import { brandLogo } from "../../utils/assets";
+import { brandLogo } from "../../utils";
 
 export const LogoOverlay = () => (
 	<div className="overlay loading-overlay">{brandLogo}</div>

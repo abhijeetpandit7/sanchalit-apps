@@ -1,8 +1,8 @@
 import React from "react";
 import "./App.css";
-import { TopRow, CenterRegion, CenterBelowRegion, BottomRow } from "./regions";
-import { Backgrounds, ModalBase } from "./containers";
 import { LogoOverlay } from "./components";
+import { Backgrounds, ModalBase } from "./containers";
+import { TopRow, CenterRegion, CenterBelowRegion, BottomRow } from "./regions";
 
 const App = () => {
 	return (

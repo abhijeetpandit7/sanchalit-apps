@@ -1,6 +1,6 @@
 import React from "react";
 import { SwitchNavWrapper } from "../../components";
-import { searchIcon, dropdownIcon } from "../../utils";
+import { dropdownIcon, searchIcon } from "../../utils";
 
 export const Search = () => {
 	return (
@@ -13,15 +13,12 @@ export const Search = () => {
 					<form className="search-form hide-apps-fade">
 						<div className="search-underline"></div>
 						<div className="search-icon-container">{searchIcon}</div>
-						<div
-							className="more more source more-dash"
-							section-title="Search with"
-						>
-							<div tabIndex="0" className="source-toggle">
+						<div className="more more source more-dash">
+							<div className="source-toggle" tabIndex="0">
 								<div className="source-selected">
 									<img
-										src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxOSI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgNi45MTYwOVYxOC42NjgxSDExLjE3NVYxMi40MjAxSDQuNjNWMTAuNDMwMUg4LjcyMlY4LjY1MDA5SDQuNjNWNi44MDUwOUgxMS4xNzVWMC40MTMwODZIMFY2LjkxNjA5WiIvPjwvc3ZnPgo="
 										className="icon-ecosia icon icon-source active"
+										src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxOSI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgNi45MTYwOVYxOC42NjgxSDExLjE3NVYxMi40MjAxSDQuNjNWMTAuNDMwMUg4LjcyMlY4LjY1MDA5SDQuNjNWNi44MDUwOUgxMS4xNzVWMC40MTMwODZIMFY2LjkxNjA5WiIvPjwvc3ZnPgo="
 									/>
 								</div>
 								{dropdownIcon}
@@ -29,19 +26,17 @@ export const Search = () => {
 						</div>
 						<input
 							id="search-input"
-							search-url="https://www.ecosia.org/search?q=&amp;tt=c4ccf3a1"
+							className="search-input"
+							placeholder="Search"
 							type="text"
 							autoComplete="off"
-							placeholder="Search"
-							className="search-input"
+							search-url="https://www.ecosia.org/search?q=&amp;tt=c4ccf3a1"
 						/>
 					</form>
 					<div className="backdrop-filter hide-apps-fade"></div>
 				</div>
 			</div>
-			<div className="side-col right">
-				<div className="slot-wrapper"></div>
-			</div>
+			<div className="side-col right"></div>
 		</div>
 	);
 };

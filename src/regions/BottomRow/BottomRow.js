@@ -1,5 +1,5 @@
 import React from "react";
-import { Settings, PhotoInfo, Quote, Notes, Todo } from "../../containers";
+import { Notes, PhotoInfo, Quote, Settings, Todo } from "../../containers";
 
 export const BottomRow = () => {
 	return (

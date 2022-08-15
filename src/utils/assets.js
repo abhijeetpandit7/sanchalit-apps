@@ -18,14 +18,14 @@ export const brandLogo = (
 			<g transform="translate(853 305.5) scale(1.464285714285714 1.464285714285714) rotate(0 0 0)">
 				<text
 					dy="0"
-					dominant-baseline="auto"
-					alignment-baseline="auto"
-					font-family="Montserrat"
-					font-size="32px"
+					dominantBaseline="auto"
+					alignmentBaseline="auto"
+					fontFamily="Montserrat"
+					fontSize="32px"
 					fill="#fbfbfb"
-					letter-spacing="0"
-					font-weight="bold"
-					font-style="normal"
+					letterSpacing="0"
+					fontWeight="bold"
+					fontStyle="normal"
 				>
 					स
 				</text>

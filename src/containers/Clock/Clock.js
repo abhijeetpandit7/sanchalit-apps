@@ -5,7 +5,7 @@ import {
 	SwitchNavWrapper,
 	MoreToggleWrapper,
 } from "../../components";
-import { getClockTime, ONE_SECOND } from "../../utils";
+import { ONE_SECOND, getClockTime } from "../../utils";
 
 export const Clock = () => {
 	const [clockTime, setClockTime] = useState(

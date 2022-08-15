@@ -12,10 +12,11 @@ const getDayPeriod = () => {
 	}
 };
 
+export const getClockTime = ({ hour12clock }) =>
+	hour12clock ? moment().format("h:mm") : moment().format("HH:mm");
+
 export const getGreetingMessage = (userName) => {
 	const dayPeriod = getDayPeriod();
 	return userName ? `Good ${dayPeriod}, ` : `Good ${dayPeriod}`;
 };
 
-export const getClockTime = ({ hour12clock }) =>
-	hour12clock ? moment().format("h:mm") : moment().format("HH:mm");

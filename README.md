@@ -1,3 +1,3 @@
-# Sanchalit APPS
+# Sanchalit Apps
 
 Sanchalit application suite
