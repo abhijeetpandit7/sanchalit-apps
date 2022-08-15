@@ -2,9 +2,12 @@ import React from "react";
 import "./App.css";
 import { LogoOverlay } from "./components";
 import { Backgrounds, ModalBase } from "./containers";
+import { useAuthPersist, useUserCustomization } from "./hooks";
 import { TopRow, CenterRegion, CenterBelowRegion, BottomRow } from "./regions";
 
 const App = () => {
+	useAuthPersist();
+
 	return (
 		<>
 			<LogoOverlay />
