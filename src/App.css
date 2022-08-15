@@ -185,6 +185,9 @@ img {
 .icon-wrapper .dash-icon {
 	opacity: 0;
 }
+.m-hide-visibility {
+	visibility: hidden !important;
+}
 .overlay {
 	position: absolute !important;
 	top: 0;
@@ -793,6 +796,9 @@ img {
 		order: 1;
 		flex: 1 1 auto;
 		justify-content: center;
+.below[data-v-40bf475c] {
+	margin-top: 35px;
+}
 	}
 }
 @media screen and (max-width: 450px) {

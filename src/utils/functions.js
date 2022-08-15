@@ -20,3 +20,7 @@ export const getGreetingMessage = (userName) => {
 	return userName ? `Good ${dayPeriod}, ` : `Good ${dayPeriod}`;
 };
 
+export const removeRefClassName = (ref, className) =>
+	ref.current.classList.remove(className);
+
+export const toCSSUrl = (link) => `url("${link}")`;
