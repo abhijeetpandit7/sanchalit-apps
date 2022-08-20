@@ -1,9 +1,9 @@
 require("dotenv/config");
 
+const API_ENDPOINT = "https://sanchalit-api.herokuapp.com";
 const DEVELOPMENT = "development";
 const PRODUCTION = "production";
 const WEB = "web";
-const API_ENDPOINT = "https://sanchalit-api.herokuapp.com";
 
 const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
@@ -77,7 +77,7 @@ const config = {
 				{ from: "target/shared" },
 				{
 					from: `target/${buildTarget}`,
-					filter: path => !path.includes("index.html"),
+					filter: (path) => !path.includes("index.html"),
 				},
 			],
 		}),
@@ -108,6 +108,10 @@ if (isProduction) {
 			minimize: true,
 			debug: false,
 		}),
+		new workbox.InjectManifest({
+			swSrc: "./src/serviceWorker.js",
+			swDest: "serviceWorker.js",
+		}),
 	);
 }
 
@@ -123,15 +127,6 @@ if (!isWeb && !isProduction) {
 				background: "background",
 				extensionPage: "main",
 			},
-		}),
-	);
-}
-
-if (isWeb) {
-	config.plugins.push(
-		new workbox.GenerateSW({
-			cacheId: "sanchalit-cache",
-			dontCacheBustURLsMatching: /\.\w{12}\./,
 		}),
 	);
 }

@@ -18,7 +18,9 @@ export const Backgrounds = () => {
 	const backgroundImage = new Image();
 	backgroundImage.src = IMAGE_LINK;
 	backgroundImage.onload = () => {
-		backgroundItemRef.current.style.backgroundImage = toCSSUrl(IMAGE_LINK);
+		backgroundItemRef.current.style.backgroundImage = toCSSUrl(
+			backgroundImage.src,
+		);
 		callback();
 		showBackgroundOverlay();
 	};
