@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { HeightResizeWrapper, MoreToggleWrapper } from "../../components";
-import { getGreetingMessage, ONE_MINUTE } from "../../utils";
+import { ONE_MINUTE, getGreetingMessage, toMilliseconds } from "../../utils";
 
 const TEST_USER_NAME = "Abhijeet";
 
@@ -12,7 +12,7 @@ export const GreetingMantra = () => {
 	useEffect(() => {
 		const greetingInterval = setInterval(() => {
 			setGreetingMessage(getGreetingMessage(TEST_USER_NAME));
-		}, ONE_MINUTE);
+		}, toMilliseconds(ONE_MINUTE));
 
 		return () => clearInterval(greetingInterval);
 	}, []);
@@ -29,7 +29,9 @@ export const GreetingMantra = () => {
 						<span className="message">{greetingMessage}</span>
 						<span className="name-punctuation-no-wrap">
 							<span className="name-wrapper">
-								<span className="name" data-v-4e331ed7>{TEST_USER_NAME}</span>
+								<span className="name" data-v-4e331ed7>
+									{TEST_USER_NAME}
+								</span>
 							</span>
 							<span>.</span>
 						</span>

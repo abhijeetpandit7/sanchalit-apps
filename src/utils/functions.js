@@ -24,3 +24,5 @@ export const removeRefClassName = (ref, className) =>
 	ref.current.classList.remove(className);
 
 export const toCSSUrl = (link) => `url("${link}")`;
+
+export const toMilliseconds = (seconds) => seconds * 1000;

@@ -5,7 +5,7 @@ import {
 	SwitchNavWrapper,
 	MoreToggleWrapper,
 } from "../../components";
-import { ONE_SECOND, getClockTime } from "../../utils";
+import { ONE_SECOND, getClockTime, toMilliseconds } from "../../utils";
 
 export const Clock = () => {
 	const [clockTime, setClockTime] = useState(
@@ -15,7 +15,7 @@ export const Clock = () => {
 	useEffect(() => {
 		const clockInterval = setInterval(() => {
 			setClockTime(getClockTime({ hour12clock: true }));
-		}, ONE_SECOND);
+		}, toMilliseconds(ONE_SECOND));
 
 		return () => clearInterval(clockInterval);
 	}, []);
