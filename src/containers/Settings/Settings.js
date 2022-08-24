@@ -23,13 +23,28 @@ export const Settings = () => {
 		setComponentDidMount(true);
 	};
 
+	const toggleViewContainer = ({ onlyRemove = false } = {}) => {
+		const settingsAppRef = settingsRef.current.querySelector(
+			`.${APP}.${SETTINGS_APP}`,
+		);
+		onlyRemove
+			? settingsAppRef.classList.remove(NAV_ACTIVE)
+			: settingsAppRef.classList.toggle(NAV_ACTIVE);
+	};
+
+	const hideViewContainer = () => toggleViewContainer({ onlyRemove: true });
+
 	const SettingsApp = (
 		<div className={`${APP} ${SETTINGS_APP}`}>
 			<Navbar
 				activeNav={activeNav}
 				setActiveNav={setActiveNav}
+				hideViewContainer={hideViewContainer}
 			>
 				<UserActions
+					activeNav={activeNav}
+					toggleSettingsApp={toggleSettingsApp}
+					toggleViewContainer={toggleViewContainer}
 				/>
 			</Navbar>
 			<ViewContainer activeNav={activeNav} />

@@ -21,6 +21,7 @@ export const Navbar = (props) => (
 						className={navItemClassArray.join(" ")}
 						onClick={() => {
 							props.setActiveNav(navItem.value);
+							props.hideViewContainer();
 						}}
 						key={navItemIndex}
 					>

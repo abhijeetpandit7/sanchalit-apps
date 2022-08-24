@@ -19,10 +19,14 @@ export const UserActions = memo((props) => {
 
 	return (
 		<div className="settings-nav-header">
+			<div className="settings-nav-chooser" onClick={props.toggleViewContainer}>
+				<span className="settings-nav-active">{props.activeNav}</span>
+				{angleDownIcon}
+			</div>
 			<div className="settings-nav-user">
 				<div className="user-container has-plus" ref={userContainerRef}>
 					<div className="user">
-						<div className="user-row" onClick={() => toggleUserContainer}>
+						<div className="user-row" onClick={toggleUserContainer}>
 							<div className="user-avatar-wrapper">
 								<div className="user-avatar">
 									<img
@@ -65,6 +69,14 @@ export const UserActions = memo((props) => {
 					</div>
 				</div>
 			</div>
+			<span className="mobile-close">
+				<span
+					className="icon-wrapper u--mobile-show-bg hide"
+					onClick={props.toggleSettingsApp}
+				>
+					{hideIcon}
+				</span>
+			</span>
 		</div>
 	);
 });
