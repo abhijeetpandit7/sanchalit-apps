@@ -873,6 +873,11 @@ img {
 	.app-dash-icon svg {
 		--icon-size: 20px;
 	}
+@font-face {
+	font-family: icons;
+	font-weight: 400;
+	src: local("icons"), url("./assets/fonts/Icons/icons.woff2") format("woff2");
+}
 }
 
 .background,
