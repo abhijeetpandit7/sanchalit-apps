@@ -7,6 +7,7 @@ export const UserCustomizationProvider = ({ children }) => {
 
 	const appsRef = useRef(null);
 	const mainViewRef = useRef(null);
+	const settingsRef = useRef(null);
 
 	return (
 		<UserCustomizationContext.Provider
@@ -15,6 +16,7 @@ export const UserCustomizationProvider = ({ children }) => {
 				setStorageUserCustomization,
 				appsRef,
 				mainViewRef,
+				settingsRef,
 			}}
 		>
 			{children}

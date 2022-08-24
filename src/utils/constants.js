@@ -2,7 +2,10 @@ export const HIDE_APPS = "hide-apps";
 export const HIDE_BACKGROUND_OVERLAY = "hide-background-overlay";
 export const HIDE_VISIBILITY = "m-hide-visibility";
 export const IMAGES = "images";
+export const OPEN = "open";
 export const PRODUCTION = "production";
+export const SHOW = "show";
+export const SHOW_FADE_IN = "show-fade-in";
 export const STATIC_RESOURCES = "static-resources";
 export const WEB = "web";
 

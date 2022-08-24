@@ -13,6 +13,7 @@ export const useUserCustomization = () => {
 		setStorageUserCustomization,
 		appsRef,
 		mainViewRef,
+		settingsRef,
 	} = useContext(UserCustomizationContext);
 
 	const showApps = () => removeRefClassName(appsRef, HIDE_APPS);
@@ -27,6 +28,7 @@ export const useUserCustomization = () => {
 		setStorageUserCustomization,
 		appsRef,
 		mainViewRef,
+		settingsRef,
 		showApps,
 		showBackgroundOverlay,
 		showMainView,
