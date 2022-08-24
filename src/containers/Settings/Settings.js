@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FocusOutHandler, useUserCustomization } from "../../hooks";
+import { Navbar, UserActions, ViewContainer } from "../Settings";
 import {
 	NAV_ACTIVE,
 	SETTINGS_NAV_LIST,
@@ -12,6 +13,7 @@ const SETTINGS_APP = "settings-app";
 
 export const Settings = () => {
 	const { settingsRef } = useUserCustomization();
+	const [activeNav, setActiveNav] = useState(SETTINGS_NAV_LIST[0].value);
 	const [componentDidMount, setComponentDidMount] = useState(false);
 
 	FocusOutHandler({ ref: settingsRef });
@@ -23,6 +25,14 @@ export const Settings = () => {
 
 	const SettingsApp = (
 		<div className={`${APP} ${SETTINGS_APP}`}>
+			<Navbar
+				activeNav={activeNav}
+				setActiveNav={setActiveNav}
+			>
+				<UserActions
+				/>
+			</Navbar>
+			<ViewContainer activeNav={activeNav} />
 		</div>
 	);
 

@@ -26,6 +26,11 @@ export const hideAppPopup = (appRef) =>
 		appRef.current.classList.contains(SHOW_FADE_IN)) &&
 	toggleAppPopup(appRef);
 
+export const hideUserNav = (ref) =>
+	ref.current.classList.contains(OPEN) && toggleRefClassName(ref, OPEN);
+
+export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
+
 export const removeRefClassName = (ref, className) =>
 	ref.current.classList.remove(className);
 
