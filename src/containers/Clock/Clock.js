@@ -5,12 +5,14 @@ import {
 	SwitchNavWrapper,
 	MoreToggleWrapper,
 } from "../../components";
+import {Settings} from "./Settings/Settings";
 import { ONE_SECOND, getClockTime, toMilliseconds } from "../../utils";
 
 export const Clock = () => {
 	const [clockTime, setClockTime] = useState(
 		getClockTime({ hour12clock: true }),
 	);
+	const [componentDidMount, setComponentDidMount] = useState(false);
 
 	useEffect(() => {
 		const clockInterval = setInterval(() => {
@@ -19,6 +21,8 @@ export const Clock = () => {
 
 		return () => clearInterval(clockInterval);
 	}, []);
+
+	const toggleSettingsApp = () => setComponentDidMount(true);
 
 	return (
 		<HeightResizeWrapper>
@@ -37,7 +41,11 @@ export const Clock = () => {
 					</WidthResizeWrapper>
 				</div>
 				<div className="side-col right" data-v-d6260d64>
-					<MoreToggleWrapper />
+					<MoreToggleWrapper onToggle={toggleSettingsApp}>
+						{componentDidMount && (
+								<Settings />
+						)}
+					</MoreToggleWrapper>
 				</div>
 			</div>
 		</HeightResizeWrapper>
