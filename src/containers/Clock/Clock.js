@@ -1,12 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { lazy, Suspense, useState, useEffect } from "react";
 import {
 	HeightResizeWrapper,
 	WidthResizeWrapper,
 	SwitchNavWrapper,
 	MoreToggleWrapper,
 } from "../../components";
-import {Settings} from "./Settings/Settings";
 import { ONE_SECOND, getClockTime, toMilliseconds } from "../../utils";
+
+const Loading = () => (
+	<div className="dropdown more-dropdown app dash-dropdown dropdown-hide nipple nipple-top-left">
+		<ul data-v-c8d4d4da className="dropdown-list">
+			<li className="dropdown-list-item">
+				<i className="loading-icon"></i>
+				Loading...
+			</li>
+		</ul>
+	</div>
+);
+
+const Settings = lazy(() => import("./Settings/Settings"));
 
 export const Clock = () => {
 	const [clockTime, setClockTime] = useState(
@@ -43,7 +55,9 @@ export const Clock = () => {
 				<div className="side-col right" data-v-d6260d64>
 					<MoreToggleWrapper onToggle={toggleSettingsApp}>
 						{componentDidMount && (
+							<Suspense fallback={<Loading />}>
 								<Settings />
+							</Suspense>
 						)}
 					</MoreToggleWrapper>
 				</div>
