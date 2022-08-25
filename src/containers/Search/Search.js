@@ -1,6 +1,11 @@
 import React from "react";
 import { SwitchNavWrapper } from "../../components";
-import { dropdownIcon, searchIcon } from "../../utils";
+import {
+	QUERY_PARAM,
+	SEARCH_ACTION,
+	dropdownIcon,
+	searchIcon,
+} from "../../utils";
 
 export const Search = () => {
 	return (
@@ -10,7 +15,7 @@ export const Search = () => {
 			</div>
 			<div className="center-col" data-v-d6260d64>
 				<div className="big search app-container hide-apps-no-fade">
-					<form className="search-form hide-apps-fade">
+					<form className="search-form hide-apps-fade" action={SEARCH_ACTION}>
 						<div className="search-underline"></div>
 						<div className="search-icon-container">{searchIcon}</div>
 						<div className="more more source more-dash">
@@ -18,7 +23,7 @@ export const Search = () => {
 								<div className="source-selected">
 									<img
 										className="icon-ecosia icon icon-source active"
-										src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxOSI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgNi45MTYwOVYxOC42NjgxSDExLjE3NVYxMi40MjAxSDQuNjNWMTAuNDMwMUg4LjcyMlY4LjY1MDA5SDQuNjNWNi44MDUwOUgxMS4xNzVWMC40MTMwODZIMFY2LjkxNjA5WiIvPjwvc3ZnPgo="
+										src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PHBhdGggZmlsbD0id2hpdGUiIGlkPSJhIiBkPSJNNDQuNSAyMEgyNHY4LjVoMTEuOEMzNC43IDMzLjkgMzAuMSAzNyAyNCAzN2MtNy4yIDAtMTMtNS44LTEzLTEzczUuOC0xMyAxMy0xM2MzLjEgMCA1LjkgMS4xIDguMSAyLjlsNi40LTYuNEMzNC42IDQuMSAyOS42IDIgMjQgMiAxMS44IDIgMiAxMS44IDIgMjRzOS44IDIyIDIyIDIyYzExIDAgMjEtOCAyMS0yMiAwLTEuMy0uMi0yLjctLjUtNHoiLz48L3N2Zz4="
 									/>
 								</div>
 								{dropdownIcon}
@@ -30,7 +35,7 @@ export const Search = () => {
 							placeholder="Search"
 							type="text"
 							autoComplete="off"
-							search-url="https://www.ecosia.org/search?q=&amp;tt=c4ccf3a1"
+							name={QUERY_PARAM}
 						/>
 					</form>
 					<div className="backdrop-filter hide-apps-fade"></div>
