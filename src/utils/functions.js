@@ -1,5 +1,6 @@
 import React from "react";
 import moment from "moment";
+import _ from "lodash";
 import { OPEN, SHOW, SHOW_FADE_IN } from "../utils";
 
 const getDayPeriod = () => {
@@ -21,6 +22,8 @@ export const getGreetingMessage = (userName) => {
 	return userName ? `Good ${dayPeriod}, ` : `Good ${dayPeriod}`;
 };
 
+export const getLocalStorageItem = (key) => localStorage.getItem(key);
+
 export const hideAppPopup = (appRef) =>
 	(appRef.current.classList.contains(SHOW) ||
 		appRef.current.classList.contains(SHOW_FADE_IN)) &&
@@ -33,6 +36,9 @@ export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
 
 export const removeRefClassName = (ref, className) =>
 	ref.current.classList.remove(className);
+
+export const setLocalStorageItem = (key, value) =>
+	localStorage.setItem(key, value);
 
 export const toCSSUrl = (link) => `url("${link}")`;
 
