@@ -14,7 +14,7 @@ const getDayPeriod = () => {
 	}
 };
 
-export const getClockTime = ({ hour12clock }) =>
+export const getClockTime = ({ hour12clock = true } = {}) =>
 	hour12clock ? moment().format("h:mm") : moment().format("HH:mm");
 
 export const getGreetingMessage = (userName) => {

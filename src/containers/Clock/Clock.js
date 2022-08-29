@@ -1,10 +1,11 @@
-import React, { lazy, Suspense, useState, useEffect } from "react";
+import React, { lazy, memo, Suspense, useState, useEffect } from "react";
 import {
 	HeightResizeWrapper,
 	WidthResizeWrapper,
 	SwitchNavWrapper,
 	MoreToggleWrapper,
 } from "../../components";
+import { useUserCustomization } from "../../hooks";
 import { ONE_SECOND, getClockTime, toMilliseconds } from "../../utils";
 
 const Loading = () => (
@@ -20,19 +21,17 @@ const Loading = () => (
 
 const Settings = lazy(() => import("./Settings/Settings"));
 
-export const Clock = () => {
-	const [clockTime, setClockTime] = useState(
-		getClockTime({ hour12clock: true }),
-	);
+const ContextMemo = memo(({ hour12clock }) => {
+	const [clockTime, setClockTime] = useState(getClockTime({ hour12clock }));
 	const [componentDidMount, setComponentDidMount] = useState(false);
 
 	useEffect(() => {
 		const clockInterval = setInterval(() => {
-			setClockTime(getClockTime({ hour12clock: true }));
+			setClockTime(getClockTime({ hour12clock }));
 		}, toMilliseconds(ONE_SECOND));
-
+		setClockTime(getClockTime({ hour12clock }));
 		return () => clearInterval(clockInterval);
-	}, []);
+	}, [hour12clock]);
 
 	const toggleSettingsApp = () => setComponentDidMount(true);
 
@@ -64,4 +63,10 @@ export const Clock = () => {
 			</div>
 		</HeightResizeWrapper>
 	);
+});
+
+export const Clock = () => {
+	const { storageUserCustomization } = useUserCustomization();
+
+	return <ContextMemo hour12clock={storageUserCustomization.hour12clock} />;
 };
