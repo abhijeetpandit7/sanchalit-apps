@@ -36,12 +36,6 @@ export const ONE_YEAR = ONE_DAY * 365;
 
 export const SETTINGS_NAV_LIST = [
 	{ value: GENERAL },
-	{ value: TODO },
-	{ value: MANTRAS },
-	{ value: PHOTOS },
-	{ value: QUOTES },
-	{ value: LINKS_AND_BOOKMARKS },
-	{ value: BALANCE },
 	{ value: HELP, secondary: true },
 	{ value: ABOUT, secondary: true },
 ];
