@@ -1,5 +1,5 @@
 import React from "react";
-import { toggleSwitch } from "../../../../../utils";
+import { ToggleSlider } from "../../../../../components/";
 
 const General = () => (
 	<div id="settings-general" className="settings-view settings-general">
@@ -10,125 +10,57 @@ const General = () => (
 
 		<h4 className="first">Show</h4>
 		<ul id="apps-list" className="settings-list options-list">
-			<li className="slide-toggle has-toggle on">
-				<input type="checkbox" />
-				<span className="setting-name">Links</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-			</li>
-			<li className="slide-toggle has-toggle">
-				<input type="checkbox" />
-				<span className="setting-name">Bookmarks Bar</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-			</li>
-			<li className="slide-toggle has-toggle">
-				<input type="checkbox" />
-				<span className="setting-name">Top Sites</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-				<span className="option-message">
-					Show most visited websites by default in Bookmarks Bar
-				</span>
-			</li>
-			<li className="slide-toggle has-toggle on">
-				<input type="checkbox" />
-				<span className="setting-name">Search</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-			</li>
-			<li className="slide-toggle has-toggle on">
-				<input type="checkbox" />
-				<span className="setting-name">Weather</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-			</li>
-			<li className="slide-toggle has-toggle on">
-				<input type="checkbox" />
-				<span className="setting-name">Clock</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-			</li>
-			<li className="slide-toggle has-toggle on">
-				<input type="checkbox" />
-				<span className="setting-name">Greeting</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-			</li>
-			<li className="slide-toggle has-toggle">
-				<input type="checkbox" />
-				<span className="setting-name">Mantras</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-				<span className="option-message">
-					Simple phrases to build positive mental habits
-				</span>
-			</li>
-			<li className="slide-toggle has-toggle">
-				<input type="checkbox" />
-				<span className="setting-name">Focus</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-			</li>
-			<li className="slide-toggle has-toggle on">
-				<input type="checkbox" />
-				<span className="setting-name">Todo</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-			</li>
-			<li className="slide-toggle has-toggle on">
-				<input type="checkbox" />
-				<span className="setting-name">Quotes</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-			</li>
-			<li className="slide-toggle has-toggle on">
-				<input type="checkbox" />
-				<span className="setting-name">Countdowns</span>
-				<span className="badge badge-plus">PLUS</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-				<span className="option-message">
-					Count down to important dates and deadlines
-				</span>
-			</li>
-			<li className="slide-toggle has-toggle on">
-				<input type="checkbox" />
-				<span className="setting-name">Metrics</span>
-				<span className="badge badge-plus">PLUS</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-				<span className="option-message">
-					Keep your important metrics at a glance
-				</span>
-			</li>
-			<li className="slide-toggle has-toggle on">
-				<input type="checkbox" />
-				<span className="setting-name">Notes</span>
-				<span className="badge badge-plus">PLUS</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-				<span className="option-message">
-					Take quick notes and store wisdom to review
-				</span>
-			</li>
-			<li className="slide-toggle has-toggle on">
-				<input type="checkbox" />
-				<span className="setting-name">World Clocks</span>
-				<span className="badge badge-plus">PLUS</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-				<span className="option-message">
-					Keep track of time anywhere on Earth
-				</span>
-			</li>
-			<li className="slide-toggle has-toggle on">
-				<input type="checkbox" />
-				<span className="setting-name">Soundscapes</span>
-				<span className="badge badge-plus">PLUS</span>
-				<span className="badge badge-plus">PREVIEW</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-				<span className="option-message">
-					Sounds to help you focus and relax
-				</span>
-			</li>
+			<ToggleSlider name="Links" value={true} />
+			<ToggleSlider name="Bookmarks Bar" />
+			<ToggleSlider
+				name="Top Sites"
+				message="Show most visited websites by default in Bookmarks Bar"
+			/>
+			<ToggleSlider name="Search" />
+			<ToggleSlider name="Weather" />
+			<ToggleSlider name="Clock" />
+			<ToggleSlider name="Greeting" />
+			<ToggleSlider
+				name="Mantras"
+				message="Simple phrases to build positive mental habits"
+			/>
+			<ToggleSlider name="Focus" />
+			<ToggleSlider name="Todo" />
+			<ToggleSlider name="Quotes" />
+			<ToggleSlider
+				name="Countdowns"
+				plus={true}
+				message="Count down to important dates and deadlines"
+			/>
+			<ToggleSlider
+				name="Metrics"
+				plus={true}
+				message="Keep your important metrics at a glance"
+			/>
+			<ToggleSlider
+				name="Notes"
+				plus={true}
+				message="Take quick notes and store wisdom to review"
+			/>
+			<ToggleSlider
+				name="World Clocks"
+				plus={true}
+				message="Keep track of time anywhere on Earth"
+			/>
+			<ToggleSlider
+				name="Soundscapes"
+				plus={true}
+				preview={true}
+				message="Sounds to help you focus and relax"
+			/>
 		</ul>
 
 		<h4>Labs</h4>
 		<ul id="labs-list" className="settings-list options-list">
-			<li className="slide-toggle has-toggle on">
-				<input type="checkbox" />
-				<span className="setting-name">Search in Center</span>
-				<span className="toggle-slider">{toggleSwitch}</span>
-				<span className="option-message">
-					Enable toggling between Search and Focus in the center
-				</span>
-			</li>
+			<ToggleSlider
+				name="Search in Center"
+				message="Enable toggling between Search and Focus in the center"
+			/>
 		</ul>
 
 		<h4>Appearance</h4>
