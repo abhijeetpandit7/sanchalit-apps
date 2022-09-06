@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { FocusOutHandler, useUserCustomization } from "../../hooks";
 import { Navbar, UserActions, ViewContainer } from "../Settings";
 import {
@@ -11,8 +11,7 @@ import {
 const APP = "app";
 const SETTINGS_APP = "settings-app";
 
-export const Settings = () => {
-	const { settingsRef } = useUserCustomization();
+const ContextMemo = memo(({ settingsRef }) => {
 	const [activeNav, setActiveNav] = useState(SETTINGS_NAV_LIST[0].value);
 	const [componentDidMount, setComponentDidMount] = useState(false);
 
@@ -61,4 +60,10 @@ export const Settings = () => {
 			</span>
 		</div>
 	);
+});
+
+export const Settings = () => {
+	const { settingsRef } = useUserCustomization();
+
+	return <ContextMemo {...{ settingsRef }} />;
 };

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { UserCustomizationContext } from "../contexts";
 import {
 	HIDE_BACKGROUND_OVERLAY,
@@ -16,12 +16,20 @@ export const useUserCustomization = () => {
 		settingsRef,
 	} = useContext(UserCustomizationContext);
 
-	const showApps = () => removeRefClassName(appsRef, HIDE_APPS);
+	const showApps = useCallback(
+		() => removeRefClassName(appsRef, HIDE_APPS),
+		[],
+	);
 
-	const showBackgroundOverlay = () =>
-		removeRefClassName(mainViewRef, HIDE_BACKGROUND_OVERLAY);
+	const showBackgroundOverlay = useCallback(
+		() => removeRefClassName(mainViewRef, HIDE_BACKGROUND_OVERLAY),
+		[],
+	);
 
-	const showMainView = () => removeRefClassName(mainViewRef, HIDE_VISIBILITY);
+	const showMainView = useCallback(
+		() => removeRefClassName(mainViewRef, HIDE_VISIBILITY),
+		[],
+	);
 
 	return {
 		storageUserCustomization,
