@@ -3,10 +3,14 @@ export const ABOUT = "About";
 export const AUTH = "auth";
 export const BALANCE = "Balance";
 export const CUSTOMIZATION = "customization";
+export const CLOCK = "Clock";
+export const CLOCK_VISIBLE = "clockVisible";
 export const DEFAULT = "default";
 export const HIDE_APPS = "hide-apps";
 export const GENERAL = "General";
 export const GOOGLE = "google";
+export const GREETING = "Greeting";
+export const GREETING_VISIBLE = "greetingVisible";
 export const HELP = "Help";
 export const HIDE_BACKGROUND_OVERLAY = "hide-background-overlay";
 export const HIDE_VISIBILITY = "m-hide-visibility";
@@ -14,18 +18,26 @@ export const IMAGES = "images";
 export const LINKS_AND_BOOKMARKS = "Links & Bookmarks";
 export const MANTRAS = "Mantras";
 export const NAV_ACTIVE = "nav-active";
+export const NOTES = "Notes";
+export const NOTES_VISIBLE = "notesVisible";
+export const NOTES_DESCRIPTION = "Take quick notes and store wisdom to review";
 export const ON = "on";
 export const OPEN = "open";
 export const PHOTOS = "Photos";
 export const PRODUCTION = "production";
 export const QUERY_PARAM = "q";
 export const QUOTES = "Quotes";
+export const QUOTES_VISIBLE = "quotesVisible";
+export const SEARCH = "Search";
+export const SEARCH_VISIBLE = "searchVisible";
+export const SEARCH_IN_CENTER = "Search in Center";
 export const SEARCH_ACTION = `https://www.google.com/search?${QUERY_PARAM}=`;
 export const SHOW = "show";
 export const SHOW_FADE_IN = "show-fade-in";
 export const STATIC_RESOURCES = "static-resources";
 export const SYSTEM = "system";
 export const TODO = "Todo";
+export const TODO_VISIBLE = "todoVisible";
 export const WEB = "web";
 
 export const ONE_SECOND = 1;
@@ -34,6 +46,19 @@ export const ONE_HOUR = ONE_MINUTE * 60;
 export const ONE_DAY = ONE_HOUR * 24;
 export const ONE_YEAR = ONE_DAY * 365;
 
+export const GENERAL_SETTING_APP_LIST = [
+	{ name: SEARCH, key: [SEARCH_VISIBLE] },
+	{ name: CLOCK, key: [CLOCK_VISIBLE] },
+	{ name: GREETING, key: [GREETING_VISIBLE] },
+	{ name: TODO, key: [TODO_VISIBLE] },
+	{ name: QUOTES, key: [QUOTES_VISIBLE] },
+	{
+		name: NOTES,
+		key: [NOTES_VISIBLE],
+		plus: true,
+		description: NOTES_DESCRIPTION,
+	},
+];
 export const SETTINGS_NAV_LIST = [
 	{ value: GENERAL },
 	{ value: HELP, secondary: true },
@@ -82,12 +107,12 @@ export const DEFAULT_CUSTOMIZATION = {
 		],
 		ts: null,
 	},
-	clockVisible: true,
+	[CLOCK_VISIBLE]: true,
 	displayName: null,
-	greetingVisible: true,
+	[GREETING_VISIBLE]: true,
 	hour12clock: true,
-	notesVisible: true,
-	quoteVisible: true,
+	[NOTES_VISIBLE]: true,
+	[QUOTES_VISIBLE]: true,
 	quoteSettings: {
 		data: [
 			{
@@ -101,12 +126,12 @@ export const DEFAULT_CUSTOMIZATION = {
 		],
 		ts: null,
 	},
-	searchVisible: true,
+	[SEARCH_VISIBLE]: true,
 	searchSettings: {
 		inCenter: true,
 		provider: GOOGLE,
 	},
-	todoVisible: true,
+	[TODO_VISIBLE]: true,
 	themeColour: SYSTEM,
 	themeFont: DEFAULT,
 };
