@@ -33,7 +33,7 @@ const App = () => {
 
 	useAuthPersist();
 
-	return <ContextMemo appsRef={appsRef} mainViewRef={mainViewRef} />;
+	return <ContextMemo {...{ appsRef, mainViewRef }} />;
 };
 
 export default App;

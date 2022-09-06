@@ -67,6 +67,7 @@ const ContextMemo = memo(({ hour12clock }) => {
 
 export const Clock = () => {
 	const { storageUserCustomization } = useUserCustomization();
+	const { hour12clock } = storageUserCustomization;
 
-	return <ContextMemo hour12clock={storageUserCustomization.hour12clock} />;
+	return <ContextMemo {...{ hour12clock }} />;
 };

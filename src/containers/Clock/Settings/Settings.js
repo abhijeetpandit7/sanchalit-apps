@@ -30,13 +30,9 @@ const ContextMemo = memo(({ hour12clock, setStorageUserCustomization }) => {
 const Settings = () => {
 	const { storageUserCustomization, setStorageUserCustomization } =
 		useUserCustomization();
+	const { hour12clock } = storageUserCustomization;
 
-	return (
-		<ContextMemo
-			hour12clock={storageUserCustomization.hour12clock}
-			setStorageUserCustomization={setStorageUserCustomization}
-		/>
-	);
+	return <ContextMemo {...{ hour12clock, setStorageUserCustomization }} />;
 };
 
 // Memoized to prevent re-render on every setClockTime

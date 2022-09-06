@@ -2,91 +2,66 @@ import React, { memo } from "react";
 import { ToggleSlider } from "../../../../../components/";
 import { useUserCustomization } from "../../../../../hooks";
 import {
-	CLOCK_VISIBLE,
-	GREETING_VISIBLE,
-	NOTES_VISIBLE,
-	QUOTES_VISIBLE,
-	SEARCH_VISIBLE,
 	SEARCH_IN_CENTER,
-	TODO_VISIBLE,
 	GENERAL_SETTING_APP_LIST,
 } from "../../../../../utils";
 
-const GeneralMemo = memo(
-	({
-		clockVisible,
-		greetingVisible,
-		notesVisible,
-		quotesVisible,
-		searchVisible,
-		inCenter,
-		setStorageUserCustomization,
-		todoVisible,
-	}) => {
-		const appVisibility = {
-			[CLOCK_VISIBLE]: clockVisible,
-			[GREETING_VISIBLE]: greetingVisible,
-			[NOTES_VISIBLE]: notesVisible,
-			[QUOTES_VISIBLE]: quotesVisible,
-			[SEARCH_VISIBLE]: searchVisible,
-			[TODO_VISIBLE]: todoVisible,
-		};
+const ContextMemo = memo((props) => {
+	const toggleApp = (app) =>
+		props.setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			[app]: !prevCustomization[app],
+		}));
 
-		const toggleApp = (app) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				[app]: !prevCustomization[app],
-			}));
+	const toggleSearchInCenter = () =>
+		props.setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			searchSettings: {
+				...prevCustomization.searchSettings,
+				inCenter: !prevCustomization.searchSettings.inCenter,
+			},
+		}));
 
-		const toggleSearchInCenter = () =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				searchSettings: {
-					...prevCustomization.searchSettings,
-					inCenter: !prevCustomization.searchSettings.inCenter,
-				},
-			}));
 
-		return (
-			<div id="settings-general" className="settings-view settings-general">
-				<header className="settings-header">
-					<h3>General</h3>
-					<p className="description">Customize your dashboard</p>
-				</header>
+	return (
+		<div id="settings-general" className="settings-view settings-general">
+			<header className="settings-header">
+				<h3>General</h3>
+				<p className="description">Customize your dashboard</p>
+			</header>
 
-				<h4 className="first">Show</h4>
-				<ul id="apps-list" className="settings-list options-list">
-					{GENERAL_SETTING_APP_LIST.map((app) => (
-						<ToggleSlider
-							key={app.name}
-							toggle={() => toggleApp(app.key)}
-							value={appVisibility[app.key]}
-							{...app}
-						/>
-					))}
-				</ul>
-
-				<h4>Labs</h4>
-				<ul id="labs-list" className="settings-list options-list">
+			<h4 className="first">Show</h4>
+			<ul id="apps-list" className="settings-list options-list">
+				{GENERAL_SETTING_APP_LIST.map((app) => (
 					<ToggleSlider
-						name={SEARCH_IN_CENTER}
-						value={inCenter}
-						toggle={toggleSearchInCenter}
+						key={app.name}
+						toggle={() => toggleApp(app.key)}
+						value={props[app.key]}
+						{...app}
 					/>
-				</ul>
+				))}
+			</ul>
 
-				<section className="u--touch-hide">
-					<h5>Tip</h5>
-					<p className="tip">
-						Many items in Sanchalit can be edited by double-clicking on them,
-						including <strong>your name</strong> and your
-						<strong> to-dos</strong>.
-					</p>
-				</section>
-			</div>
-		);
-	},
-);
+			<h4>Labs</h4>
+			<ul id="labs-list" className="settings-list options-list">
+				<ToggleSlider
+					name={SEARCH_IN_CENTER}
+					value={props.inCenter}
+					toggle={toggleSearchInCenter}
+				/>
+			</ul>
+
+			<section className="u--touch-hide">
+				<h5>Tip</h5>
+				<p className="tip">
+					Many items in Sanchalit can be edited by double-clicking on them,
+					including <strong>your name</strong> and your
+					<strong> to-dos</strong>.
+				</p>
+			</section>
+		</div>
+	);
+});
 
 const General = () => {
 	const { storageUserCustomization, setStorageUserCustomization } =
@@ -96,21 +71,24 @@ const General = () => {
 		greetingVisible,
 		notesVisible,
 		quotesVisible,
-		searchVisible,
 		searchSettings,
+		searchVisible,
 		todoVisible,
 	} = storageUserCustomization;
+	const { inCenter } = searchSettings;
 
 	return (
-		<GeneralMemo
-			clockVisible={clockVisible}
-			greetingVisible={greetingVisible}
-			notesVisible={notesVisible}
-			quotesVisible={quotesVisible}
-			searchVisible={searchVisible}
-			inCenter={searchSettings.inCenter}
-			setStorageUserCustomization={setStorageUserCustomization}
-			todoVisible={todoVisible}
+		<ContextMemo
+			{...{
+				clockVisible,
+				greetingVisible,
+				inCenter,
+				notesVisible,
+				quotesVisible,
+				searchVisible,
+				setStorageUserCustomization,
+				todoVisible,
+			}}
 		/>
 	);
 };
