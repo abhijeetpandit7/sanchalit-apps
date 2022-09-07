@@ -3597,7 +3597,7 @@ body:not(.touch) .search {
 	height: 100%;
 	padding: 0 var(--side-padding);
 }
-.app-dash .icon-search {
+[data-v-c28d382a] .app-dash .icon-search {
 	--icon-size: 18px;
 	margin-top: 2px;
 }

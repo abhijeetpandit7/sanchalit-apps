@@ -1,12 +1,10 @@
 import React from "react";
-import { Focus, Search } from "../../containers";
+import { Search } from "../../containers";
 
-export const CenterBelowRegion = () => {
-	return (
-		<div className="region center-below">
-			<div className="center-below-app-wrapper">
-				<Search />
-			</div>
+export const CenterBelowRegion = () => (
+	<div className="region center-below">
+		<div className="center-below-app-wrapper">
+			<Search />
 		</div>
-	);
-};
+	</div>
+);
