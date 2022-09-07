@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { memo, useState, useEffect } from "react";
 import { HeightResizeWrapper, MoreToggleWrapper } from "../../components";
+import { useUserCustomization } from "../../hooks";
 import { ONE_MINUTE, getGreetingMessage, toMilliseconds } from "../../utils";
 
 const TEST_USER_NAME = "Abhijeet";
 
-export const GreetingMantra = () => {
+const ContextMemo = memo(() => {
 	const [greetingMessage, setGreetingMessage] = useState(
 		getGreetingMessage(TEST_USER_NAME),
 	);
@@ -43,4 +44,11 @@ export const GreetingMantra = () => {
 			</div>
 		</HeightResizeWrapper>
 	);
+});
+
+export const GreetingMantra = () => {
+	const { storageUserCustomization } = useUserCustomization();
+	const { greetingVisible } = storageUserCustomization;
+
+	return <>{greetingVisible && <ContextMemo />}</>;
 };

@@ -1,7 +1,8 @@
-import React from "react";
+import React, { memo } from "react";
+import { useUserCustomization } from "../../hooks";
 import { heartIcon, skipIcon } from "../../utils";
 
-export const Quote = () => {
+const ContextMemo = memo(() => {
 	return (
 		<div className="app-container quote">
 			<div className="app-dash" data-resize-sensor-id="okxvl">
@@ -38,4 +39,11 @@ export const Quote = () => {
 			</div>
 		</div>
 	);
+});
+
+export const Quote = () => {
+	const { storageUserCustomization } = useUserCustomization();
+	const { quotesVisible } = storageUserCustomization;
+
+	return <>{quotesVisible && <ContextMemo />}</>;
 };
