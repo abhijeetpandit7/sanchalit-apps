@@ -20,65 +20,90 @@ const Loading = () => (
 
 const Settings = lazy(() => import("./Settings/Settings"));
 
-const ContextMemo = memo(({ displayName, displayNameVisible }) => {
-	const [greetingMessage, setGreetingMessage] = useState(
-		getGreetingMessage(displayNameVisible, displayName),
-	);
-	const [componentDidMount, setComponentDidMount] = useState(false);
+const ContextMemo = memo(
+	({ displayName, displayNameRef, displayNameVisible, editDisplayName }) => {
+		const [greetingMessage, setGreetingMessage] = useState(
+			getGreetingMessage(displayNameVisible, displayName),
+		);
+		const [componentDidMount, setComponentDidMount] = useState(false);
 
-	useEffect(() => {
-		const greetingInterval = setInterval(() => {
+		useEffect(() => {
+			const greetingInterval = setInterval(() => {
+				setGreetingMessage(getGreetingMessage(displayNameVisible, displayName));
+			}, toMilliseconds(ONE_MINUTE));
 			setGreetingMessage(getGreetingMessage(displayNameVisible, displayName));
-		}, toMilliseconds(ONE_MINUTE));
 
-		return () => clearInterval(greetingInterval);
-	}, []);
+			return () => clearInterval(greetingInterval);
+		}, [displayName, displayNameVisible]);
 
-	const toggleSettingsApp = () => setComponentDidMount(true);
+		const displayNameClickHandler = (event) => {
+			switch (event.detail) {
+				case 2:
+					editDisplayName();
+				default:
+					return;
+			}
+		};
 
-	return (
-		<HeightResizeWrapper>
-			<div
-				className="has-3-col app-container has-dash-icon greeting"
-				data-v-d6260d64
-			>
-				<div className="side-col left" data-v-d6260d64></div>
-				<div className="center-col" data-v-d6260d64>
-					<span className="content">
-						<span className="message">{greetingMessage}</span>
-						<span className="name-punctuation-no-wrap">
-							<span id="name-wrapper" className="name-wrapper">
-								<span className="name" data-v-4e331ed7>
-									{displayNameVisible && displayName}
+		const toggleSettingsApp = () => setComponentDidMount(true);
+
+		return (
+			<HeightResizeWrapper>
+				<div
+					className="has-3-col app-container has-dash-icon greeting"
+					data-v-d6260d64
+				>
+					<div className="side-col left" data-v-d6260d64></div>
+					<div className="center-col" data-v-d6260d64>
+						<span className="content">
+							<span className="message">{greetingMessage}</span>
+							<span className="name-punctuation-no-wrap">
+								<span className="name-wrapper">
+									<span
+										className="name"
+										ref={displayNameRef}
+										onClick={displayNameClickHandler}
+										data-v-4e331ed7
+									>
+										{displayNameVisible && displayName}
+									</span>
 								</span>
+								<span>.</span>
 							</span>
-							<span>.</span>
 						</span>
-					</span>
+					</div>
+					<div className="side-col right" data-v-d6260d64>
+						<MoreToggleWrapper onToggle={toggleSettingsApp}>
+							{componentDidMount && (
+								<Suspense fallback={<Loading />}>
+									<Settings />
+								</Suspense>
+							)}
+						</MoreToggleWrapper>
+					</div>
 				</div>
-				<div className="side-col right" data-v-d6260d64>
-					<MoreToggleWrapper onToggle={toggleSettingsApp}>
-						{componentDidMount && (
-							<Suspense fallback={<Loading />}>
-								<Settings />
-							</Suspense>
-						)}
-					</MoreToggleWrapper>
-				</div>
-			</div>
-		</HeightResizeWrapper>
-	);
-});
+			</HeightResizeWrapper>
+		);
+	},
+);
 
 export const GreetingMantra = () => {
-	const { storageUserCustomization } = useUserCustomization();
+	const { displayNameRef, storageUserCustomization, editDisplayName } =
+		useUserCustomization();
 	const { displayName, displayNameVisible, greetingVisible } =
 		storageUserCustomization;
 
 	return (
 		<>
 			{greetingVisible && (
-				<ContextMemo {...{ displayName, displayNameVisible }} />
+				<ContextMemo
+					{...{
+						displayName,
+						displayNameVisible,
+						displayNameRef,
+						editDisplayName,
+					}}
+				/>
 			)}
 		</>
 	);

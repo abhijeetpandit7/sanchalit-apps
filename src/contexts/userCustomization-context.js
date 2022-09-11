@@ -6,6 +6,7 @@ export const UserCustomizationProvider = ({ children }) => {
 	const [storageUserCustomization, setStorageUserCustomization] = useState({});
 
 	const appsRef = useRef(null);
+	const displayNameRef = useRef(null);
 	const mainViewRef = useRef(null);
 	const settingsRef = useRef(null);
 
@@ -15,6 +16,7 @@ export const UserCustomizationProvider = ({ children }) => {
 				storageUserCustomization,
 				setStorageUserCustomization,
 				appsRef,
+				displayNameRef,
 				mainViewRef,
 				settingsRef,
 			}}

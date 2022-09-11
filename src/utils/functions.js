@@ -1,7 +1,20 @@
 import React from "react";
 import moment from "moment";
 import _ from "lodash";
-import { OPEN, SHOW, SHOW_FADE_IN } from "../utils";
+import { EMPTY_NAME, OPEN, SHOW, SHOW_FADE_IN } from "../utils";
+
+export const focusDisplayName = (displayNameRef) => {
+	const element = displayNameRef.current;
+	if (element.innerText === EMPTY_NAME) element.innerText = "";
+	const setpos = document.createRange();
+	const set = window.getSelection();
+	if (element.childNodes[0])
+		setpos.setStart(element.childNodes[0], element.innerText.length);
+	setpos.collapse(true);
+	set.removeAllRanges();
+	set.addRange(setpos);
+	element.focus();
+};
 
 const getDayPeriod = () => {
 	const currentHour = moment().get("hour");
