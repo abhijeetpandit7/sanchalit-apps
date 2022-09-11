@@ -1,5 +1,4 @@
 import React, { memo } from "react";
-import { SwitchNavWrapper } from "../../components";
 import { useUserCustomization } from "../../hooks";
 import {
 	QUERY_PARAM,
@@ -40,9 +39,7 @@ const Form = ({ topRow }) => (
 
 const CenterContextMemo = memo(() => (
 	<div className="has-3-col has-dash-icon big-search-wrapper">
-		<div className="side-col left">
-			<SwitchNavWrapper />
-		</div>
+		<div className="side-col left"></div>
 		<div className="center-col" data-v-d6260d64>
 			<div className="big search app-container hide-apps-no-fade">
 				<Form />

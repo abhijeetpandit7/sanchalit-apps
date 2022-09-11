@@ -2,7 +2,6 @@ import React, { lazy, memo, Suspense, useState, useEffect } from "react";
 import {
 	HeightResizeWrapper,
 	WidthResizeWrapper,
-	SwitchNavWrapper,
 	MoreToggleWrapper,
 } from "../../components";
 import { useUserCustomization } from "../../hooks";
@@ -41,9 +40,7 @@ const ContextMemo = memo(({ hour12clock }) => {
 				className="has-3-col app-container clock center-clock has-dash-icon"
 				data-v-d6260d64
 			>
-				<div className="side-col left" data-v-d6260d64>
-					<SwitchNavWrapper />
-				</div>
+				<div className="side-col left" data-v-d6260d64></div>
 				<div className="center-col" data-v-d6260d64>
 					<WidthResizeWrapper>
 						<span className="default-clock">
