@@ -74,7 +74,7 @@ export const useUserCustomization = () => {
 		else if (isDisplayNameEmpty)
 			setStorageUserCustomization((prevCustomization) => ({
 				...prevCustomization,
-				displayName: "",
+				displayName: null,
 			}));
 		else element.innerText = storageUserCustomization.displayName;
 	};

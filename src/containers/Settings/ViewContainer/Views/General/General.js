@@ -2,6 +2,7 @@ import React, { memo } from "react";
 import { ToggleSlider } from "../../../../../components/";
 import { useUserCustomization } from "../../../../../hooks";
 import {
+	SEARCH,
 	SEARCH_IN_CENTER,
 	GENERAL_SETTING_APP_LIST,
 } from "../../../../../utils";
@@ -13,7 +14,11 @@ const ContextMemo = memo((props) => {
 			[app]: !prevCustomization[app],
 		}));
 
-	const toggleSearchInCenter = () =>
+	const toggleSearchInCenter = () => {
+		if (props.inCenter === false && props.searchVisible === false)
+			toggleApp(
+				GENERAL_SETTING_APP_LIST.find((app) => app.name === SEARCH).key,
+			);
 		props.setStorageUserCustomization((prevCustomization) => ({
 			...prevCustomization,
 			searchSettings: {
@@ -21,7 +26,7 @@ const ContextMemo = memo((props) => {
 				inCenter: !prevCustomization.searchSettings.inCenter,
 			},
 		}));
-
+	};
 
 	return (
 		<div id="settings-general" className="settings-view settings-general">
