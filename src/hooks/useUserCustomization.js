@@ -23,8 +23,7 @@ export const useUserCustomization = () => {
 		settingsRef,
 	} = useContext(UserCustomizationContext);
 
-	// TODO: Prevent re-render on every setStorageUserCustomization
-	const editDisplayName = async () => {
+	const editDisplayName = useCallback(async () => {
 		const { displayName, displayNameVisible } = storageUserCustomization;
 		displayNameVisible === false && (await toggleDisplayNameVisible());
 
@@ -55,7 +54,10 @@ export const useUserCustomization = () => {
 				once: true,
 			},
 		);
-	};
+	}, [
+		storageUserCustomization.displayName,
+		storageUserCustomization.displayNameVisible,
+	]);
 
 	const saveDisplayName = (isDisplayNameEmpty) => {
 		const element = displayNameRef.current;
