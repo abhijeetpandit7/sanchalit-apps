@@ -17,9 +17,10 @@ const getDayPeriod = () => {
 export const getClockTime = ({ hour12clock = true } = {}) =>
 	hour12clock ? moment().format("h:mm") : moment().format("HH:mm");
 
-export const getGreetingMessage = (userName) => {
+export const getGreetingMessage = (userNameVisible, userName) => {
 	const dayPeriod = getDayPeriod();
-	return userName ? `Good ${dayPeriod}, ` : `Good ${dayPeriod}`;
+	if (userNameVisible && userName) return `Good ${dayPeriod}, `;
+	else return `Good ${dayPeriod}`;
 };
 
 export const getLocalStorageItem = (key) => localStorage.getItem(key);

@@ -8519,6 +8519,7 @@ input[type="number"].hide-controls {
 	}
 	.settings-nav .open .user-nav {
 		display: block;
+		visibility: visible;
 	}
 	.settings-nav .nipple-top-right:after {
 		right: 31px;

@@ -1,22 +1,40 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { lazy, memo, Suspense, useState, useEffect } from "react";
 import { HeightResizeWrapper, MoreToggleWrapper } from "../../components";
 import { useUserCustomization } from "../../hooks";
 import { ONE_MINUTE, getGreetingMessage, toMilliseconds } from "../../utils";
 
-const TEST_USER_NAME = "Abhijeet";
+const Loading = () => (
+	<div className="dropdown more-dropdown app dash-dropdown dropdown-hide nipple nipple-top-left">
+		<ul data-v-c8d4d4da className="dropdown-list">
+			<li className="dropdown-list-item">
+				<div className="dropdown-list-label-wrapper">
+					<span className="dropdown-list-label">
+						<i className="loading-icon"></i>
+						Loading...
+					</span>
+				</div>
+			</li>
+		</ul>
+	</div>
+);
 
-const ContextMemo = memo(() => {
+const Settings = lazy(() => import("./Settings/Settings"));
+
+const ContextMemo = memo(({ displayName, displayNameVisible }) => {
 	const [greetingMessage, setGreetingMessage] = useState(
-		getGreetingMessage(TEST_USER_NAME),
+		getGreetingMessage(displayNameVisible, displayName),
 	);
+	const [componentDidMount, setComponentDidMount] = useState(false);
 
 	useEffect(() => {
 		const greetingInterval = setInterval(() => {
-			setGreetingMessage(getGreetingMessage(TEST_USER_NAME));
+			setGreetingMessage(getGreetingMessage(displayNameVisible, displayName));
 		}, toMilliseconds(ONE_MINUTE));
 
 		return () => clearInterval(greetingInterval);
 	}, []);
+
+	const toggleSettingsApp = () => setComponentDidMount(true);
 
 	return (
 		<HeightResizeWrapper>
@@ -29,9 +47,9 @@ const ContextMemo = memo(() => {
 					<span className="content">
 						<span className="message">{greetingMessage}</span>
 						<span className="name-punctuation-no-wrap">
-							<span className="name-wrapper">
+							<span id="name-wrapper" className="name-wrapper">
 								<span className="name" data-v-4e331ed7>
-									{TEST_USER_NAME}
+									{displayNameVisible && displayName}
 								</span>
 							</span>
 							<span>.</span>
@@ -39,7 +57,13 @@ const ContextMemo = memo(() => {
 					</span>
 				</div>
 				<div className="side-col right" data-v-d6260d64>
-					<MoreToggleWrapper />
+					<MoreToggleWrapper onToggle={toggleSettingsApp}>
+						{componentDidMount && (
+							<Suspense fallback={<Loading />}>
+								<Settings />
+							</Suspense>
+						)}
+					</MoreToggleWrapper>
 				</div>
 			</div>
 		</HeightResizeWrapper>
@@ -48,7 +72,14 @@ const ContextMemo = memo(() => {
 
 export const GreetingMantra = () => {
 	const { storageUserCustomization } = useUserCustomization();
-	const { greetingVisible } = storageUserCustomization;
+	const { displayName, displayNameVisible, greetingVisible } =
+		storageUserCustomization;
 
-	return <>{greetingVisible && <ContextMemo />}</>;
+	return (
+		<>
+			{greetingVisible && (
+				<ContextMemo {...{ displayName, displayNameVisible }} />
+			)}
+		</>
+	);
 };

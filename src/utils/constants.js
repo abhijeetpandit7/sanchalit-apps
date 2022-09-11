@@ -109,6 +109,7 @@ export const DEFAULT_CUSTOMIZATION = {
 	},
 	[CLOCK_VISIBLE]: true,
 	displayName: null,
+	displayNameVisible: true,
 	[GREETING_VISIBLE]: true,
 	hour12clock: true,
 	[NOTES_VISIBLE]: true,
