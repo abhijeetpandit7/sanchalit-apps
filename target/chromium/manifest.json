@@ -1,20 +1,15 @@
 {
-	"manifest_version": 2,
+	"manifest_version": 3,
 	"name": "Sanchalit",
 	"short_name": "Sanchalit",
 	"version": "0.1.0",
-	"description": "Bring inspiration, focus and productivity to your start page.",
-	"background": {
-		"scripts": ["background.js"],
-		"persistent": false
+	"description": "Bring inspiration, focus and productivity to your new tab page.",
+	"background": { "service_worker ": "background.js" },
+	"action": { "default_title": "Sanchalit" },
+	"chrome_url_overrides": { "newtab": "index.html" },
+	"content_security_policy": {
+		"extension_pages": "script-src 'self'; object-src 'self'"
 	},
-	"browser_action": {
-		"default_title": "Sanchalit"
-	},
-	"chrome_url_overrides": {
-		"newtab": "index.html"
-	},
-	"content_security_policy": "script-src 'self' https://www.google-analytics.com/analytics.js; object-src 'self'",
 	"icons": {
 		"16": "icons/favicon-16.png",
 		"32": "icons/favicon-32.png",
@@ -22,5 +17,6 @@
 		"144": "icons/favicon-144.png"
 	},
 	"permissions": ["storage", "cookies"],
-	"optional_permissions": ["topSites"]
+	"optional_permissions": ["topSites"],
+	"offline_enabled": true
 }
