@@ -3,8 +3,10 @@ import { useUserCustomization } from "../hooks";
 import {
 	EDITING,
 	EMPTY_NAME,
+	GENERAL_SETTING_APP_LIST,
 	INPUT_WRAPPER,
 	PULSE,
+	SEARCH,
 	focusDisplayName,
 	removeRefClassName,
 	toggleRefClassName,
@@ -75,13 +77,60 @@ export const useUserActions = () => {
 		else element.innerText = storageUserCustomization.displayName;
 	};
 
-	const toggleDisplayNameVisible = () =>
+	const toggleDisplayNameVisible = useCallback(
+		() =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				displayNameVisible: !prevCustomization.displayNameVisible,
+			})),
+		[],
+	);
+
+	const toggleHour12Clock = useCallback(
+		() =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				hour12clock: !prevCustomization.hour12clock,
+			})),
+		[],
+	);
+
+	const toggleSearchInCenter = useCallback(() => {
+		const {
+			searchSettings: { inCenter },
+			searchVisible,
+		} = storageUserCustomization;
+
+		if (inCenter === false && searchVisible === false)
+			toggleShowApp(
+				GENERAL_SETTING_APP_LIST.find((app) => app.name === SEARCH).key,
+			);
 		setStorageUserCustomization((prevCustomization) => ({
 			...prevCustomization,
-			displayNameVisible: !prevCustomization.displayNameVisible,
+			searchSettings: {
+				...prevCustomization.searchSettings,
+				inCenter: !prevCustomization.searchSettings.inCenter,
+			},
 		}));
+	}, [
+		storageUserCustomization.searchSettings,
+		storageUserCustomization.searchVisible,
+	]);
+
+	const toggleShowApp = useCallback(
+		(app) =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				[app]: !prevCustomization[app],
+			})),
+		[],
+	);
 
 	return {
 		editDisplayName,
+		toggleDisplayNameVisible,
+		toggleHour12Clock,
+		toggleSearchInCenter,
+		toggleShowApp,
 	};
 };
