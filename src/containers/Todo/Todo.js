@@ -17,8 +17,9 @@ const ContextMemo = memo(() => {
 });
 
 export const Todo = () => {
-	const { storageUserCustomization } = useUserCustomization();
-	const { todoVisible } = storageUserCustomization;
+	const {
+		storageUserCustomization: { todoVisible },
+	} = useUserCustomization();
 
 	return <>{todoVisible && <ContextMemo />}</>;
 };

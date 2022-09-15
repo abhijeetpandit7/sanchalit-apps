@@ -63,8 +63,9 @@ const ContextMemo = memo(({ hour12clock }) => {
 });
 
 export const Clock = () => {
-	const { storageUserCustomization } = useUserCustomization();
-	const { clockVisible, hour12clock } = storageUserCustomization;
+	const {
+		storageUserCustomization: { clockVisible, hour12clock },
+	} = useUserCustomization();
 
 	return <>{clockVisible && <ContextMemo {...{ hour12clock }} />}</>;
 };

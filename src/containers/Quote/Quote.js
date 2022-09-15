@@ -42,8 +42,9 @@ const ContextMemo = memo(() => {
 });
 
 export const Quote = () => {
-	const { storageUserCustomization } = useUserCustomization();
-	const { quotesVisible } = storageUserCustomization;
+	const {
+		storageUserCustomization: { quotesVisible },
+	} = useUserCustomization();
 
 	return <>{quotesVisible && <ContextMemo />}</>;
 };

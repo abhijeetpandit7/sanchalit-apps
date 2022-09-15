@@ -88,10 +88,15 @@ const ContextMemo = memo(
 );
 
 export const GreetingMantra = () => {
-	const { displayNameRef, storageUserCustomization, editDisplayName } =
-		useUserCustomization();
-	const { displayName, displayNameVisible, greetingVisible } =
-		storageUserCustomization;
+	const {
+		displayNameRef,
+		storageUserCustomization: {
+			displayName,
+			displayNameVisible,
+			greetingVisible,
+		},
+		editDisplayName,
+	} = useUserCustomization();
 
 	return (
 		<>

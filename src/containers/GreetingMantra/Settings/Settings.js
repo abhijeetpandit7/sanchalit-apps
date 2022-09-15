@@ -50,11 +50,10 @@ const ContextMemo = memo(
 
 const Settings = () => {
 	const {
-		storageUserCustomization,
+		storageUserCustomization: { displayName, displayNameVisible },
 		setStorageUserCustomization,
 		editDisplayName,
 	} = useUserCustomization();
-	const { displayName, displayNameVisible } = storageUserCustomization;
 
 	return (
 		<ContextMemo

@@ -57,8 +57,9 @@ const TopContextMemo = memo(() => (
 ));
 
 export const Search = ({ topRow }) => {
-	const { storageUserCustomization } = useUserCustomization();
-	const { searchVisible, searchSettings } = storageUserCustomization;
+	const {
+		storageUserCustomization: { searchVisible, searchSettings },
+	} = useUserCustomization();
 
 	return (
 		<>

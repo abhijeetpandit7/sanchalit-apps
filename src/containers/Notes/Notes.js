@@ -18,8 +18,9 @@ const ContextMemo = memo(() => {
 });
 
 export const Notes = () => {
-	const { storageUserCustomization } = useUserCustomization();
-	const { notesVisible } = storageUserCustomization;
+	const {
+		storageUserCustomization: { notesVisible },
+	} = useUserCustomization();
 
 	return <>{notesVisible && <ContextMemo />}</>;
 };

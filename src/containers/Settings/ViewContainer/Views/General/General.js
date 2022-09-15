@@ -69,18 +69,18 @@ const ContextMemo = memo((props) => {
 });
 
 const General = () => {
-	const { storageUserCustomization, setStorageUserCustomization } =
-		useUserCustomization();
 	const {
-		clockVisible,
-		greetingVisible,
-		notesVisible,
-		quotesVisible,
-		searchSettings,
-		searchVisible,
-		todoVisible,
-	} = storageUserCustomization;
-	const { inCenter } = searchSettings;
+		storageUserCustomization: {
+			clockVisible,
+			greetingVisible,
+			notesVisible,
+			quotesVisible,
+			searchSettings: { inCenter },
+			searchVisible,
+			todoVisible,
+		},
+		setStorageUserCustomization,
+	} = useUserCustomization();
 
 	return (
 		<ContextMemo

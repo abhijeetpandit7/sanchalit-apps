@@ -28,9 +28,10 @@ const ContextMemo = memo(({ hour12clock, setStorageUserCustomization }) => {
 });
 
 const Settings = () => {
-	const { storageUserCustomization, setStorageUserCustomization } =
-		useUserCustomization();
-	const { hour12clock } = storageUserCustomization;
+	const {
+		storageUserCustomization: { hour12clock },
+		setStorageUserCustomization,
+	} = useUserCustomization();
 
 	return <ContextMemo {...{ hour12clock, setStorageUserCustomization }} />;
 };
