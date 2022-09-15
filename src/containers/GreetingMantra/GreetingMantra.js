@@ -1,6 +1,6 @@
 import React, { lazy, memo, Suspense, useState, useEffect } from "react";
 import { HeightResizeWrapper, MoreToggleWrapper } from "../../components";
-import { useUserCustomization } from "../../hooks";
+import { useUserActions, useUserCustomization } from "../../hooks";
 import { ONE_MINUTE, getGreetingMessage, toMilliseconds } from "../../utils";
 
 const Loading = () => (
@@ -95,8 +95,8 @@ export const GreetingMantra = () => {
 			displayNameVisible,
 			greetingVisible,
 		},
-		editDisplayName,
 	} = useUserCustomization();
+	const { editDisplayName } = useUserActions();
 
 	return (
 		<>

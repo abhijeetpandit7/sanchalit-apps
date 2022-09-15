@@ -13,12 +13,12 @@ export const UserCustomizationProvider = ({ children }) => {
 	return (
 		<UserCustomizationContext.Provider
 			value={{
-				storageUserCustomization,
-				setStorageUserCustomization,
 				appsRef,
 				displayNameRef,
 				mainViewRef,
 				settingsRef,
+				storageUserCustomization,
+				setStorageUserCustomization,
 			}}
 		>
 			{children}

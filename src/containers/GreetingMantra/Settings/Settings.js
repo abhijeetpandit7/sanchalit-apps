@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { useUserCustomization } from "../../../hooks";
+import { useUserActions,useUserCustomization } from "../../../hooks";
 
 const ContextMemo = memo(
 	({
@@ -52,8 +52,9 @@ const Settings = () => {
 	const {
 		storageUserCustomization: { displayName, displayNameVisible },
 		setStorageUserCustomization,
-		editDisplayName,
+		
 	} = useUserCustomization();
+	const { editDisplayName } = useUserActions();
 
 	return (
 		<ContextMemo
