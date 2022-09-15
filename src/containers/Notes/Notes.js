@@ -1,7 +1,10 @@
-import React, { memo } from "react";
-import { useUserCustomization } from "../../hooks";
+import React, { memo, useEffect } from "react";
+import { useUserActions, useUserCustomization } from "../../hooks";
+import { NOTES } from "../../utils";
 
-const ContextMemo = memo(() => {
+const ContextMemo = memo(({ setWidgetReady }) => {
+	useEffect(() => setWidgetReady({ widget: NOTES }), []);
+
 	return (
 		<div id="notes" className="app-container notes">
 			<div className="app-wrapper app-placeholder nipple nipple-bottom-right">
@@ -21,6 +24,7 @@ export const Notes = () => {
 	const {
 		storageUserCustomization: { notesVisible },
 	} = useUserCustomization();
+	const { setWidgetReady } = useUserActions();
 
-	return <>{notesVisible && <ContextMemo />}</>;
+	return <>{notesVisible && <ContextMemo {...{ setWidgetReady }} />}</>;
 };

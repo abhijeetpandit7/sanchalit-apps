@@ -1,7 +1,10 @@
-import React, { memo } from "react";
-import { useUserCustomization } from "../../hooks";
+import React, { memo, useEffect } from "react";
+import { useUserActions, useUserCustomization } from "../../hooks";
+import { TODO } from "../../utils";
 
-const ContextMemo = memo(() => {
+const ContextMemo = memo(({ setWidgetReady }) => {
+	useEffect(() => setWidgetReady({ widget: TODO }), []);
+
 	return (
 		<div id="todo" className="app-container todo">
 			<div className="app-wrapper nipple nipple-bottom-right"></div>
@@ -20,6 +23,7 @@ export const Todo = () => {
 	const {
 		storageUserCustomization: { todoVisible },
 	} = useUserCustomization();
+	const { setWidgetReady } = useUserActions();
 
-	return <>{todoVisible && <ContextMemo />}</>;
+	return <>{todoVisible && <ContextMemo {...{ setWidgetReady }} />}</>;
 };

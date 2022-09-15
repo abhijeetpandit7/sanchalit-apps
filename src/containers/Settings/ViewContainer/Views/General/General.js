@@ -2,7 +2,6 @@ import React, { memo } from "react";
 import { ToggleSlider } from "../../../../../components/";
 import { useUserActions, useUserCustomization } from "../../../../../hooks";
 import {
-	SEARCH,
 	SEARCH_IN_CENTER,
 	GENERAL_SETTING_APP_LIST,
 } from "../../../../../utils";

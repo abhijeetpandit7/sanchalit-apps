@@ -1,7 +1,12 @@
-import React, { lazy, memo, Suspense, useState, useEffect } from "react";
+import React, { lazy, memo, Suspense, useEffect, useState } from "react";
 import { HeightResizeWrapper, MoreToggleWrapper } from "../../components";
 import { useUserActions, useUserCustomization } from "../../hooks";
-import { ONE_MINUTE, getGreetingMessage, toMilliseconds } from "../../utils";
+import {
+	GREETING,
+	ONE_MINUTE,
+	getGreetingMessage,
+	toMilliseconds,
+} from "../../utils";
 
 const Loading = () => (
 	<div className="dropdown more-dropdown app dash-dropdown dropdown-hide nipple nipple-top-left">
@@ -21,7 +26,13 @@ const Loading = () => (
 const Settings = lazy(() => import("./Settings/Settings"));
 
 const ContextMemo = memo(
-	({ displayName, displayNameRef, displayNameVisible, editDisplayName }) => {
+	({
+		displayName,
+		displayNameRef,
+		displayNameVisible,
+		editDisplayName,
+		setWidgetReady,
+	}) => {
 		const [greetingMessage, setGreetingMessage] = useState(
 			getGreetingMessage(displayNameVisible, displayName),
 		);
@@ -32,6 +43,7 @@ const ContextMemo = memo(
 				setGreetingMessage(getGreetingMessage(displayNameVisible, displayName));
 			}, toMilliseconds(ONE_MINUTE));
 			setGreetingMessage(getGreetingMessage(displayNameVisible, displayName));
+			setWidgetReady({ widget: GREETING });
 
 			return () => clearInterval(greetingInterval);
 		}, [displayName, displayNameVisible]);
@@ -96,7 +108,7 @@ export const GreetingMantra = () => {
 			greetingVisible,
 		},
 	} = useUserCustomization();
-	const { editDisplayName } = useUserActions();
+	const { editDisplayName, setWidgetReady } = useUserActions();
 
 	return (
 		<>
@@ -107,6 +119,7 @@ export const GreetingMantra = () => {
 						displayNameVisible,
 						displayNameRef,
 						editDisplayName,
+						setWidgetReady,
 					}}
 				/>
 			)}

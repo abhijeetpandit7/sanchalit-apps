@@ -1,7 +1,8 @@
-import React, { memo } from "react";
-import { useUserCustomization } from "../../hooks";
+import React, { memo, useEffect } from "react";
+import { useUserActions, useUserCustomization } from "../../hooks";
 import {
 	QUERY_PARAM,
+	SEARCH,
 	SEARCH_ACTION,
 	dropdownIcon,
 	searchIcon,
@@ -37,36 +38,49 @@ const Form = ({ topRow }) => (
 	</form>
 );
 
-const CenterContextMemo = memo(() => (
-	<div className="has-3-col has-dash-icon big-search-wrapper">
-		<div className="side-col left"></div>
-		<div className="center-col" data-v-d6260d64>
-			<div className="big search app-container hide-apps-no-fade">
-				<Form />
-				<div className="backdrop-filter hide-apps-fade"></div>
-			</div>
-		</div>
-		<div className="side-col right"></div>
-	</div>
-));
+const CenterContextMemo = memo(({ setWidgetReady }) => {
+	useEffect(() => setWidgetReady({ widget: SEARCH }), []);
 
-const TopContextMemo = memo(() => (
-	<div id="search" className="app-dash app-container search" data-v-c28d382a>
-		<Form topRow={true} />
-	</div>
-));
+	return (
+		<div className="has-3-col has-dash-icon big-search-wrapper">
+			<div className="side-col left"></div>
+			<div className="center-col" data-v-d6260d64>
+				<div className="big search app-container hide-apps-no-fade">
+					<Form />
+					<div className="backdrop-filter hide-apps-fade"></div>
+				</div>
+			</div>
+			<div className="side-col right"></div>
+		</div>
+	);
+});
+
+const TopContextMemo = memo(({ setWidgetReady }) => {
+	useEffect(() => setWidgetReady({ widget: SEARCH }), []);
+
+	return (
+		<div id="search" className="app-dash app-container search" data-v-c28d382a>
+			<Form topRow={true} />
+		</div>
+	);
+});
 
 export const Search = ({ topRow }) => {
 	const {
 		storageUserCustomization: { searchVisible, searchSettings },
 	} = useUserCustomization();
+	const { setWidgetReady } = useUserActions();
 
 	return (
 		<>
 			{searchVisible &&
 				(topRow
-					? searchSettings.inCenter === false && <TopContextMemo />
-					: searchSettings.inCenter && <CenterContextMemo />)}
+					? searchSettings.inCenter === false && (
+							<TopContextMemo {...{ setWidgetReady }} />
+					  )
+					: searchSettings.inCenter && (
+							<CenterContextMemo {...{ setWidgetReady }} />
+					  ))}
 		</>
 	);
 };

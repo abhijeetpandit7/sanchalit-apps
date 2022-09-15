@@ -1,4 +1,6 @@
-import React, { createContext, useRef, useState } from "react";
+import React, { createContext, useReducer, useRef, useState } from "react";
+import { widgetReducer } from "../reducers";
+import { API, BACKGROUND, GENERAL_SETTING_APP_LIST } from "../utils";
 
 export const UserCustomizationContext = createContext();
 
@@ -10,6 +12,21 @@ export const UserCustomizationProvider = ({ children }) => {
 	const mainViewRef = useRef(null);
 	const settingsRef = useRef(null);
 
+	const [widgetManager, widgetDispatch] = useReducer(widgetReducer, {
+		app: GENERAL_SETTING_APP_LIST.reduce((acc, app) => {
+			acc[app.name] = { visibilityKey: app.key, ready: false };
+			return acc;
+		}, {}),
+		data: {
+			[API]: {
+				ready: false,
+			},
+			[BACKGROUND]: {
+				ready: false,
+			},
+		},
+	});
+
 	return (
 		<UserCustomizationContext.Provider
 			value={{
@@ -19,6 +36,8 @@ export const UserCustomizationProvider = ({ children }) => {
 				settingsRef,
 				storageUserCustomization,
 				setStorageUserCustomization,
+				widgetManager,
+				widgetDispatch,
 			}}
 		>
 			{children}

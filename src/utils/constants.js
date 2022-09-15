@@ -1,7 +1,9 @@
 export const ACTIVE = "active";
 export const ABOUT = "About";
+export const API = "api";
 export const AUTH = "auth";
 export const BALANCE = "Balance";
+export const BACKGROUND = "Background";
 export const CUSTOMIZATION = "customization";
 export const CLOCK = "Clock";
 const CLOCK_VISIBLE = "clockVisible";
@@ -51,14 +53,14 @@ export const ONE_DAY = ONE_HOUR * 24;
 export const ONE_YEAR = ONE_DAY * 365;
 
 export const GENERAL_SETTING_APP_LIST = [
-	{ name: SEARCH, key: [SEARCH_VISIBLE] },
-	{ name: CLOCK, key: [CLOCK_VISIBLE] },
-	{ name: GREETING, key: [GREETING_VISIBLE] },
-	{ name: TODO, key: [TODO_VISIBLE] },
-	{ name: QUOTES, key: [QUOTES_VISIBLE] },
+	{ name: SEARCH, key: SEARCH_VISIBLE },
+	{ name: CLOCK, key: CLOCK_VISIBLE },
+	{ name: GREETING, key: GREETING_VISIBLE },
+	{ name: TODO, key: TODO_VISIBLE },
+	{ name: QUOTES, key: QUOTES_VISIBLE },
 	{
 		name: NOTES,
-		key: [NOTES_VISIBLE],
+		key: NOTES_VISIBLE,
 		plus: true,
 		description: NOTES_DESCRIPTION,
 	},

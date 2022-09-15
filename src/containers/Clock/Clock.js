@@ -1,11 +1,11 @@
-import React, { lazy, memo, Suspense, useState, useEffect } from "react";
+import React, { lazy, memo, Suspense, useEffect, useState } from "react";
 import {
 	HeightResizeWrapper,
 	WidthResizeWrapper,
 	MoreToggleWrapper,
 } from "../../components";
-import { useUserCustomization } from "../../hooks";
-import { ONE_SECOND, getClockTime, toMilliseconds } from "../../utils";
+import { useUserActions, useUserCustomization } from "../../hooks";
+import { CLOCK, ONE_SECOND, getClockTime, toMilliseconds } from "../../utils";
 
 const Loading = () => (
 	<div className="dropdown more-dropdown app dash-dropdown dropdown-hide nipple nipple-top-left">
@@ -20,7 +20,7 @@ const Loading = () => (
 
 const Settings = lazy(() => import("./Settings/Settings"));
 
-const ContextMemo = memo(({ hour12clock }) => {
+const ContextMemo = memo(({ hour12clock, setWidgetReady }) => {
 	const [clockTime, setClockTime] = useState(getClockTime({ hour12clock }));
 	const [componentDidMount, setComponentDidMount] = useState(false);
 
@@ -29,6 +29,8 @@ const ContextMemo = memo(({ hour12clock }) => {
 			setClockTime(getClockTime({ hour12clock }));
 		}, toMilliseconds(ONE_SECOND));
 		setClockTime(getClockTime({ hour12clock }));
+		setWidgetReady({ widget: CLOCK });
+
 		return () => clearInterval(clockInterval);
 	}, [hour12clock]);
 
@@ -66,6 +68,9 @@ export const Clock = () => {
 	const {
 		storageUserCustomization: { clockVisible, hour12clock },
 	} = useUserCustomization();
+	const { setWidgetReady } = useUserActions();
 
-	return <>{clockVisible && <ContextMemo {...{ hour12clock }} />}</>;
+	return (
+		<>{clockVisible && <ContextMemo {...{ hour12clock, setWidgetReady }} />}</>
+	);
 };

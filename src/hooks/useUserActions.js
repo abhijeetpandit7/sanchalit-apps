@@ -17,6 +17,7 @@ export const useUserActions = () => {
 		displayNameRef,
 		storageUserCustomization,
 		setStorageUserCustomization,
+		widgetDispatch,
 	} = useUserCustomization();
 
 	const editDisplayName = useCallback(async () => {
@@ -77,6 +78,18 @@ export const useUserActions = () => {
 		else element.innerText = storageUserCustomization.displayName;
 	};
 
+	const setWidgetReady = useCallback(
+		({ widget, type = "app" } = {}) =>
+			widgetDispatch({
+				type: "SET_READY",
+				payload: {
+					type: type,
+					widget: widget,
+				},
+			}),
+		[],
+	);
+
 	const toggleDisplayNameVisible = useCallback(
 		() =>
 			setStorageUserCustomization((prevCustomization) => ({
@@ -128,6 +141,7 @@ export const useUserActions = () => {
 
 	return {
 		editDisplayName,
+		setWidgetReady,
 		toggleDisplayNameVisible,
 		toggleHour12Clock,
 		toggleSearchInCenter,

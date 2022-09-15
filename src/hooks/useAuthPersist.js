@@ -1,6 +1,7 @@
 import { useEffect } from "react";
-import { useAuth, useUserCustomization } from "../hooks";
+import { useAuth, useUserActions, useUserCustomization } from "../hooks";
 import {
+	API,
 	AUTH,
 	CUSTOMIZATION,
 	DEFAULT_AUTHENTICATION,
@@ -12,8 +13,29 @@ import {
 
 export const useAuthPersist = () => {
 	const { storageAuth, setStorageAuth } = useAuth();
-	const { storageUserCustomization, setStorageUserCustomization } =
-		useUserCustomization();
+	const {
+		storageUserCustomization,
+		setStorageUserCustomization,
+		widgetManager,
+		showApps,
+		showMainView,
+	} = useUserCustomization();
+	const { setWidgetReady } = useUserActions();
+
+	useEffect(() => {
+		(async () => {
+			if (
+				Object.values({ ...widgetManager.app, ...widgetManager.data }).every(
+					(widget) =>
+						widget.ready === true ||
+						storageUserCustomization[widget.visibilityKey] === false,
+				)
+			) {
+				showMainView();
+				showApps();
+			}
+		})();
+	}, [widgetManager]);
 
 	useEffect(() => {
 		(async () => {
@@ -33,6 +55,7 @@ export const useAuthPersist = () => {
 
 			setStorageAuth(auth);
 			setStorageUserCustomization(userCustomization);
+			setWidgetReady({ widget: API, type: "data" });
 		})();
 	}, []);
 

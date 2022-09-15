@@ -15,6 +15,8 @@ export const useUserCustomization = () => {
 		settingsRef,
 		storageUserCustomization,
 		setStorageUserCustomization,
+		widgetManager,
+		widgetDispatch,
 	} = useContext(UserCustomizationContext);
 
 	const showApps = useCallback(
@@ -39,6 +41,8 @@ export const useUserCustomization = () => {
 		settingsRef,
 		storageUserCustomization,
 		setStorageUserCustomization,
+		widgetManager,
+		widgetDispatch,
 		showApps,
 		showBackgroundOverlay,
 		showMainView,

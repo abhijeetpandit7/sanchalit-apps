@@ -1,8 +1,10 @@
-import React, { memo } from "react";
-import { useUserCustomization } from "../../hooks";
-import { heartIcon, skipIcon } from "../../utils";
+import React, { memo, useEffect } from "react";
+import { useUserActions, useUserCustomization } from "../../hooks";
+import { QUOTES, heartIcon, skipIcon } from "../../utils";
 
-const ContextMemo = memo(() => {
+const ContextMemo = memo(({ setWidgetReady }) => {
+	useEffect(() => setWidgetReady({ widget: QUOTES }), []);
+
 	return (
 		<div className="app-container quote">
 			<div className="app-dash" data-resize-sensor-id="okxvl">
@@ -45,6 +47,7 @@ export const Quote = () => {
 	const {
 		storageUserCustomization: { quotesVisible },
 	} = useUserCustomization();
+	const { setWidgetReady } = useUserActions();
 
-	return <>{quotesVisible && <ContextMemo />}</>;
+	return <>{quotesVisible && <ContextMemo {...{ setWidgetReady }} />}</>;
 };
