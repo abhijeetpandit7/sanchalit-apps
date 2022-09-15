@@ -4,6 +4,7 @@ import {
 	HIDE_APPS,
 	HIDE_BACKGROUND_OVERLAY,
 	HIDE_VISIBILITY,
+	addRefClassName,
 	removeRefClassName,
 } from "../utils";
 
@@ -18,6 +19,11 @@ export const useUserCustomization = () => {
 		widgetManager,
 		widgetDispatch,
 	} = useContext(UserCustomizationContext);
+
+	const hideApps = useCallback(
+		() => addRefClassName(appsRef, HIDE_APPS),
+		[],
+	);
 
 	const showApps = useCallback(
 		() => removeRefClassName(appsRef, HIDE_APPS),
@@ -43,6 +49,7 @@ export const useUserCustomization = () => {
 		setStorageUserCustomization,
 		widgetManager,
 		widgetDispatch,
+		hideApps,
 		showApps,
 		showBackgroundOverlay,
 		showMainView,

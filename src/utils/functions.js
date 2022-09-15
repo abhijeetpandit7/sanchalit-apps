@@ -3,6 +3,9 @@ import moment from "moment";
 import _ from "lodash";
 import { EMPTY_NAME, OPEN, SHOW, SHOW_FADE_IN } from "../utils";
 
+export const addRefClassName = (ref, className) =>
+	ref.current.classList.add(className);
+
 export const focusDisplayName = (displayNameRef) => {
 	const element = displayNameRef.current;
 	if (element.innerText === EMPTY_NAME) element.innerText = "";
