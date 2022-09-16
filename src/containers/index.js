@@ -1,4 +1,5 @@
 export { Backgrounds } from "./Backgrounds/Backgrounds";
+export { Bookmarks } from "./Bookmarks/Bookmarks";
 export { Clock } from "./Clock/Clock";
 export { Focus } from "./Focus/Focus";
 export { GreetingMantra } from "./GreetingMantra/GreetingMantra";

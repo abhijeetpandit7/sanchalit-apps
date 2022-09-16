@@ -364,6 +364,21 @@ export const ecosiaColouredIcon = (
 	</svg>
 );
 
+export const folderIcon = (
+	<svg
+		data-v-5504764e
+		viewBox="0 0 64 64"
+		xmlns="http://www.w3.org/2000/svg"
+		draggable="false"
+		className="bookmark-icon icon-folder bookmark-child-icon"
+	>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M0 11C0 7.68629 2.68629 5 6 5H20.8836C22.552 5 24.1451 5.69469 25.2803 6.91729L28.2197 10.0827C29.3549 11.3053 30.948 12 32.6164 12H58C61.3137 12 64 14.6863 64 18V53C64 56.3137 61.3137 59 58 59H6C2.68629 59 0 56.3137 0 53V11Z"
+		></path>
+	</svg>
+);
+
 export const googleBase64Source =
 	"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PHBhdGggZmlsbD0id2hpdGUiIGlkPSJhIiBkPSJNNDQuNSAyMEgyNHY4LjVoMTEuOEMzNC43IDMzLjkgMzAuMSAzNyAyNCAzN2MtNy4yIDAtMTMtNS44LTEzLTEzczUuOC0xMyAxMy0xM2MzLjEgMCA1LjkgMS4xIDguMSAyLjlsNi40LTYuNEMzNC42IDQuMSAyOS42IDIgMjQgMiAxMS44IDIgMiAxMS44IDIgMjRzOS44IDIyIDIyIDIyYzExIDAgMjEtOCAyMS0yMiAwLTEuMy0uMi0yLjctLjUtNHoiLz48L3N2Zz4=";
 

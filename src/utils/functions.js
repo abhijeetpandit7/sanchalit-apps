@@ -41,6 +41,29 @@ export const getGreetingMessage = (userNameVisible, userName) => {
 
 export const getLocalStorageItem = (key) => localStorage.getItem(key);
 
+export const getBookmarks = async (bookmarksSettings) => {
+	const bookmarksTree = await new Promise((resolve, reject) =>
+		chrome.bookmarks.getTree((bookmarks) =>
+			chrome.runtime.lastError
+				? reject(Error(chrome.runtime.lastError.message))
+				: resolve(bookmarks),
+		),
+	);
+	const bookmarks = bookmarksSettings.includeOtherBookmarks
+		? bookmarksTree[0]
+		: bookmarksTree[0].children[0].children;
+	return bookmarks;
+};
+
+export const getPermissionAllowed = (permission) =>
+	new Promise((resolve, reject) =>
+		chrome.permissions.contains({ permissions: [permission] }, (allowed) =>
+			chrome.runtime.lastError
+				? reject(Error(chrome.runtime.lastError.message))
+				: resolve(allowed),
+		),
+	);
+
 export const hideAppPopup = (appRef) =>
 	(appRef.current.classList.contains(SHOW) ||
 		appRef.current.classList.contains(SHOW_FADE_IN)) &&
@@ -53,6 +76,15 @@ export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
 
 export const removeRefClassName = (ref, className) =>
 	ref.current.classList.remove(className);
+
+export const requestPermission = (permssion) =>
+	new Promise((resolve, reject) =>
+		chrome.permissions.request({ permissions: [permssion] }, (granted) =>
+			chrome.runtime.lastError
+				? reject(Error(chrome.runtime.lastError.message))
+				: resolve(granted),
+		),
+	);
 
 export const setLocalStorageItem = (key, value) =>
 	localStorage.setItem(key, value);

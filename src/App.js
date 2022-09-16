@@ -3,7 +3,13 @@ import "./App.css";
 import { LogoOverlay } from "./components";
 import { Backgrounds, ModalBase } from "./containers";
 import { useAuthPersist, useUserCustomization } from "./hooks";
-import { TopRow, CenterRegion, CenterBelowRegion, BottomRow } from "./regions";
+import {
+	TopBar,
+	TopRow,
+	CenterRegion,
+	CenterBelowRegion,
+	BottomRow,
+} from "./regions";
 import { HIDE_APPS, HIDE_BACKGROUND_OVERLAY, HIDE_VISIBILITY } from "./utils";
 
 const ContextMemo = memo(({ appsRef, mainViewRef }) => (
@@ -17,7 +23,7 @@ const ContextMemo = memo(({ appsRef, mainViewRef }) => (
 			<Backgrounds />
 			<div className={`apps ${HIDE_APPS}`} ref={appsRef}>
 				<ModalBase />
-				<div className="region top-bar"></div>
+				<TopBar />
 				<TopRow />
 				<div className="region center-above"></div>
 				<CenterRegion />

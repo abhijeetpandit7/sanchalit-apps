@@ -6,6 +6,7 @@ import {
 	CUSTOMIZATION,
 	DEFAULT_AUTHENTICATION,
 	DEFAULT_CUSTOMIZATION,
+	getBookmarks,
 	getLocalStorageItem,
 	isObjectEmpty,
 	setLocalStorageItem,
@@ -38,8 +39,7 @@ export const useAuthPersist = () => {
 	}, [widgetManager]);
 
 	useEffect(() => {
-		(async () => {
-		})();
+		(async () => {})();
 	}, [storageUserCustomization]);
 
 	useEffect(() => {
@@ -52,6 +52,13 @@ export const useAuthPersist = () => {
 			if (isObjectEmpty(auth)) auth = DEFAULT_AUTHENTICATION;
 			if (isObjectEmpty(userCustomization))
 				userCustomization = DEFAULT_CUSTOMIZATION;
+
+			const { bookmarksVisible, bookmarksSettings } = userCustomization;
+			if (bookmarksVisible)
+				userCustomization = {
+					...userCustomization,
+					bookmarks: await getBookmarks(bookmarksSettings),
+				};
 
 			setStorageAuth(auth);
 			setStorageUserCustomization(userCustomization);

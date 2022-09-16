@@ -17,6 +17,6 @@
 		"144": "icons/favicon-144.png"
 	},
 	"permissions": ["storage", "cookies"],
-	"optional_permissions": ["topSites"],
+	"optional_permissions": ["topSites", "bookmarks"],
 	"offline_enabled": true
 }

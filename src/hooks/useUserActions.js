@@ -1,14 +1,20 @@
 import { useCallback } from "react";
 import { useUserCustomization } from "../hooks";
 import {
+	BOOKMARKS,
+	BOOKMARKS_PERMISSION,
 	EDITING,
 	EMPTY_NAME,
 	GENERAL_SETTING_APP_LIST,
 	INPUT_WRAPPER,
 	PULSE,
 	SEARCH,
+	WEB,
 	focusDisplayName,
+	getBookmarks,
+	getPermissionAllowed,
 	removeRefClassName,
+	requestPermission,
 	toggleRefClassName,
 } from "../utils";
 
@@ -145,14 +151,45 @@ export const useUserActions = () => {
 		storageUserCustomization.searchVisible,
 	]);
 
-	const toggleShowApp = useCallback(
-		(app) =>
+	const toggleShowBookmarksApp = useCallback(async (app) => {
+		const isPermissionAllowed = await getPermissionAllowed(
+			BOOKMARKS_PERMISSION,
+		);
+		if (isPermissionAllowed === false) {
+			const isPermissionGranted = await requestPermission(BOOKMARKS_PERMISSION);
+			if (isPermissionGranted === false) return;
+		}
+		const { bookmarks, bookmarksSettings } = storageUserCustomization;
+		let fetchedBookmarks;
+		if (bookmarks.length === 0) fetchedBookmarks = await getBookmarks(bookmarksSettings);
+
+		setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			[app.key]: !prevCustomization[app.key],
+			bookmarks: fetchedBookmarks || prevCustomization.bookmarks,
+		}));
+	}, [storageUserCustomization.bookmarks]);
+
+	const toggleShowApp = useCallback((app) => {
+		if (app.requirePermission) {
+			if (process.env.BUILD_TARGET === WEB) {
+				alert("This feature is available only on extension.");
+				return;
+			} else {
+				switch (app.name) {
+					case BOOKMARKS: {
+						toggleShowBookmarksApp(app);
+					}
+					default:
+						return;
+				}
+			}
+		} else
 			setStorageUserCustomization((prevCustomization) => ({
 				...prevCustomization,
-				[app]: !prevCustomization[app],
-			})),
-		[],
-	);
+				[app.key]: !prevCustomization[app.key],
+			}));
+	}, []);
 
 	return {
 		editDisplayName,

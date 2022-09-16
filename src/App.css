@@ -8365,6 +8365,107 @@ input[type="number"].hide-controls {
 	box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
 }
 
+.bookmarks[data-v-10674610] {
+	height: 36px;
+	display: block;
+	background-color: var(--color-bg);
+	text-shadow: none;
+}
+.bookmarks-list[data-v-10674610] {
+	height: 100%;
+	padding: 0 4px;
+	display: flex;
+	align-items: flex-end;
+	transition: transform 0.25s ease, opacity 0.25s ease;
+	white-space: nowrap;
+}
+.bookmarks-item[data-v-10674610] {
+	color: var(--color-text);
+}
+.most-visited .bookmark[data-v-10674610] {
+	max-width: none;
+}
+[data-v-10674610] .bookmark:hover {
+	background: var(--dropdown-hover-bg);
+}
+[data-v-10674610] .bookmark {
+	max-width: 150px;
+	margin: 4px 1px;
+	padding: 6px;
+	position: relative;
+	display: flex;
+	align-items: center;
+	border-radius: 30px;
+	color: var(--color-text);
+	cursor: pointer;
+	line-height: 1.25;
+	transition: background 0s ease;
+}
+[data-v-10674610] .bookmark-icon-wrapper {
+	--size: 16px;
+	height: var(--size);
+	width: var(--size);
+}
+.dropdown[data-v-5504764e] .bookmark-label {
+  margin-left: 10px;
+}
+[data-v-10674610] .bookmark-label {
+  margin-left: 6px;
+  display: inline-block;
+  font-size: 0.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+[data-v-10674610] .icon-back-wrapper {
+	--size: 16px;
+	height: var(--size);
+	width: var(--size);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0.6;
+}
+[data-v-10674610] .icon-back-wrapper .icon-back {
+	--size: 14px;
+}
+[data-v-10674610] .bookmark-icon {
+	--size: 16px;
+	height: var(--size);
+	width: var(--size);
+	fill: var(--color-text);
+}
+.icon-folder[data-v-5504764e] {
+  opacity: 0.5;
+}
+.folder-wrapper[data-v-5504764e] {
+  display: flex;
+  align-items: center;
+}
+.dropdown[data-v-5504764e] {
+  margin-top: 3px;
+  top: 100%;
+  display: block;
+}
+.dropdown-wrapper[data-v-5504764e] {
+  max-height: calc(100vh - 45px);
+  overflow-y: auto;
+}
+.dropdown-list[data-v-5504764e] {
+  cursor: auto;
+}
+.dropdown-item[data-v-5504764e] {
+  min-width: 150px;
+  max-width: 400px;
+  display: inherit;
+}
+.dropdown[data-v-5504764e] .bookmark {
+  max-width: 500px;
+  margin: 0;
+  padding: 4px 14px;
+  border-radius: 0px;
+}
+
 /* Mobile */
 @media screen and (max-width: 450px) {
 	.settings-app {

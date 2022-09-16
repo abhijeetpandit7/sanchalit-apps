@@ -18,7 +18,7 @@ const ContextMemo = memo((props) => (
 			{GENERAL_SETTING_APP_LIST.map((app) => (
 				<ToggleSlider
 					key={app.name}
-					toggle={() => props.toggleShowApp(app.key)}
+					toggle={() => props.toggleShowApp(app)}
 					value={props[app.key]}
 					{...app}
 				/>
@@ -48,6 +48,7 @@ const ContextMemo = memo((props) => (
 const General = () => {
 	const {
 		storageUserCustomization: {
+			bookmarksVisible,
 			clockVisible,
 			greetingVisible,
 			notesVisible,
@@ -62,6 +63,7 @@ const General = () => {
 	return (
 		<ContextMemo
 			{...{
+				bookmarksVisible,
 				clockVisible,
 				greetingVisible,
 				inCenter,

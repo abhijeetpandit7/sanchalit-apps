@@ -1,3 +1,4 @@
+export { TopBar } from "./TopBar/TopBar";
 export { TopRow } from "./TopRow/TopRow";
 export { CenterRegion } from "./CenterRegion/CenterRegion";
 export { CenterBelowRegion } from "./CenterBelowRegion/CenterBelowRegion";

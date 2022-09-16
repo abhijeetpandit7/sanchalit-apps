@@ -6,6 +6,9 @@ export const AUTH = "auth";
 export const BALANCE = "Balance";
 export const BACKGROUND = "Background";
 export const BING = "Bing";
+export const BOOKMARKS = "Bookmarks";
+export const BOOKMARKS_PERMISSION = "bookmarks";
+const BOOKMARKS_VISIBLE = "bookmarksVisible";
 export const CUSTOMIZATION = "customization";
 export const CLOCK = "Clock";
 const CLOCK_VISIBLE = "clockVisible";
@@ -58,6 +61,7 @@ export const ONE_DAY = ONE_HOUR * 24;
 export const ONE_YEAR = ONE_DAY * 365;
 
 export const GENERAL_SETTING_APP_LIST = [
+	{ name: BOOKMARKS, key: BOOKMARKS_VISIBLE, requirePermission: true },
 	{ name: SEARCH, key: SEARCH_VISIBLE },
 	{ name: CLOCK, key: CLOCK_VISIBLE },
 	{ name: GREETING, key: GREETING_VISIBLE },
@@ -144,6 +148,15 @@ export const DEFAULT_CUSTOMIZATION = {
 		],
 		ts: null,
 	},
+	bookmarks: [],
+	bookmarksSettings: {
+		iconsOnly: false,
+		openInNewTab: false,
+		includeOtherBookmarks: false,
+		defaultMostVisited: false,
+		includeMostVisited: false,
+	},
+	[BOOKMARKS_VISIBLE]: false,
 	[CLOCK_VISIBLE]: true,
 	displayName: null,
 	displayNameVisible: true,
