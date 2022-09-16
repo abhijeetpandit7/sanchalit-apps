@@ -2,13 +2,13 @@ import React from "react";
 
 export const angleDownIcon = (
 	<svg
-	className="setting-nav-icon icon icon-angle-down"
-	xmlns="http://www.w3.org/2000/svg"
-	viewBox="0 0 55.751 55.751"
->
-	<path d="M31.836 43.006c.282-.281.518-.59.725-.912L54.17 20.485a5.403 5.403 0 0 0 0-7.638 5.403 5.403 0 0 0-7.638 0l-18.608 18.61L9.217 12.753A5.4 5.4 0 0 0 0 16.571a5.363 5.363 0 0 0 1.582 3.816l21.703 21.706c.207.323.445.631.729.913a5.367 5.367 0 0 0 3.91 1.572 5.37 5.37 0 0 0 3.912-1.572z"></path>
-</svg>
-)
+		className="setting-nav-icon icon icon-angle-down"
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 55.751 55.751"
+	>
+		<path d="M31.836 43.006c.282-.281.518-.59.725-.912L54.17 20.485a5.403 5.403 0 0 0 0-7.638 5.403 5.403 0 0 0-7.638 0l-18.608 18.61L9.217 12.753A5.4 5.4 0 0 0 0 16.571a5.363 5.363 0 0 0 1.582 3.816l21.703 21.706c.207.323.445.631.729.913a5.367 5.367 0 0 0 3.91 1.572 5.37 5.37 0 0 0 3.912-1.572z"></path>
+	</svg>
+);
 
 export const brandLogo = (
 	<svg
@@ -104,6 +104,303 @@ export const ellipsisIcon = (
 		<path
 			xmlns="http://www.w3.org/2000/svg"
 			d="M8 22c-4.411 0-8 3.589-8 8s3.589 8 8 8 8-3.589 8-8-3.589-8-8-8zM52 22c-4.411 0-8 3.589-8 8s3.589 8 8 8 8-3.589 8-8-3.589-8-8-8zM30 22c-4.411 0-8 3.589-8 8s3.589 8 8 8 8-3.589 8-8-3.589-8-8-8z"
+		></path>
+	</svg>
+);
+
+export const bingBase64Source =
+	"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMzQgMzQ1Ij48cGF0aCBmaWxsPSIjZmZmIiBkPSJNODIuMjQgMjc4LjMzTDgyLjI0IDY1LjQwOTZDODIuMjU3MyA1OC42OTY0IDgwLjYzMTQgNTIuMDgxIDc3LjUwNDMgNDYuMTQwNkM3NC4zNzcyIDQwLjIwMDIgNjkuODQ0IDM1LjExNTMgNjQuMyAzMS4zMjk1QzY0LjA0MyAzMS4xNzk2IDYzLjggMzEuMDA4NSA2My41NyAzMC44MTk1TDIxLjUgMy4zMzk1NUMxOS40MjkgMS45NDUzMSAxNy4wMTggMS4xNDAzMyAxNC41MjQ4IDEuMDEwNzVDMTIuMDMxNSAwLjg4MTE2OSA5LjU1IDEuNDMxODUgNy4zNDU2MiAyLjYwMzg5QzUuMTQxMjUgMy43NzU5MiAzLjI5Njk5IDUuNTI1MjEgMi4wMTAxNiA3LjY2NDZDMC43MjMzMjMgOS44MDM5OCAwLjA0MjMzMDggMTIuMjUzIDAuMDQwMDM5MSAxNC43NDk2VjI1NC43NUMwLjA3MDAzOTEgMjU2LjQyIDAuMTYwMDM5IDI1OC4wNyAwLjI5MDAzOSAyNTkuNzVDMC4zOTAwMzkgMjYwLjY0IDAuNTEwMDM5IDI2MS41NiAwLjY3MDAzOSAyNjIuNDVDMC43MDk2ODggMjYyLjY3MSAwLjc1MTEyNSAyNjIuODkxIDAuNzk0MzQzIDI2My4xMTFDMi40NDk3NSAyNzYuNjE0IDcuMDkyOTUgMjg5LjU4MSAxNC4zOSAzMDEuMDdDMjIuNDQwNCAzMTMuODAyIDMzLjQ2NzEgMzI0LjM4NSA0Ni41MTkzIDMzMS45MDZDNTkuNTcxNSAzMzkuNDI3IDc0LjI1NzIgMzQzLjY2IDg5LjMxIDM0NC4yNEM5MC40OSAzNDQuMzEgOTEuNjggMzQ0LjMxIDkyLjg4IDM0NC4zMUg5NS40OEMxMTQuMDcgMzQzLjg1IDEyOC44NSAzMzcuMDMgMTQ0LjQ4IDMyNy40TDE2NS44MSAzMTQuNEMxNjcuNzI5IDMxMy4xNyAxNzAuMzA0IDMxMS41ODEgMTczLjI1OSAzMDkuNzZDMTg1LjA5OSAzMDIuNDU4IDIwMy4wMjQgMjkxLjQwNCAyMDkuMTcgMjg0LjYxTDIwOS4xODQgMjg0LjU5NUMyMjUuMTMzIDI2Ny40NCAyMzMuOTk5IDI0NC44ODQgMjM0IDIyMS40NkMyMzQgMjE5LjI4IDIzMy45MSAyMTcuMTIgMjMzLjc5IDIxNC45M0MyMzIuMTcyIDE5MS4yNDcgMjIxLjUwNSAxNjkuMDk0IDIwNCAxNTMuMDZDMTk5LjMwMyAxNDguNzE1IDE5NC4xNjEgMTQ0Ljg3NyAxODguNjYgMTQxLjYxTDE3OC4yNyAxMzYuM0wxMjUuNTggMTA5LjNDMTIzLjY4IDEwOC40OTYgMTIxLjYxOSAxMDguMTQ5IDExOS41NjEgMTA4LjI4NkMxMTYuNDU2IDEwOC40OTQgMTEzLjUyNSAxMDkuNzkzIDExMS4yODUgMTExLjk1M0MxMDkuMDQ1IDExNC4xMTMgMTA3LjY0MSAxMTYuOTk1IDEwNy4zMiAxMjAuMDlDMTA3LjI5NSAxMjAuNTQgMTA3LjI5NSAxMjAuOTkgMTA3LjMyIDEyMS40NEMxMDcuMzE5IDEyMy4xODIgMTA3LjY1OCAxMjQuOTA4IDEwOC4zMiAxMjYuNTJMMTA4LjkgMTI3LjdMMTExLjE3IDEzMy41MkwxMjMgMTYzLjY4TDEzMy4yOSAxOTAuMDZDMTM2LjIyNyAxOTUuNDEgMTQwLjkzNyAxOTkuNTY5IDE0Ni42MSAyMDEuODJMMTQ4LjM4IDIwMi40N0gxNDguNjZMMTg3LjY1OCAyMTUuODcyTDgzLjYzIDI3Ny41TDgyLjI0IDI3OC4zM1oiLz48L3N2Zz4=";
+
+export const bingColouredIcon = (
+	<svg
+		viewBox="0 0 234 343.41"
+		xmlns="http://www.w3.org/2000/svg"
+		className="icon"
+	>
+		<defs xmlns="http://www.w3.org/2000/svg">
+			<linearGradient
+				id="a"
+				x1="-29.25"
+				y1="662.02"
+				x2="-23.09"
+				y2="658.46"
+				gradientTransform="matrix(24.45, 0, 0, -24.45, 967.18, 16420.97)"
+				gradientUnits="userSpaceOnUse"
+			>
+				<stop offset="0" stopColor="#37bdff"></stop>
+				<stop offset="0.18" stopColor="#33bffd"></stop>
+				<stop offset="0.36" stopColor="#28c5f5"></stop>
+				<stop offset="0.53" stopColor="#15d0e9"></stop>
+				<stop offset="0.55" stopColor="#12d1e7"></stop>
+				<stop offset="0.59" stopColor="#1cd2e5"></stop>
+				<stop offset="0.77" stopColor="#42d8dc"></stop>
+				<stop offset="0.91" stopColor="#59dbd6"></stop>
+				<stop offset="1" stopColor="#62dcd4"></stop>
+			</linearGradient>
+			<linearGradient
+				id="b"
+				x1="-32.86"
+				y1="656.68"
+				x2="-23.89"
+				y2="656.68"
+				gradientTransform="matrix(24.45, 0, 0, -24.45, 967.18, 16420.97)"
+				gradientUnits="userSpaceOnUse"
+			>
+				<stop offset="0" stopColor="#39d2ff"></stop>
+				<stop offset="0.15" stopColor="#38cefe"></stop>
+				<stop offset="0.29" stopColor="#35c3fa"></stop>
+				<stop offset="0.43" stopColor="#2fb0f3"></stop>
+				<stop offset="0.55" stopColor="#299aeb"></stop>
+				<stop offset="0.58" stopColor="#2692ec"></stop>
+				<stop offset="0.76" stopColor="#1a6cf1"></stop>
+				<stop offset="0.91" stopColor="#1355f4"></stop>
+				<stop offset="1" stopColor="#104cf5"></stop>
+			</linearGradient>
+			<linearGradient
+				id="c"
+				x1="-31.2"
+				y1="655.9"
+				x2="-31.2"
+				y2="667.89"
+				gradientTransform="matrix(24.45, 0, 0, -24.45, 967.18, 16420.97)"
+				gradientUnits="userSpaceOnUse"
+			>
+				<stop offset="0" stopColor="#1b48ef"></stop>
+				<stop offset="0.12" stopColor="#1c51f0"></stop>
+				<stop offset="0.32" stopColor="#1e69f5"></stop>
+				<stop offset="0.57" stopColor="#2190fb"></stop>
+				<stop offset="1" stopColor="#26b8f4"></stop>
+			</linearGradient>
+			<clipPath id="d" transform="translate(-163 -82.94)">
+				<rect
+					x="163.02"
+					y="288.38"
+					width="227.17"
+					height="140.76"
+					style={{ fill: "none" }}
+				></rect>
+			</clipPath>
+			<linearGradient
+				id="e"
+				x1="-31.08"
+				y1="654.47"
+				x2="-25.54"
+				y2="660"
+				gradientTransform="matrix(24.45, 0, 0, -24.45, 967.18, 16420.97)"
+				gradientUnits="userSpaceOnUse"
+			>
+				<stop offset="0" stopColor="#fff"></stop>
+				<stop offset="0.37" stopColor="#fdfdfd"></stop>
+				<stop offset="0.51" stopColor="#f6f6f6"></stop>
+				<stop offset="0.6" stopColor="#ebebeb"></stop>
+				<stop offset="0.68" stopColor="#dadada"></stop>
+				<stop offset="0.75" stopColor="#c4c4c4"></stop>
+				<stop offset="0.81" stopColor="#a8a8a8"></stop>
+				<stop offset="0.86" stopColor="#888"></stop>
+				<stop offset="0.91" stopColor="#626262"></stop>
+				<stop offset="0.95" stopColor="#373737"></stop>
+				<stop offset="0.99" stopColor="#090909"></stop>
+				<stop offset="1"></stop>
+			</linearGradient>
+			<clipPath id="f" transform="translate(-163 -82.94)">
+				<rect
+					x="163.02"
+					y="82.87"
+					width="86.51"
+					height="302.96"
+					style={{ fill: "none" }}
+				></rect>
+			</clipPath>
+			<linearGradient
+				id="g"
+				x1="-31.2"
+				y1="668.1"
+				x2="-31.2"
+				y2="656.02"
+			></linearGradient>
+		</defs>
+		<title xmlns="http://www.w3.org/2000/svg">bing-logo</title>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M397,303.4a92.73,92.73,0,0,1-24.84,63.16,41.81,41.81,0,0,0,4.5-6,38.11,38.11,0,0,0,2.69-5.08,17.7,17.7,0,0,0,.74-1.78,17.25,17.25,0,0,0,.65-1.78c.21-.56.39-1.14.55-1.72s.33-1.2.46-1.81l.07-.21c.14-.6.25-1.2.37-1.81s.23-1.25.33-1.88v0c.09-.58.16-1.16.21-1.76a40,40,0,0,0,.21-4.13A41.41,41.41,0,0,0,377,317.11a36.51,36.51,0,0,0-2.85-4.17,39.93,39.93,0,0,0-4-4.43,41.45,41.45,0,0,0-12.36-8.28,38.78,38.78,0,0,0-6.22-2.14l-.09,0-.74-.25-10.81-3.71v0l-28.27-9.72c-.09,0-.21,0-.28,0l-1.77-.65A26.23,26.23,0,0,1,296.29,272L286,245.62l-11.83-30.16-2.27-5.82-.58-1.18a13.35,13.35,0,0,1-1-5.08,12,12,0,0,1,0-1.35,13.19,13.19,0,0,1,18.26-10.79l52.69,27,10.39,5.31A91.11,91.11,0,0,1,367,235a92.45,92.45,0,0,1,29.79,61.87C396.91,299.06,397,301.22,397,303.4Z"
+			transform="translate(-163 -82.94)"
+			style={{ fill: "url(#a)" }}
+		></path>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M382.91,338.56a42.8,42.8,0,0,1-.72,7.82c-.14.67-.28,1.35-.44,2-.3,1.2-.62,2.36-1,3.53-.21.6-.42,1.2-.65,1.78s-.49,1.18-.74,1.78a38.1,38.1,0,0,1-2.69,5.08,42.22,42.22,0,0,1-4.5,6c-7.68,8.49-33.75,23.63-43.36,29.79l-21.33,13c-15.63,9.63-30.41,16.45-49,16.91-.88,0-1.74,0-2.6,0-1.2,0-2.39,0-3.57-.07a92.86,92.86,0,0,1-74.92-43.17,91.58,91.58,0,0,1-13.68-38.67,41.13,41.13,0,0,0,60,28.95l.14-.07,2.09-1.25,8.49-5,10.81-6.4v-.3l1.39-.83,96.71-57.29,7.44-4.41.74.25.09,0a38.31,38.31,0,0,1,6.22,2.14,41.45,41.45,0,0,1,12.36,8.28,40,40,0,0,1,4,4.43,37,37,0,0,1,2.85,4.17A41.64,41.64,0,0,1,382.91,338.56Z"
+			transform="translate(-163 -82.94)"
+			style={{ fill: "url(#b)" }}
+		></path>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M245.24,147.35l0,213.29L234.39,367l-8.5,5-2.09,1.27a.24.24,0,0,0-.13.06,41.13,41.13,0,0,1-60-28.94c-.16-.89-.28-1.81-.38-2.7-.13-1.68-.22-3.33-.25-5v-240a13.77,13.77,0,0,1,21.46-11.41l42.07,27.48a5.55,5.55,0,0,0,.73.51A41.14,41.14,0,0,1,245.24,147.35Z"
+			transform="translate(-163 -82.94)"
+			style={{ fill: "url(#c)" }}
+		></path>
+		<g
+			xmlns="http://www.w3.org/2000/svg"
+			style={{ opacity: "0.14900000393390656", isolation: "isolate" }}
+		>
+			<g style={{ clipPath: "url(#d)" }}>
+				<path
+					d="M382.91,338.56a42.8,42.8,0,0,1-.72,7.82c-.14.67-.28,1.35-.44,2-.3,1.2-.62,2.36-1,3.53-.21.6-.42,1.2-.65,1.78s-.49,1.18-.74,1.78a38.1,38.1,0,0,1-2.69,5.08,41.81,41.81,0,0,1-4.5,6c-7.68,8.49-33.75,23.63-43.36,29.79l-21.33,13c-15.63,9.63-30.41,16.45-49,16.91-.88,0-1.74,0-2.6,0-1.2,0-2.39,0-3.57-.07a92.86,92.86,0,0,1-74.92-43.17,91.58,91.58,0,0,1-13.68-38.67,41.13,41.13,0,0,0,60,28.95l.14-.07,2.09-1.25,8.49-5,10.81-6.4v-.3l1.39-.83,96.71-57.29,7.44-4.41.74.25.09,0a38.31,38.31,0,0,1,6.22,2.14,41.45,41.45,0,0,1,12.36,8.28,40,40,0,0,1,4,4.43,37,37,0,0,1,2.85,4.17A41.64,41.64,0,0,1,382.91,338.56Z"
+					transform="translate(-163 -82.94)"
+					style={{ fill: "url(#e)" }}
+				></path>
+			</g>
+		</g>
+		<g
+			xmlns="http://www.w3.org/2000/svg"
+			style={{ opacity: "0.09799999743700027", isolation: "isolate" }}
+		>
+			<g style={{ clipPath: "url(#f)" }}>
+				<path
+					d="M245.24,147.35l0,213.29L234.39,367l-8.5,5-2.09,1.27a.24.24,0,0,0-.13.06,41.13,41.13,0,0,1-60-28.94c-.16-.89-.28-1.81-.38-2.7-.13-1.68-.22-3.33-.25-5v-240a13.77,13.77,0,0,1,21.46-11.41l42.07,27.48a5.55,5.55,0,0,0,.73.51A41.14,41.14,0,0,1,245.24,147.35Z"
+					transform="translate(-163 -82.94)"
+					style={{ fill: "url(#g)" }}
+				></path>
+			</g>
+		</g>
+	</svg>
+);
+
+export const duckDuckGoBase64Source =
+	"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzEiIGhlaWdodD0iOTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0iI0ZGRiIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMzAuMzkgNTguODFjMCAxMC40NTUgNy4zMTQgMjQuMzg3IDEwLjkxNCAzMC41NS41MTcuODg0LTE4LjM4NS42MzMtMjUuNzguNDU3LTIuMTM1LS4wNTEtMy4zMTUtMS4xNDUtMi43ODMtLjkwOEMxNS4xMSA4OS45NjYgMi42OSA0Ni43NS45NCAyOS4yOC0uMjcgMTYuOTMgNi40IDEwLjIgMTkuMyA4LjUzIDEzLjY1IDYuNyAzLjc2IDcuMjQgMy43NiA3LjI0IDQgMy43OSA5IDMuMTIgOSAzLjEyYTMxLjcgMzEuNyAwIDAgMC00LjkyLTJjMTMuOC0xLjk0IDIyLjUgMi44MiAyNi4yIDcuNyAxNC45NiAzLjU4IDE3LjQxIDIwLjc1IDE3LjQxIDI1LjY5IDAgMjAuNTktMTcuMy0xLjUxLTE3LjMgMjQuM3ptMTIuNzktMzcuNTVjLTMuMDgtMS43OS01Ljg5LTEuNDItOC4xOC40IDEuNDUtMy42MSA1Ljc4LTMuNTEgOC4xOC0uNHptLTI2Ljc0LjFjLTQuNjctLjUxLTYuODMuMjQtOC40NSA0LjA2LS4zNy02LjIyIDUuMTctNi4wNiA4LjQ1LTQuMDZ6bTI0LjcgNS44YTMuMzEgMy4zMSAwIDEgMCAwIDYuNjIgMy4zMSAzLjMxIDAgMCAwIDAtNi42MnptLTI1LjU1IDEuOGEzLjgxIDMuODEgMCAxIDAgMCA3LjYyIDMuODEgMy44MSAwIDAgMCAwLTcuNjJ6Ii8+PHBhdGggZD0iTTI3LjIyIDQ5LjI1YzAtNi42MSA5LTguNzEgMTIuMzgtOC43MSA5LjIyIDAgMjIuMTctNS45IDI1LjQyLTUuOCAzLjI1LjEgNS4zNSAxLjQxIDUuMzUgMi45NCAwIDIuMjMtMTguMzYgMTAuNDYtMjUuNTQgOS43OS02Ljc4LS42NC04LjM4LjExLTguMzggMi45MyAwIDIuNDQgNC44OCA0LjU4IDEwLjI3IDQuNTggOC4wNyAwIDE2LTMuNjQgMTguNDItMS44NkM2Ny4yMSA1NC42NCA1OS42IDYwIDUwLjkzIDYwYy04LjY3IDAtMjMuNzEtNC4xNC0yMy43MS0xMC43NXpNNDIuMzcgMzAuMjNhMSAxIDAgMSAxIDAtMiAxIDEgMCAwIDEgMCAyek0xNyAzMi41YTEuMTIgMS4xMiAwIDEgMSAxLjExLTEuMTJBMS4xMSAxLjExIDAgMCAxIDE3IDMyLjV6Ii8+PHBhdGggZD0iTTcuMjUgMTIuNzdjLTQuOCAzLjQ4LTcgOC45NC02LjI5IDE2LjUxIDEuNzMgMTcuNDggOS4wOSA0OC43OSAxMS43MyA1OS42Ni44OS4zMiAxLjguNjIgMi43MS44OS0xLjYxLTYuNjQtOS4yOC0zOC43Ny0xMi43MS02My41MS0uODktNi41OSAxLjY1LTEwLjQyIDQuNTYtMTMuNTV6TTE5LjE1IDguNDdsLjY4LS4wNUMxNC41OCA1Ljg5IDYuNCA1LjgyIDQuMTkgNS44NWEzLjQ3IDMuNDcgMCAwIDAtLjQxIDEuMzlzOS42OS0uNTYgMTUuMzcgMS4yM3pNOS44MSAzLjEyQTM2LjEgMzYuMSAwIDAgMCA2LjEyLjg5Yy0uNjYuMDYtMS4zMy4xNC0yIC4yNGEzMC41NCAzMC41NCAwIDAgMSA0LjkyIDJoLS4xNmMuNTUtLjAyLjkzLS4wMS45My0uMDF6TTUwLjA1IDY5LjYxYy0xLjczLS40MS04LjMxIDQuMjktMTAuNzggNi4xMWE2LjYyIDYuNjIgMCAwIDAtLjMxLTEuMDRjLS4zMy0xLTYuNjktLjQ0LTguMjMgMS4xNy00LTItMTItNS41OS0xMi4wNi0zLjMyLS4yNSAzIDAgMTUuNTMgMS42NCAxNi40MSAxLjIyLjY2IDgtMyAxMS40MS00LjkzIDIuMi41IDYuMDYgMCA3LjQ5LS44OC4xNzItLjEyNy4zMDQtLjMuMzgtLjUgMy4xMyAxLjIgOS43OCAzLjYzIDExLjIyIDMuMTUgMS43Ni0uNjQgMS4zOC0xNS42Ni0uNzYtMTYuMTd6IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNMzEuNzggODRjLTIuMTUtLjM4LTEuMzktMi41Mi0xLjM5LTcuNDUtLjU0LjMyLS44OC43LS44OCAxLjE0IDAgNC45Mi0uNzYgNy4wNyAxLjM4IDcuNDVhMTMuNTYgMTMuNTYgMCAwIDAgNy41Ny0uODljLjMtLjI1MS40OS0uNjEuNTMtMWExMy4zNSAxMy4zNSAwIDAgMS03LjIxLjc1eiIgZmlsbC1ydWxlPSJub256ZXJvIi8+PC9nPjwvc3ZnPg==";
+
+export const duckDuckGoColouredIcon = (
+	<svg
+		preserveAspectRatio="xMidYMid"
+		viewBox="0 0 256 255"
+		height="2490"
+		width="2500"
+		xmlns="http://www.w3.org/2000/svg"
+		className="icon"
+	>
+		<defs xmlns="http://www.w3.org/2000/svg">
+			<linearGradient x1="71.005%" y1="100%" x2="0%" y2="100%" id="a">
+				<stop stopColor="#394A9F" offset="0%"></stop>
+				<stop stopColor="#6176B9" offset="100%"></stop>
+			</linearGradient>
+		</defs>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M128.145 18.841c60.002 0 108.643 48.641 108.643 108.643 0 60.001-48.641 108.642-108.643 108.642-60.001 0-108.642-48.641-108.642-108.642 0-60.002 48.641-108.643 108.642-108.643"
+			fill="#DE5833"
+		></path>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M128.143 254.922c70.383 0 127.44-57.057 127.44-127.44S198.526.042 128.143.042.703 57.099.703 127.482s57.057 127.44 127.44 127.44zm0-10.62c-64.518 0-116.82-52.302-116.82-116.82s52.302-116.82 116.82-116.82 116.82 52.302 116.82 116.82-52.302 116.82-116.82 116.82z"
+			fill="#DE5833"
+		></path>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M75.219 54.13c-.021-1.827 1.306-2.85 3.069-3.567-.807.132-1.58.334-2.276.646-1.838.833-3.212 3.987-3.199 5.48 8.923-.902 22.118-.278 31.767 2.602.712-.1 1.424-.2 2.147-.283-9.624-4.273-21.066-5.923-31.508-4.878M77.048 43.15c.201-.036.405-.061.607-.095-1.925.239-2.94.927-4.385 1.164 1.569.139 7.514 2.914 11.25 4.44.524-.199.996-.42 1.381-.681-1.937-.286-6.75-4.636-8.853-4.828M86.326 64.756c-.535.206-1.043.421-1.483.652-14.545 7.663-20.97 25.562-17.141 47.01 3.495 19.518 17.82 86.205 24.379 117.571 1.915.673 3.853 1.298 5.815 1.865-5.841-28.24-21.784-102.24-25.504-123.023-3.771-21.143-.102-36.314 13.934-44.075"
+			fill="#D5D7D8"
+		></path>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M145.184 218.618c-.24.16-.526.31-.831.456-.226.876-.571 1.54-1.074 1.874-3.004 1.993-11.489 2.997-15.969 1.993-.771-.171-1.355-.454-1.811-.843-7.649 4.247-18.649 9.901-20.883 8.627-3.49-2.001-3.996-28.451-3.49-34.942.369-4.9 17.581 3.037 25.954 7.2 1.851-1.729 6.386-2.886 10.4-3.279-6.065-14.761-10.538-31.645-7.796-43.618-3.79-2.641-8.813-8.766-7.767-15.159.806-4.866 13.38-14.072 22.283-14.628 8.923-.563 11.704-.436 19.138-2.216l1.209-.29c4.576-16.087-6.399-44.074-18.641-56.321-3.991-3.991-10.127-6.503-17.041-7.829-2.659-3.649-6.948-7.138-13.02-10.369-11.275-5.986-25.209-8.423-38.19-6.219-.202.034-.406.059-.607.095 2.103.192 6.916 4.542 8.853 4.828-.385.261-.857.482-1.381.681-1.818.692-4.289 1.112-6.232 1.904-1.763.717-3.09 1.74-3.069 3.567 10.442-1.045 21.884.605 31.508 4.878-.723.083-1.435.183-2.147.283-6.825.96-13.098 2.728-17.63 5.119-.213.111-.415.231-.624.346-14.036 7.761-17.705 22.932-13.934 44.075C76.112 129.614 92.159 204.76 98 233c9.603 2.779 18.582 5 29.08 5 8.912 0 19.631-1.975 27.92-4-2.911-5.613-6.656-11.82-8.964-16.271-.308.367-.551.688-.852.889zm5.873-106.561c-3.804 0-6.907-3.094-6.907-6.92 0-3.808 3.103-6.903 6.907-6.903 3.825 0 6.916 3.095 6.916 6.903a6.912 6.912 0 0 1-6.916 6.92zm4.161-26.008s-4.357-2.489-7.738-2.447c-6.948.091-8.84 3.161-8.84 3.161s1.166-7.318 10.051-5.85c4.817.801 6.527 5.136 6.527 5.136zm-73.255 8.997s-3.129-6.973 5.21-10.39c8.348-3.418 12.413 1.945 12.413 1.945s-6.062-2.742-11.956.962c-5.884 3.7-5.667 7.483-5.667 7.483zm7.29 14.862a8.038 8.038 0 0 1 8.047-8.044 8.04 8.04 0 0 1 8.04 8.044c0 4.447-3.6 8.041-8.04 8.041a8.034 8.034 0 0 1-8.047-8.041z"
+			fill="#FFF"
+		></path>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M105.34 109.908a8.04 8.04 0 0 0-8.04-8.044 8.038 8.038 0 0 0-8.047 8.044 8.034 8.034 0 0 0 8.047 8.041c4.44 0 8.04-3.594 8.04-8.041zm-4.478-.591a2.088 2.088 0 0 1-2.081-2.09 2.085 2.085 0 1 1 4.171 0 2.09 2.09 0 0 1-2.09 2.09z"
+			fill="#2D4F8E"
+		></path>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M100.862 105.139a2.085 2.085 0 0 0-2.081 2.088c0 1.154.939 2.093 2.081 2.09a2.09 2.09 0 0 0 2.09-2.09 2.087 2.087 0 0 0-2.09-2.088"
+			fill="#FFF"
+		></path>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M151.057 98.234c-3.804 0-6.907 3.095-6.907 6.903 0 3.826 3.103 6.92 6.907 6.92a6.912 6.912 0 0 0 6.916-6.92c0-3.808-3.091-6.903-6.916-6.903zm3.067 6.394c-.975 0-1.78-.793-1.78-1.789 0-.983.805-1.79 1.78-1.79 1.017 0 1.797.807 1.797 1.79 0 .996-.78 1.789-1.797 1.789z"
+			fill="#2D4F8E"
+		></path>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M154.124 101.049c-.975 0-1.78.807-1.78 1.79 0 .996.805 1.789 1.78 1.789a1.773 1.773 0 0 0 1.797-1.789c0-.983-.78-1.79-1.797-1.79"
+			fill="#FFF"
+		></path>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M33.586 44.601s-4.065-5.363-12.413-1.945c-8.339 3.417-5.21 10.39-5.21 10.39s-.217-3.783 5.667-7.483c5.894-3.704 11.956-.962 11.956-.962M82.691 38.913c-8.885-1.468-10.051 5.85-10.051 5.85s1.892-3.07 8.84-3.161c3.381-.042 7.738 2.447 7.738 2.447s-1.71-4.335-6.527-5.136"
+			fill="url(#a)"
+			transform="translate(66 42)"
+		></path>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M144.2 126.299c-8.903.556-21.477 9.762-22.283 14.628-1.046 6.393 3.977 12.518 7.767 15.159l.031.023c3.789 2.636 29.018 11.147 41.535 10.911 12.531-.244 33.111-7.918 30.851-14.067-2.25-6.151-22.689 5.427-44.007 3.451-15.788-1.467-18.575-8.54-15.079-13.706 4.397-6.493 12.406 1.232 25.616-2.721 13.23-3.942 31.732-10.998 38.597-14.84 15.873-8.849-6.642-12.519-11.96-10.064-5.041 2.329-22.587 6.757-30.721 8.72l-1.209.29c-7.434 1.78-10.215 1.653-19.138 2.216"
+			fill="#FDD209"
+		></path>
+		<g xmlns="http://www.w3.org/2000/svg">
+			<path
+				d="M124.316 206.97c0-.921.741-1.736 1.917-2.431.033-.559.337-1.079.847-1.556-8.373-4.163-25.585-12.1-25.954-7.2-.506 6.491 0 32.941 3.49 34.942 2.234 1.274 13.234-4.38 20.883-8.627-2.207-1.881-1.183-6.447-1.183-15.128M145.925 217.686l.111.043c6.854 2.645 20.498 7.624 23.461 6.537 3.995-1.527 2.995-33.453-1.489-34.47-3.592-.797-17.343 8.892-22.753 12.839.957 4.041 2.115 12.045.67 15.051"
+				fill="#65BC46"
+			></path>
+			<path
+				d="M129.214 220.611c-4.495-.996-2.993-5.493-2.993-15.971 0-.034.01-.067.012-.101-1.176.695-1.917 1.51-1.917 2.431 0 8.681-1.024 13.247 1.183 15.128.456.389 1.04.672 1.811.843 4.48 1.004 12.965 0 15.969-1.993.503-.334.848-.998 1.074-1.874-3.516 1.684-11.024 2.473-15.139 1.537"
+				fill="#43A244"
+			></path>
+			<path
+				d="M127.08 202.983c-.51.477-.814.997-.847 1.556-.002.034-.012.067-.012.101 0 10.478-1.502 14.975 2.993 15.971 4.115.936 11.623.147 15.139-1.537.305-.146.591-.296.831-.456.301-.201.544-.522.741-.932 1.445-3.006.287-11.01-.67-15.051-.211-.889-.411-1.589-.572-1.999-.413-1.022-3.594-1.285-7.203-.932-4.014.393-8.549 1.55-10.4 3.279"
+				fill="#65BC46"
+			></path>
+		</g>
+	</svg>
+);
+
+export const ecosiaBase64Source =
+	"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxOSI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTAgNi45MTYwOVYxOC42NjgxSDExLjE3NVYxMi40MjAxSDQuNjNWMTAuNDMwMUg4LjcyMlY4LjY1MDA5SDQuNjNWNi44MDUwOUgxMS4xNzVWMC40MTMwODZIMFY2LjkxNjA5WiIvPjwvc3ZnPgo=";
+
+export const ecosiaColouredIcon = (
+	<svg viewBox="0 0 12 19" xmlns="http://www.w3.org/2000/svg" className="icon">
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			fill="#008009"
+			d="M0 6.91609V18.6681H11.175V12.4201H4.63V10.4301H8.722V8.65009H4.63V6.80509H11.175V0.413086H0V6.91609Z"
+		></path>
+	</svg>
+);
+
+export const googleBase64Source =
+	"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PHBhdGggZmlsbD0id2hpdGUiIGlkPSJhIiBkPSJNNDQuNSAyMEgyNHY4LjVoMTEuOEMzNC43IDMzLjkgMzAuMSAzNyAyNCAzN2MtNy4yIDAtMTMtNS44LTEzLTEzczUuOC0xMyAxMy0xM2MzLjEgMCA1LjkgMS4xIDguMSAyLjlsNi40LTYuNEMzNC42IDQuMSAyOS42IDIgMjQgMiAxMS44IDIgMiAxMS44IDIgMjRzOS44IDIyIDIyIDIyYzExIDAgMjEtOCAyMS0yMiAwLTEuMy0uMi0yLjctLjUtNHoiLz48L3N2Zz4=";
+
+export const googleColouredIcon = (
+	<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" className="icon">
+		<defs xmlns="http://www.w3.org/2000/svg">
+			<path
+				id="a"
+				d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"
+			></path>
+		</defs>
+		<clipPath xmlns="http://www.w3.org/2000/svg" id="b">
+			<use xlinkHref="#a" overflow="visible"></use>
+		</clipPath>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			clipPath="url(#b)"
+			fill="#FBBC05"
+			d="M0 37V11l17 13z"
+		></path>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			clipPath="url(#b)"
+			fill="#EA4335"
+			d="M0 11l17 13 7-6.1L48 14V0H0z"
+		></path>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			clipPath="url(#b)"
+			fill="#34A853"
+			d="M0 37l30-23 7.9 1L48 0v48H0z"
+		></path>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			clipPath="url(#b)"
+			fill="#4285F4"
+			d="M48 48L17 24l-4-3 35-10z"
 		></path>
 	</svg>
 );

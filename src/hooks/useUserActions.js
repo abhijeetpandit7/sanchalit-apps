@@ -15,6 +15,7 @@ import {
 export const useUserActions = () => {
 	const {
 		displayNameRef,
+		searchInputRef,
 		storageUserCustomization,
 		setStorageUserCustomization,
 		widgetDispatch,
@@ -77,6 +78,20 @@ export const useUserActions = () => {
 			}));
 		else element.innerText = storageUserCustomization.displayName;
 	};
+
+	const setSearchProvider = useCallback(
+		(searchProvider) => {
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				searchSettings: {
+					...prevCustomization.searchSettings,
+					provider: searchProvider,
+				},
+			}));
+			searchInputRef.current.focus();
+		},
+		[storageUserCustomization.searchSettings],
+	);
 
 	const setWidgetReady = useCallback(
 		({ widget, type = "app" } = {}) =>
@@ -141,6 +156,7 @@ export const useUserActions = () => {
 
 	return {
 		editDisplayName,
+		setSearchProvider,
 		setWidgetReady,
 		toggleDisplayNameVisible,
 		toggleHour12Clock,

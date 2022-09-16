@@ -1400,6 +1400,9 @@ body:not(.touch) .toggle-option .toggle-label:hover {
 	position: relative;
 	z-index: 0;
 }
+.dropdown-list-loading {
+	width: 130px;
+}
 .dropdown-list-item {
 	max-width: 280px;
 	padding: 6px calc(var(--app-padding) - 6px);
@@ -3138,8 +3141,8 @@ body:not(.touch) .photo-info .app-dash:hover .title,
 .touch .app-dash:not(.show-hover) .source {
 	display: none;
 }
-.app-dash:hover .source,
-.app-dash.show-hover .source {
+.app-dash:hover .source[data-v-1040273e],
+.app-dash.show-hover .source[data-v-1040273e] {
 	opacity: 1;
 	transform: translateZ(0) translateY(-2px);
 }

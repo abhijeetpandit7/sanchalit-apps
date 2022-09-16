@@ -1,4 +1,5 @@
 export { CollapsibleHeaderWrapper } from "./CollapsibleHeaderWrapper/CollapsibleHeaderWrapper";
+export { DropdownToggleWrapper } from "./DropdownToggleWrapper/DropdownToggleWrapper";
 export { HeightResizeWrapper } from "./HeightResizeWrapper/HeightResizeWrapper";
 export { LogoOverlay } from "./LogoOverlay/LogoOverlay";
 export { MoreToggleWrapper } from "./MoreToggleWrapper/MoreToggleWrapper";

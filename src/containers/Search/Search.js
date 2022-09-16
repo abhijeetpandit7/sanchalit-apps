@@ -1,72 +1,97 @@
-import React, { memo, useEffect } from "react";
+import React, { lazy, memo, Suspense, useEffect, useState } from "react";
+import { DropdownToggleWrapper } from "../../components";
 import { useUserActions, useUserCustomization } from "../../hooks";
 import {
 	QUERY_PARAM,
 	SEARCH,
-	SEARCH_ACTION,
-	dropdownIcon,
+	SEARCH_PROVIDER_LIST,
 	searchIcon,
+	bingBase64Source,
+	duckDuckGoBase64Source,
+	ecosiaBase64Source,
+	googleBase64Source,
 } from "../../utils";
 
-const Form = ({ topRow }) => (
-	<form className="search-form hide-apps-fade" action={SEARCH_ACTION}>
-		<div className="search-underline"></div>
-		{topRow ? (
-			<i className="dash-icon icon-search"></i>
-		) : (
-			<div className="search-icon-container">{searchIcon}</div>
-		)}
-		<div className="more more source more-dash">
-			<div className="source-toggle" tabIndex="0">
-				<div className="source-selected">
-					<img
-						className="icon-ecosia icon icon-source active"
-						src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PHBhdGggZmlsbD0id2hpdGUiIGlkPSJhIiBkPSJNNDQuNSAyMEgyNHY4LjVoMTEuOEMzNC43IDMzLjkgMzAuMSAzNyAyNCAzN2MtNy4yIDAtMTMtNS44LTEzLTEzczUuOC0xMyAxMy0xM2MzLjEgMCA1LjkgMS4xIDguMSAyLjlsNi40LTYuNEMzNC42IDQuMSAyOS42IDIgMjQgMiAxMS44IDIgMiAxMS44IDIgMjRzOS44IDIyIDIyIDIyYzExIDAgMjEtOCAyMS0yMiAwLTEuMy0uMi0yLjctLjUtNHoiLz48L3N2Zz4="
-					/>
-				</div>
-				{dropdownIcon}
+const Loading = () => (
+	<div className="dropdown more-dropdown app dash-dropdown nipple nipple-top-left">
+		<ul className="dropdown-list">
+			<div className="heading dropdown-list-loading">
+				<i className="loading-icon"></i>
+				Loading...
 			</div>
-		</div>
-		<input
-			id="search-input"
-			className="search-input"
-			placeholder={topRow ? "" : "Search"}
-			type="text"
-			autoComplete="off"
-			name={QUERY_PARAM}
-		/>
-	</form>
+		</ul>
+	</div>
 );
 
-const CenterContextMemo = memo(({ setWidgetReady }) => {
-	useEffect(() => setWidgetReady({ widget: SEARCH }), []);
+const Dropdown = lazy(() => import("./Dropdown/Dropdown"));
+
+const Form = (props) => {
+	const [componentDidMount, setComponentDidMount] = useState(false);
+
+	useEffect(() => props.setWidgetReady({ widget: SEARCH }), []);
+
+	const toggleDropdownApp = () => setComponentDidMount(true);
+
+	const activeSearchProvider = SEARCH_PROVIDER_LIST.find(
+		({ name }) => name === props.provider,
+	);
 
 	return (
-		<div className="has-3-col has-dash-icon big-search-wrapper">
-			<div className="side-col left"></div>
-			<div className="center-col" data-v-d6260d64>
-				<div className="big search app-container hide-apps-no-fade">
-					<Form />
-					<div className="backdrop-filter hide-apps-fade"></div>
-				</div>
+		<form
+			className="search-form hide-apps-fade"
+			action={activeSearchProvider.action}
+		>
+			<div className="search-underline"></div>
+			{props.topRow ? (
+				<i className="dash-icon icon-search"></i>
+			) : (
+				<div className="search-icon-container">{searchIcon}</div>
+			)}
+			<DropdownToggleWrapper
+				onToggle={toggleDropdownApp}
+				iconSource={props[activeSearchProvider.base64SourceKey]}
+			>
+				{componentDidMount && (
+					<Suspense fallback={<Loading />}>
+						<Dropdown />
+					</Suspense>
+				)}
+			</DropdownToggleWrapper>
+			<input
+				id="search-input"
+				className="search-input"
+				placeholder={props.topRow ? "" : "Search"}
+				type="text"
+				autoComplete="off"
+				name={QUERY_PARAM}
+				ref={props.searchInputRef}
+			/>
+		</form>
+	);
+};
+
+const CenterContextMemo = memo((props) => (
+	<div className="has-3-col has-dash-icon big-search-wrapper">
+		<div className="side-col left"></div>
+		<div className="center-col" data-v-d6260d64>
+			<div className="big search app-container hide-apps-no-fade">
+				<Form {...props} />
+				<div className="backdrop-filter hide-apps-fade"></div>
 			</div>
-			<div className="side-col right"></div>
 		</div>
-	);
-});
+		<div className="side-col right"></div>
+	</div>
+));
 
-const TopContextMemo = memo(({ setWidgetReady }) => {
-	useEffect(() => setWidgetReady({ widget: SEARCH }), []);
-
-	return (
-		<div id="search" className="app-dash app-container search" data-v-c28d382a>
-			<Form topRow={true} />
-		</div>
-	);
-});
+const TopContextMemo = memo((props) => (
+	<div id="search" className="app-dash app-container search" data-v-c28d382a>
+		<Form {...{ ...props, topRow: true }} />
+	</div>
+));
 
 export const Search = ({ topRow }) => {
 	const {
+		searchInputRef,
 		storageUserCustomization: { searchVisible, searchSettings },
 	} = useUserCustomization();
 	const { setWidgetReady } = useUserActions();
@@ -76,10 +101,30 @@ export const Search = ({ topRow }) => {
 			{searchVisible &&
 				(topRow
 					? searchSettings.inCenter === false && (
-							<TopContextMemo {...{ setWidgetReady }} />
+							<TopContextMemo
+								{...{
+									bingBase64Source,
+									duckDuckGoBase64Source,
+									ecosiaBase64Source,
+									googleBase64Source,
+									searchInputRef,
+									provider: searchSettings.provider,
+									setWidgetReady,
+								}}
+							/>
 					  )
 					: searchSettings.inCenter && (
-							<CenterContextMemo {...{ setWidgetReady }} />
+							<CenterContextMemo
+								{...{
+									bingBase64Source,
+									duckDuckGoBase64Source,
+									ecosiaBase64Source,
+									googleBase64Source,
+									searchInputRef,
+									provider: searchSettings.provider,
+									setWidgetReady,
+								}}
+							/>
 					  ))}
 		</>
 	);

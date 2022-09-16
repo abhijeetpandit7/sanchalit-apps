@@ -5,15 +5,18 @@ export const API = "api";
 export const AUTH = "auth";
 export const BALANCE = "Balance";
 export const BACKGROUND = "Background";
+export const BING = "Bing";
 export const CUSTOMIZATION = "customization";
 export const CLOCK = "Clock";
 const CLOCK_VISIBLE = "clockVisible";
 export const DEFAULT = "default";
+export const DUCK_DUCK_GO = "DuckDuckGo";
+export const ECOSIA = "Ecosia";
 export const EDITING = "editing";
 export const EMPTY_NAME = "empty-name";
 export const HIDE_APPS = "hide-apps";
 export const GENERAL = "General";
-export const GOOGLE = "google";
+export const GOOGLE = "Google";
 export const GREETING = "Greeting";
 const GREETING_VISIBLE = "greetingVisible";
 export const HELP = "Help";
@@ -39,7 +42,6 @@ const QUOTES_VISIBLE = "quotesVisible";
 export const SEARCH = "Search";
 const SEARCH_VISIBLE = "searchVisible";
 export const SEARCH_IN_CENTER = "Search in Center";
-export const SEARCH_ACTION = `https://www.google.com/search?${QUERY_PARAM}=`;
 export const SHOW = "show";
 export const SHOW_ANYWAY = "show-anyway";
 export const SHOW_FADE_IN = "show-fade-in";
@@ -66,6 +68,32 @@ export const GENERAL_SETTING_APP_LIST = [
 		key: NOTES_VISIBLE,
 		plus: true,
 		description: NOTES_DESCRIPTION,
+	},
+];
+export const SEARCH_PROVIDER_LIST = [
+	{
+		name: GOOGLE,
+		action: `https://www.google.com/search?${QUERY_PARAM}=`,
+		colouredIconKey: "googleColouredIcon",
+		base64SourceKey: "googleBase64Source",
+	},
+	{
+		name: BING,
+		action: `https://www.bing.com/search?${QUERY_PARAM}=`,
+		colouredIconKey: "bingColouredIcon",
+		base64SourceKey: "bingBase64Source",
+	},
+	{
+		name: DUCK_DUCK_GO,
+		action: `https://www.duckduckgo.com/?${QUERY_PARAM}=`,
+		colouredIconKey: "duckDuckGoColouredIcon",
+		base64SourceKey: "duckDuckGoBase64Source",
+	},
+	{
+		name: ECOSIA,
+		action: `https://www.ecosia.org/search?${QUERY_PARAM}=`,
+		colouredIconKey: "ecosiaColouredIcon",
+		base64SourceKey: "ecosiaBase64Source",
 	},
 ];
 export const SETTINGS_NAV_LIST = [
@@ -139,7 +167,7 @@ export const DEFAULT_CUSTOMIZATION = {
 	[SEARCH_VISIBLE]: true,
 	searchSettings: {
 		inCenter: true,
-		provider: GOOGLE,
+		provider: SEARCH_PROVIDER_LIST[0].name,
 	},
 	[TODO_VISIBLE]: true,
 	themeColour: SYSTEM,

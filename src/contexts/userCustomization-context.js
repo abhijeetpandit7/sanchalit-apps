@@ -10,6 +10,7 @@ export const UserCustomizationProvider = ({ children }) => {
 	const appsRef = useRef(null);
 	const displayNameRef = useRef(null);
 	const mainViewRef = useRef(null);
+	const searchInputRef = useRef(null);
 	const settingsRef = useRef(null);
 
 	const [widgetManager, widgetDispatch] = useReducer(widgetReducer, {
@@ -33,6 +34,7 @@ export const UserCustomizationProvider = ({ children }) => {
 				appsRef,
 				displayNameRef,
 				mainViewRef,
+				searchInputRef,
 				settingsRef,
 				storageUserCustomization,
 				setStorageUserCustomization,
