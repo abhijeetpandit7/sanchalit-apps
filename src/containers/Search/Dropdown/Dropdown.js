@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { useUserActions } from "../../../hooks";
+import { useUserActions, useUserCustomization } from "../../../hooks";
 import {
 	SEARCH_PROVIDER_LIST,
 	bingColouredIcon,
@@ -18,27 +18,34 @@ const ContextMemo = memo((props) => (
 				<div className="heading" data-v-5077f7de>
 					Search with
 				</div>
-				{SEARCH_PROVIDER_LIST.map(({ name, colouredIconKey }) => (
-					<li
-						key={name}
-						className="dropdown-list-item search-provider active"
-						onClick={() => props.setSearchProvider(name)}
-						data-v-5077f7de
-					>
-						<div className="dropdown-list-label-wrapper">
-							<span className="dropdown-list-icon-wrapper">
-								{props[colouredIconKey]}
-							</span>
-							<span className="dropdown-list-label">{name}</span>
-						</div>
-					</li>
-				))}
+				{SEARCH_PROVIDER_LIST.filter(({ name }) => name !== props.provider).map(
+					({ name, colouredIconKey }) => (
+						<li
+							key={name}
+							className="dropdown-list-item search-provider active"
+							onClick={() => props.setSearchProvider(name)}
+							data-v-5077f7de
+						>
+							<div className="dropdown-list-label-wrapper">
+								<span className="dropdown-list-icon-wrapper">
+									{props[colouredIconKey]}
+								</span>
+								<span className="dropdown-list-label">{name}</span>
+							</div>
+						</li>
+					),
+				)}
 			</div>
 		</ul>
 	</div>
 ));
 
 const Dropdown = () => {
+	const {
+		storageUserCustomization: {
+			searchSettings: { provider },
+		},
+	} = useUserCustomization();
 	const { setSearchProvider } = useUserActions();
 
 	return (
@@ -48,6 +55,7 @@ const Dropdown = () => {
 				duckDuckGoColouredIcon,
 				ecosiaColouredIcon,
 				googleColouredIcon,
+				provider,
 				setSearchProvider,
 			}}
 		/>
