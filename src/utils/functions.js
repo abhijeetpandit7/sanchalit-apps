@@ -1,7 +1,7 @@
 import React from "react";
 import moment from "moment";
 import _ from "lodash";
-import { EMPTY_NAME, OPEN, SHOW, SHOW_FADE_IN } from "../utils";
+import { ACTIVE, EMPTY_NAME, OPEN, SHOW, SHOW_FADE_IN } from "../utils";
 
 export const addRefClassName = (ref, className) =>
 	ref.current.classList.add(className);
@@ -69,6 +69,9 @@ export const hideAppPopup = (appRef) =>
 		appRef.current.classList.contains(SHOW_FADE_IN)) &&
 	toggleAppPopup(appRef);
 
+export const hideBookmarkFolder = (appRef) =>
+	appRef.current.classList.contains(ACTIVE) && toggleBookmarkFolder(appRef);
+
 export const hideUserNav = (ref) =>
 	ref.current.classList.contains(OPEN) && toggleRefClassName(ref, OPEN);
 
@@ -94,6 +97,10 @@ export const toCSSUrl = (link) => `url("${link}")`;
 export const toggleAppPopup = (appRef) => {
 	toggleRefClassName(appRef, SHOW);
 	toggleRefClassName(appRef, SHOW_FADE_IN);
+};
+
+export const toggleBookmarkFolder = (appRef) => {
+	toggleRefClassName(appRef, ACTIVE);
 };
 
 export const toggleRefClassName = (ref, className) =>
