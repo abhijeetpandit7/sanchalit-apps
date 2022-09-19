@@ -1,5 +1,5 @@
 import React from "react";
-import { ON, toggleSwitch } from "../../utils";
+import { DISABLED, ON, toggleSwitch } from "../../utils";
 
 export const ToggleSlider = (props) => {
 	const Plus = () =>
@@ -10,17 +10,26 @@ export const ToggleSlider = (props) => {
 		props.description ? (
 			<span className="option-message">{props.description}</span>
 		) : null;
+	const Unsupported = () =>
+		props.unsupported ? (
+			<span class="unsupported">
+				This feature is not yet supported on your current browser
+			</span>
+		) : null;
 
 	return (
 		<li
-			className={`slide-toggle has-toggle ${props.value ? ON : ""}`}
-			onClick={props.toggle}
+			className={`slide-toggle has-toggle ${props.value ? ON : ""} ${
+				props.unsupported ? DISABLED : ""
+			}`}
+			onClick={props.unsupported !== true && props.toggle}
 		>
 			<span className="setting-name">{props.name}</span>
 			<Plus />
 			<Preview />
 			<span className="toggle-slider">{toggleSwitch}</span>
 			<Description />
+			<Unsupported />
 		</li>
 	);
 };

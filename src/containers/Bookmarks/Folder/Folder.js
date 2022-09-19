@@ -43,3 +43,5 @@ export const Folder = (folder) => {
 		</li>
 	);
 };
+
+// TODO: .folder-wrapper height should be equal to .bookmark.folder

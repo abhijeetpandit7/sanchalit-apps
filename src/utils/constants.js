@@ -13,6 +13,7 @@ export const CUSTOMIZATION = "customization";
 export const CLOCK = "Clock";
 const CLOCK_VISIBLE = "clockVisible";
 export const DEFAULT = "default";
+export const DISABLED = "disabled";
 export const DUCK_DUCK_GO = "DuckDuckGo";
 export const ECOSIA = "Ecosia";
 export const EDITING = "editing";
@@ -42,6 +43,7 @@ export const PULSE = "pulse";
 export const QUERY_PARAM = "q";
 export const QUOTES = "Quotes";
 const QUOTES_VISIBLE = "quotesVisible";
+const SAFARI = "safari";
 export const SEARCH = "Search";
 const SEARCH_VISIBLE = "searchVisible";
 export const SEARCH_IN_CENTER = "Search in Center";
@@ -61,7 +63,12 @@ export const ONE_DAY = ONE_HOUR * 24;
 export const ONE_YEAR = ONE_DAY * 365;
 
 export const GENERAL_SETTING_APP_LIST = [
-	{ name: BOOKMARKS, key: BOOKMARKS_VISIBLE, requirePermission: true },
+	{
+		name: BOOKMARKS,
+		key: BOOKMARKS_VISIBLE,
+		requirePermission: true,
+		unsupported: process.env.BUILD_TARGET === SAFARI,
+	},
 	{ name: SEARCH, key: SEARCH_VISIBLE },
 	{ name: CLOCK, key: CLOCK_VISIBLE },
 	{ name: GREETING, key: GREETING_VISIBLE },
