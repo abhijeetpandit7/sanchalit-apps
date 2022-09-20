@@ -1,7 +1,14 @@
 import React from "react";
 import moment from "moment";
 import _ from "lodash";
-import { ACTIVE, EMPTY_NAME, OPEN, SHOW, SHOW_FADE_IN } from "../utils";
+import {
+	ACTIVE,
+	EMPTY_NAME,
+	OPEN,
+	OVERFLOW,
+	SHOW,
+	SHOW_FADE_IN,
+} from "../utils";
 
 export const addRefClassName = (ref, className) =>
 	ref.current.classList.add(className);
@@ -76,6 +83,49 @@ export const hideUserNav = (ref) =>
 	ref.current.classList.contains(OPEN) && toggleRefClassName(ref, OPEN);
 
 export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
+
+export const parseBookmarksListOverflow = (bookmarksList, bookmarksListRef) => {
+	const availableWidth = bookmarksListRef.current.offsetWidth;
+	const totalContentWidth = bookmarksListRef.current.scrollWidth;
+	const isOverflowing = totalContentWidth > availableWidth;
+
+	if (isOverflowing) {
+		bookmarksList.map(
+			(bookmark) =>
+				(bookmark.width = bookmarksListRef.current.querySelector(
+					`[id='${bookmark.id}']`,
+				).offsetWidth),
+		);
+
+		const reducedBookmarksList = bookmarksList.reduce(
+			(bookmarksListAcc, bookmark) => {
+				const bookmarksListAccWidth = bookmarksListAcc.reduce(
+					(totalWidth, bookmark) => totalWidth + bookmark.width,
+					0,
+				);
+
+				if (bookmarksListAccWidth + bookmark.width < availableWidth)
+					return [...bookmarksListAcc, bookmark];
+				else {
+					bookmarksListAcc
+						.find((bookmark) => bookmark.id === OVERFLOW)
+						.children.push(bookmark);
+					return [...bookmarksListAcc];
+				}
+			},
+			[
+				{
+					id: OVERFLOW,
+					width: 30,
+					children: [],
+				},
+			],
+		);
+
+		reducedBookmarksList.push(reducedBookmarksList.shift());
+		return reducedBookmarksList;
+	} else return bookmarksList;
+};
 
 export const removeRefClassName = (ref, className) =>
 	ref.current.classList.remove(className);

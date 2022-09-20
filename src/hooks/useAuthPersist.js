@@ -81,3 +81,5 @@ export const useAuthPersist = () => {
 		})();
 	}, [storageAuth, storageUserCustomization]);
 };
+
+// TODO: Hotkey for toggling bookmars

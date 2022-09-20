@@ -1,8 +1,8 @@
 import React from "react";
 import { Folder } from "../Folder";
 
-const FolderBookmark = ({ title, url }) => (
-	<li className="dropdown-item" data-v-5504764e>
+const FolderBookmark = ({ id, title, url }) => (
+	<li id={id} className="dropdown-item" data-v-5504764e>
 		<a
 			className="bookmark bookmark-child"
 			data-v-5504764e

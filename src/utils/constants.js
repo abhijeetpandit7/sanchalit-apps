@@ -37,6 +37,7 @@ const NOTES_VISIBLE = "notesVisible";
 const NOTES_DESCRIPTION = "Take quick notes and store wisdom to review";
 export const ON = "on";
 export const OPEN = "open";
+export const OVERFLOW = "overflow";
 export const PHOTOS = "Photos";
 export const PRODUCTION = "production";
 export const PULSE = "pulse";

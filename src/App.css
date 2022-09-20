@@ -1577,7 +1577,7 @@ body:not(.touch) .toggle-option .toggle-label:hover {
 	background-color: var(--color-bg);
 	color: var(--color-text);
 }
-.shift-to-left .dash-dropdown {
+.shift-to-left > .dash-dropdown {
 	left: auto;
 	right: -7px;
 }
@@ -1588,7 +1588,7 @@ body:not(.touch) .toggle-option .toggle-label:hover {
 .dash-dropdown.nipple-top-left:after {
 	left: var(--nipple-displacement);
 }
-.shift-to-left .dash-dropdown.nipple-top-left:after {
+.shift-to-left > .dash-dropdown.nipple-top-left:after {
 	left: auto;
 	right: var(--nipple-displacement);
 }
@@ -8378,6 +8378,21 @@ input[type="number"].hide-controls {
 	align-items: flex-end;
 	transition: transform 0.25s ease, opacity 0.25s ease;
 	white-space: nowrap;
+}
+.overflow[data-v-10674610] {
+	flex-grow: 1;
+	display: flex;
+	justify-content: flex-end;
+}
+.overflow > .folder-wrapper[data-v-5504764e] {
+	height: 16px;
+	width: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.overflow > .folder-wrapper .icon-ellipsis[data-v-5504764e] {
+	height: 12px;
 }
 .bookmarks-item[data-v-10674610] {
 	color: var(--color-text);

@@ -1,7 +1,7 @@
 import React from "react";
 
-export const BookmarksItem = ({ title, url }) => (
-	<li className="bookmarks-item" data-v-10674610>
+export const BookmarksItem = ({ id, title, url }) => (
+	<li id={id} className="bookmarks-item" data-v-10674610>
 		<a
 			className="bookmark"
 			title={title}
