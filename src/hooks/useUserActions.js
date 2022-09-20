@@ -137,7 +137,7 @@ export const useUserActions = () => {
 
 		if (inCenter === false && searchVisible === false)
 			toggleShowApp(
-				GENERAL_SETTING_APP_LIST.find((app) => app.name === SEARCH).key,
+				GENERAL_SETTING_APP_LIST.find((app) => app.name === SEARCH),
 			);
 		setStorageUserCustomization((prevCustomization) => ({
 			...prevCustomization,
@@ -151,24 +151,30 @@ export const useUserActions = () => {
 		storageUserCustomization.searchVisible,
 	]);
 
-	const toggleShowBookmarksApp = useCallback(async (app) => {
-		const isPermissionAllowed = await getPermissionAllowed(
-			BOOKMARKS_PERMISSION,
-		);
-		if (isPermissionAllowed === false) {
-			const isPermissionGranted = await requestPermission(BOOKMARKS_PERMISSION);
-			if (isPermissionGranted === false) return;
-		}
-		const { bookmarks, bookmarksSettings } = storageUserCustomization;
-		let fetchedBookmarks;
-		if (bookmarks.length === 0) fetchedBookmarks = await getBookmarks(bookmarksSettings);
+	const toggleShowBookmarksApp = useCallback(
+		async (app) => {
+			const isPermissionAllowed = await getPermissionAllowed(
+				BOOKMARKS_PERMISSION,
+			);
+			if (isPermissionAllowed === false) {
+				const isPermissionGranted = await requestPermission(
+					BOOKMARKS_PERMISSION,
+				);
+				if (isPermissionGranted === false) return;
+			}
+			const { bookmarks, bookmarksSettings } = storageUserCustomization;
+			let fetchedBookmarks;
+			if (bookmarks.length === 0)
+				fetchedBookmarks = await getBookmarks(bookmarksSettings);
 
-		setStorageUserCustomization((prevCustomization) => ({
-			...prevCustomization,
-			[app.key]: !prevCustomization[app.key],
-			bookmarks: fetchedBookmarks || prevCustomization.bookmarks,
-		}));
-	}, [storageUserCustomization.bookmarks]);
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				[app.key]: !prevCustomization[app.key],
+				bookmarks: fetchedBookmarks || prevCustomization.bookmarks,
+			}));
+		},
+		[storageUserCustomization.bookmarks],
+	);
 
 	const toggleShowApp = useCallback((app) => {
 		if (app.requirePermission) {
