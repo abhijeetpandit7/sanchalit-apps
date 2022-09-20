@@ -1,23 +1,7 @@
-import React, { memo, useEffect } from "react";
+import React, { lazy, Suspense } from "react";
 import { useUserActions, useUserCustomization } from "../../hooks";
-import { TODO } from "../../utils";
 
-const ContextMemo = memo(({ setWidgetReady }) => {
-	useEffect(() => setWidgetReady({ widget: TODO }), []);
-
-	return (
-		<div id="todo" className="app-container todo">
-			<div className="app-wrapper nipple nipple-bottom-right"></div>
-			<span
-				className="app-dash toggle Todo-toggle"
-				data-test="todo-app-dash"
-				data-ob="todo-app-dash"
-			>
-				Todo
-			</span>
-		</div>
-	);
-});
+const ContextMemo = lazy(() => import("./ContextMemo"));
 
 export const Todo = () => {
 	const {
@@ -25,5 +9,13 @@ export const Todo = () => {
 	} = useUserCustomization();
 	const { setWidgetReady } = useUserActions();
 
-	return <>{todoVisible && <ContextMemo {...{ setWidgetReady }} />}</>;
+	return (
+		<>
+			{todoVisible && (
+				<Suspense fallback={null}>
+					<ContextMemo {...{ setWidgetReady }} />
+				</Suspense>
+			)}
+		</>
+	);
 };
