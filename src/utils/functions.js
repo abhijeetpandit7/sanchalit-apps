@@ -4,8 +4,11 @@ import _ from "lodash";
 import {
 	ACTIVE,
 	EMPTY_NAME,
+	FOLDER_DROPDOWN,
 	OPEN,
 	OVERFLOW,
+	PARENT_ID,
+	SHIFT_TO_LEFT,
 	SHOW,
 	SHOW_FADE_IN,
 } from "../utils";
@@ -82,6 +85,19 @@ export const hideBookmarkFolder = (appRef) =>
 export const hideUserNav = (ref) =>
 	ref.current.classList.contains(OPEN) && toggleRefClassName(ref, OPEN);
 
+export const isBookmarkDropdownOverflowing = (bookmarksListRef) => {
+	const folderDropdown = bookmarksListRef.current.querySelector(
+		`.${FOLDER_DROPDOWN}`,
+	);
+	const availableWidth =
+		bookmarksListRef.current.offsetParent.offsetParent.offsetWidth;
+	const folderDropdownWidth = folderDropdown.offsetWidth;
+	const bookmarkFolderOffsetLeft = folderDropdown.offsetParent.offsetLeft;
+	const isOverflowing =
+		availableWidth < bookmarkFolderOffsetLeft + folderDropdownWidth;
+	return isOverflowing;
+};
+
 export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
 
 export const parseBookmarksListOverflow = (bookmarksList, bookmarksListRef) => {
@@ -97,6 +113,12 @@ export const parseBookmarksListOverflow = (bookmarksList, bookmarksListRef) => {
 				).offsetWidth),
 		);
 
+		const mapBookmarkChildOverflow = (bookmark) => {
+			bookmark.parentOverflow = true;
+			if (bookmark.children)
+				bookmark.children.map((child) => mapBookmarkChildOverflow(child));
+		};
+
 		const reducedBookmarksList = bookmarksList.reduce(
 			(bookmarksListAcc, bookmark) => {
 				const bookmarksListAccWidth = bookmarksListAcc.reduce(
@@ -107,6 +129,7 @@ export const parseBookmarksListOverflow = (bookmarksList, bookmarksListRef) => {
 				if (bookmarksListAccWidth + bookmark.width < availableWidth)
 					return [...bookmarksListAcc, bookmark];
 				else {
+					mapBookmarkChildOverflow(bookmark);
 					bookmarksListAcc
 						.find((bookmark) => bookmark.id === OVERFLOW)
 						.children.push(bookmark);
@@ -116,6 +139,8 @@ export const parseBookmarksListOverflow = (bookmarksList, bookmarksListRef) => {
 			[
 				{
 					id: OVERFLOW,
+					parentId: PARENT_ID,
+					title: OVERFLOW,
 					width: 30,
 					children: [],
 				},
@@ -149,8 +174,11 @@ export const toggleAppPopup = (appRef) => {
 	toggleRefClassName(appRef, SHOW_FADE_IN);
 };
 
-export const toggleBookmarkFolder = (appRef) => {
+export const toggleBookmarkFolder = (appRef, ignoreOverflow) => {
 	toggleRefClassName(appRef, ACTIVE);
+	if (ignoreOverflow === false)
+		if (isBookmarkDropdownOverflowing(appRef))
+			addRefClassName(appRef, SHIFT_TO_LEFT);
 };
 
 export const toggleRefClassName = (ref, className) =>

@@ -1,5 +1,6 @@
 import React from "react";
 import { Folder } from "../Folder";
+import { FOLDER_DROPDOWN } from "../../../../utils";
 
 const FolderBookmark = ({ id, title, url }) => (
 	<li id={id} className="dropdown-item" data-v-5504764e>
@@ -27,7 +28,7 @@ const FolderBookmark = ({ id, title, url }) => (
 
 export const FolderDropdown = ({ bookmarks }) => (
 	<div
-		className="app dropdown more-dropdown dash-dropdown folder-dropdown nipple nipple-top-left"
+		className={`app dropdown more-dropdown dash-dropdown ${FOLDER_DROPDOWN} nipple nipple-top-left`}
 		data-v-5504764e
 	>
 		<div className="dropdown-wrapper" data-v-5504764e>

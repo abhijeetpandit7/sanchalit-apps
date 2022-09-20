@@ -3,6 +3,7 @@ import { FolderDropdown } from "./FolderDropdown/FolderDropdown";
 import { FocusOutHandler } from "../../../hooks";
 import {
 	OVERFLOW,
+	PARENT_ID,
 	ellipsisIcon1,
 	folderIcon,
 	hideBookmarkFolder,
@@ -15,12 +16,15 @@ export const Folder = (folder) => {
 
 	FocusOutHandler({ ref: bookmarkFolderRef, callback: hideBookmarkFolder });
 
-	const toggleBookmarkItem = () => {
-		toggleBookmarkFolder(bookmarkFolderRef);
-		setComponentDidMount(true);
-	};
-
 	const isOverflowFolder = folder.id === OVERFLOW;
+	const isNestedFolder = folder.parentId !== PARENT_ID;
+	const isParentOverflow = folder.parentOverflow === true;
+
+	const toggleBookmarkItem = async () => {
+		await setComponentDidMount(true);
+		const ignoreOverflow = isNestedFolder || isParentOverflow;
+		toggleBookmarkFolder(bookmarkFolderRef, ignoreOverflow);
+	};
 
 	return (
 		<li
@@ -29,7 +33,7 @@ export const Folder = (folder) => {
 			data-v-10674610
 		>
 			<span
-				className={`bookmark folder ${isOverflowFolder ? "shift-to-left" : ""}`}
+				className="bookmark folder"
 				title={isOverflowFolder ? "" : folder.title}
 				ref={bookmarkFolderRef}
 				draggable="false"
@@ -55,4 +59,3 @@ export const Folder = (folder) => {
 };
 
 // TODO: .folder-wrapper height should be equal to .bookmark.folder
-// TODO: shift-to-left .folder-dropdown if out of screen
