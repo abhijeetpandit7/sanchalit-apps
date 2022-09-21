@@ -1,8 +1,9 @@
 import React, { lazy, Suspense } from "react";
 import { ABOUT, GENERAL, HELP, SETTINGS_NAV_LIST } from "../../../utils";
 
-const General = lazy(() => import("./Views/General/General"));
 const About = lazy(() => import("./Views/About/About"));
+const General = lazy(() => import("./Views/General/General"));
+const Help = lazy(() => import("./Views/Help/Help"));
 
 const getNavItemValue = (navItem) =>
 	SETTINGS_NAV_LIST.find(({ value }) => value === navItem).value;
@@ -12,7 +13,7 @@ const SETTINGS_VIEW_LIST = [
 		value: getNavItemValue(GENERAL),
 		component: <General />,
 	},
-	{ value: getNavItemValue(HELP) },
+	{ value: getNavItemValue(HELP), component: <Help /> },
 	{ value: getNavItemValue(ABOUT), component: <About /> },
 ];
 

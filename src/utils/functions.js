@@ -182,6 +182,9 @@ export const parseBookmarksListOverflow = (bookmarksList, bookmarksListRef) => {
 	} else return bookmarksList;
 };
 
+export const randomElement = (array) =>
+	array[Math.floor(Math.random() * array.length)];
+
 export const removeRefClassName = (ref, className) =>
 	ref.current.classList.remove(className);
 

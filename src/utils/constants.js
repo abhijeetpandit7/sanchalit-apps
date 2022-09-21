@@ -21,6 +21,7 @@ export const EDGE = "edge";
 export const ECOSIA = "Ecosia";
 export const EDITING = "editing";
 export const EMPTY_NAME = "empty-name";
+export const FADEIN = "fadein";
 export const FIREFOX = "firefox";
 export const FOLDER_DROPDOWN = "folder-dropdown";
 export const HIDE_APPS = "hide-apps";
@@ -125,6 +126,11 @@ export const SETTINGS_NAV_LIST = [
 	{ value: GENERAL },
 	{ value: HELP, secondary: true },
 	{ value: ABOUT, secondary: true },
+];
+export const QUICK_TIP_LIST = [
+	"Sanchalit's Photo, Quote & Mantra change automatically each day.",
+	"You can change between a 12 hour or 24 hour clock.",
+	"Double-clicking your display name will let you edit it.",
 ];
 
 export const DEFAULT_AUTHENTICATION = {
