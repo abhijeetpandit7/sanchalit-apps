@@ -410,11 +410,14 @@ h4 .badge {
 .loading-overlay {
 	z-index: 0;
 }
-.loading-logo {
+.loading-overlay > svg {
 	height: 4.5rem;
 	display: block !important;
 	opacity: 0;
 	animation: fadein 1s linear 1s forwards;
+}
+.logo.logo-white > svg {
+	height: 64px;
 }
 .apps {
 	z-index: 3;

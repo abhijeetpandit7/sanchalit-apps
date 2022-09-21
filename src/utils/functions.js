@@ -3,14 +3,19 @@ import moment from "moment";
 import _ from "lodash";
 import {
 	ACTIVE,
+	CHROME,
+	EDGE,
 	EMPTY_NAME,
+	FIREFOX,
 	FOLDER_DROPDOWN,
 	OPEN,
 	OVERFLOW,
 	PARENT_ID,
+	SAFARI,
 	SHIFT_TO_LEFT,
 	SHOW,
 	SHOW_FADE_IN,
+	BROWSER_LIST,
 } from "../utils";
 
 export const addRefClassName = (ref, className) =>
@@ -63,6 +68,31 @@ export const getBookmarks = async (bookmarksSettings) => {
 		? bookmarksTree[0]
 		: bookmarksTree[0].children[0].children;
 	return bookmarks;
+};
+
+export const getBrowserType = () => {
+	const userDeviceDetails = navigator.userAgent;
+	let chromeAgent = userDeviceDetails.indexOf("Chrome") > -1;
+	let edgeAgent = userDeviceDetails.indexOf("Edg") > -1;
+	let firefoxAgent = userDeviceDetails.indexOf("Firefox") > -1;
+	let safariAgent = userDeviceDetails.indexOf("Safari") > -1;
+
+	if (edgeAgent && chromeAgent) chromeAgent = false;
+	if (chromeAgent && safariAgent) safariAgent = false;
+
+	const browserName = chromeAgent
+		? CHROME
+		: edgeAgent
+		? EDGE
+		: firefoxAgent
+		? FIREFOX
+		: safariAgent
+		? SAFARI
+		: CHROME;
+	const browserType = BROWSER_LIST.find(
+		(browser) => browser.name === browserName,
+	);
+	return browserType;
 };
 
 export const getPermissionAllowed = (permission) =>

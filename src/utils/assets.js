@@ -15,7 +15,6 @@ export const brandLogo = (
 		xmlns="http://www.w3.org/2000/svg"
 		preserveAspectRatio="xMidYMid meet"
 		viewBox="828 245 88 88"
-		className="loading-logo"
 	>
 		<g>
 			<g transform="translate(829.7999992370605 238.29999923706055) scale(1 1) rotate(0 0 0)">

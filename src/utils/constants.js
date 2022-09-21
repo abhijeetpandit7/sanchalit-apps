@@ -9,15 +9,19 @@ export const BING = "Bing";
 export const BOOKMARKS = "Bookmarks";
 export const BOOKMARKS_PERMISSION = "bookmarks";
 const BOOKMARKS_VISIBLE = "bookmarksVisible";
-export const CUSTOMIZATION = "customization";
+export const CHROME = "chrome";
+const CHROMIUM = "chromium";
 export const CLOCK = "Clock";
 const CLOCK_VISIBLE = "clockVisible";
+export const CUSTOMIZATION = "customization";
 export const DEFAULT = "default";
 export const DISABLED = "disabled";
 export const DUCK_DUCK_GO = "DuckDuckGo";
+export const EDGE = "edge";
 export const ECOSIA = "Ecosia";
 export const EDITING = "editing";
 export const EMPTY_NAME = "empty-name";
+export const FIREFOX = "firefox";
 export const FOLDER_DROPDOWN = "folder-dropdown";
 export const HIDE_APPS = "hide-apps";
 export const GENERAL = "General";
@@ -46,7 +50,7 @@ export const PULSE = "pulse";
 export const QUERY_PARAM = "q";
 export const QUOTES = "Quotes";
 const QUOTES_VISIBLE = "quotesVisible";
-const SAFARI = "safari";
+export const SAFARI = "safari";
 export const SEARCH = "Search";
 const SEARCH_VISIBLE = "searchVisible";
 export const SEARCH_IN_CENTER = "Search in Center";
@@ -66,6 +70,12 @@ export const ONE_HOUR = ONE_MINUTE * 60;
 export const ONE_DAY = ONE_HOUR * 24;
 export const ONE_YEAR = ONE_DAY * 365;
 
+export const BROWSER_LIST = [
+	{ name: CHROME, key: CHROMIUM },
+	{ name: EDGE, key: CHROMIUM },
+	{ name: FIREFOX, key: FIREFOX },
+	{ name: SAFARI, key: SAFARI },
+];
 export const GENERAL_SETTING_APP_LIST = [
 	{
 		name: BOOKMARKS,
