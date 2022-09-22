@@ -16,7 +16,9 @@ export const CollapsibleHeaderWrapper = (props) => {
 		const WrapperContent = SmoothHeightWrapperRef.current.querySelector(
 			`.${SMOOTH_HEIGHT_CONTENT}`,
 		);
-		WrapperContent.classList.toggle(ACTIVE);
+		WrapperHeight === 0
+			? WrapperContent.classList.add(ACTIVE)
+			: WrapperContent.classList.remove(ACTIVE);
 	};
 
 	return (
