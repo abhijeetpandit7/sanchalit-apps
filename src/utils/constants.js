@@ -2,6 +2,7 @@ export const ABOUT = "About";
 export const ACTIVE = "active";
 export const ADD_SHADOW = "add-shadow";
 export const API = "api";
+const APPS_LOCATION = "appsLocation";
 export const AUTH = "auth";
 export const BALANCE = "Balance";
 export const BACKGROUND = "Background";
@@ -10,11 +11,14 @@ export const BOOKMARKS = "Bookmarks";
 export const BOOKMARKS_PERMISSION = "bookmarks";
 const BOOKMARKS_VISIBLE = "bookmarksVisible";
 export const CHROME = "chrome";
+const CHROME_TAB_LOCATION = "chromeTabLocation";
 const CHROMIUM = "chromium";
 export const CLOCK = "Clock";
 const CLOCK_VISIBLE = "clockVisible";
 export const CUSTOMIZATION = "customization";
+const DASH = "Dash";
 export const DEFAULT = "default";
+const DEFAULT_MOST_VISITED = "defaultMostVisited";
 export const DISABLED = "disabled";
 export const DUCK_DUCK_GO = "DuckDuckGo";
 export const EDGE = "edge";
@@ -33,16 +37,22 @@ export const HELP = "Help";
 export const HIDE_BACKGROUND_OVERLAY = "hide-background-overlay";
 export const HIDE_VISIBILITY = "m-hide-visibility";
 export const HOTKEY_HOVER = "hotkey-hover";
+const ICONS_ONLY = "iconsOnly";
 export const IMAGES = "images";
+const INCLUDE_BOOKMARKS_MANAGER = "includeBookmarksManager";
+const INCLUDE_MOST_VISITED = "includeMostVisited";
+const INCLUDE_OTHER_BOOKMARKS = "includeOtherBookmarks";
 export const INPUT_WRAPPER = "input-wrapper";
 export const LINKS_AND_BOOKMARKS = "Links & Bookmarks";
 export const MANTRAS = "Mantras";
 export const NAV_ACTIVE = "nav-active";
+const NONE = "None";
 export const NOTES = "Notes";
 const NOTES_VISIBLE = "notesVisible";
 const NOTES_DESCRIPTION = "Take quick notes and store wisdom to review";
 export const ON = "on";
 export const OPEN = "open";
+const OPEN_IN_NEW_TAB = "openInNewTab";
 export const OVERFLOW = "overflow";
 export const PARENT_ID = "1";
 export const PHOTOS = "Photos";
@@ -59,10 +69,13 @@ export const SHIFT_TO_LEFT = "shift-to-left";
 export const SHOW = "show";
 export const SHOW_ANYWAY = "show-anyway";
 export const SHOW_FADE_IN = "show-fade-in";
+export const SHOW_TOP_SITES = "Show Top Sites";
+export const START_IN_TOP_SITES = "Start in Top Sites";
 export const STATIC_RESOURCES = "static-resources";
 export const SYSTEM = "system";
 export const TODO = "Todo";
 const TODO_VISIBLE = "todoVisible";
+export const TOP_SITES_PERMISSION = "topSites";
 export const WEB = "web";
 
 export const ONE_SECOND = 1;
@@ -71,6 +84,51 @@ export const ONE_HOUR = ONE_MINUTE * 60;
 export const ONE_DAY = ONE_HOUR * 24;
 export const ONE_YEAR = ONE_DAY * 365;
 
+const isExtensionBuildTargetSafari = process.env.BUILD_TARGET === SAFARI;
+
+const APP_LOCATION_OPTIONS = [
+	{ name: BOOKMARKS, key: BOOKMARKS },
+	{ name: DASH, key: DASH },
+	{ name: NONE, key: NONE },
+];
+export const BOOKMARKS_GENERAL_SETTING_LIST = [
+	{
+		name: "Icons only",
+		description: "Hide titles for a clean and compact look",
+		key: ICONS_ONLY,
+	},
+	{
+		name: START_IN_TOP_SITES,
+		description: "Show most visited websites by default in Bookmarks Bar",
+		key: DEFAULT_MOST_VISITED,
+		requirePermission: true,
+		unsupported: isExtensionBuildTargetSafari,
+	},
+	{
+		name: SHOW_TOP_SITES,
+		description: "Add a folder with most visited websites to Bookmarks Bar",
+		key: INCLUDE_MOST_VISITED,
+		requirePermission: true,
+		unsupported: isExtensionBuildTargetSafari,
+	},
+	{ name: "Show Bookmarks Manager", key: INCLUDE_BOOKMARKS_MANAGER },
+	{ name: "Show Other Bookmarks", key: INCLUDE_OTHER_BOOKMARKS },
+];
+export const BOOKMARKS_FEED_SETTING_LIST = [
+	{
+		name: "Show Chrome Tab in",
+		key: APPS_LOCATION,
+		toggleOptions: true,
+		options: APP_LOCATION_OPTIONS,
+	},
+	{
+		name: "Show Apps in	",
+		key: CHROME_TAB_LOCATION,
+		toggleOptions: true,
+		options: APP_LOCATION_OPTIONS,
+	},
+	{ name: "Open links in new tab", key: OPEN_IN_NEW_TAB },
+];
 export const BROWSER_LIST = [
 	{ name: CHROME, key: CHROMIUM },
 	{ name: EDGE, key: CHROMIUM },
@@ -82,7 +140,7 @@ export const GENERAL_SETTING_APP_LIST = [
 		name: BOOKMARKS,
 		key: BOOKMARKS_VISIBLE,
 		requirePermission: true,
-		unsupported: process.env.BUILD_TARGET === SAFARI,
+		unsupported: isExtensionBuildTargetSafari,
 	},
 	{ name: SEARCH, key: SEARCH_VISIBLE },
 	{ name: CLOCK, key: CLOCK_VISIBLE },
@@ -124,6 +182,7 @@ export const SEARCH_PROVIDER_LIST = [
 ];
 export const SETTINGS_NAV_LIST = [
 	{ value: GENERAL },
+	{ value: BOOKMARKS },
 	{ value: HELP, secondary: true },
 	{ value: ABOUT, secondary: true },
 ];
@@ -177,11 +236,14 @@ export const DEFAULT_CUSTOMIZATION = {
 	},
 	bookmarks: [],
 	bookmarksSettings: {
-		iconsOnly: false,
-		openInNewTab: false,
-		includeOtherBookmarks: false,
-		defaultMostVisited: false,
-		includeMostVisited: false,
+		[ICONS_ONLY]: false,
+		[OPEN_IN_NEW_TAB]: false,
+		[INCLUDE_OTHER_BOOKMARKS]: false,
+		[INCLUDE_BOOKMARKS_MANAGER]: false,
+		[INCLUDE_MOST_VISITED]: false,
+		[DEFAULT_MOST_VISITED]: false,
+		[APPS_LOCATION]: NONE,
+		[CHROME_TAB_LOCATION]: NONE,
 	},
 	[BOOKMARKS_VISIBLE]: false,
 	[CLOCK_VISIBLE]: true,
@@ -210,6 +272,7 @@ export const DEFAULT_CUSTOMIZATION = {
 		provider: SEARCH_PROVIDER_LIST[0].name,
 	},
 	[TODO_VISIBLE]: true,
+	topSites: [],
 	themeColour: SYSTEM,
 	themeFont: DEFAULT,
 };

@@ -7008,9 +7008,8 @@ input[type="number"].hide-controls {
 	border-top: none;
 }
 
-.settings-mantras .off-state {
+.off-state {
 	margin-top: 20px;
-	display: none;
 	text-align: center;
 }
 .settings-mantras-onboard {

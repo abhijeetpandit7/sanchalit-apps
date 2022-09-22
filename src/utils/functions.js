@@ -104,6 +104,15 @@ export const getPermissionAllowed = (permission) =>
 		),
 	);
 
+export const getTopSites = () =>
+	new Promise((resolve, reject) =>
+		chrome.topSites.get((topSitesArray) =>
+			chrome.runtime.lastError
+				? reject(Error(chrome.runtime.lastError.message))
+				: resolve(topSitesArray),
+		),
+	);
+
 export const hideAppPopup = (appRef) =>
 	(appRef.current.classList.contains(SHOW) ||
 		appRef.current.classList.contains(SHOW_FADE_IN)) &&

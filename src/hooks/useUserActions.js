@@ -9,10 +9,14 @@ import {
 	INPUT_WRAPPER,
 	PULSE,
 	SEARCH,
+	SHOW_TOP_SITES,
+	START_IN_TOP_SITES,
+	TOP_SITES_PERMISSION,
 	WEB,
 	focusDisplayName,
 	getBookmarks,
 	getPermissionAllowed,
+	getTopSites,
 	removeRefClassName,
 	requestPermission,
 	toggleRefClassName,
@@ -85,6 +89,18 @@ export const useUserActions = () => {
 		else element.innerText = storageUserCustomization.displayName;
 	};
 
+	const selectBookmarksSetting = useCallback(
+		(setting) =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				bookmarksSettings: {
+					...prevCustomization.bookmarksSettings,
+					[setting.keyValue]: setting.newValue,
+				},
+			})),
+		[storageUserCustomization.bookmarksSettings],
+	);
+
 	const setSearchProvider = useCallback(
 		(searchProvider) => {
 			setStorageUserCustomization((prevCustomization) => ({
@@ -109,6 +125,36 @@ export const useUserActions = () => {
 				},
 			}),
 		[],
+	);
+
+	const toggleBookmarksSetting = useCallback(
+		(setting) => {
+			if (setting.requirePermission) {
+				if (process.env.BUILD_TARGET === WEB) {
+					alert("This feature is available only on extension.");
+					return;
+				} else {
+					switch (setting.name) {
+						case START_IN_TOP_SITES:
+							return toggleTopSitesSetting(setting);
+
+						case SHOW_TOP_SITES:
+							return toggleTopSitesSetting(setting);
+
+						default:
+							return;
+					}
+				}
+			} else
+				setStorageUserCustomization((prevCustomization) => ({
+					...prevCustomization,
+					bookmarksSettings: {
+						...prevCustomization.bookmarksSettings,
+						[setting.key]: !prevCustomization.bookmarksSettings[setting.key],
+					},
+				}));
+		},
+		[storageUserCustomization.bookmarksSettings],
 	);
 
 	const toggleDisplayNameVisible = useCallback(
@@ -151,6 +197,27 @@ export const useUserActions = () => {
 		storageUserCustomization.searchVisible,
 	]);
 
+	const toggleShowApp = useCallback((app) => {
+		if (app.requirePermission) {
+			if (process.env.BUILD_TARGET === WEB) {
+				alert("This feature is available only on extension.");
+				return;
+			} else {
+				switch (app.name) {
+					case BOOKMARKS:
+						return toggleShowBookmarksApp(app);
+
+					default:
+						return;
+				}
+			}
+		} else
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				[app.key]: !prevCustomization[app.key],
+			}));
+	}, []);
+
 	const toggleShowBookmarksApp = useCallback(
 		async (app) => {
 			const isPermissionAllowed = await getPermissionAllowed(
@@ -173,34 +240,48 @@ export const useUserActions = () => {
 				bookmarks: fetchedBookmarks || prevCustomization.bookmarks,
 			}));
 		},
-		[storageUserCustomization.bookmarks],
+		[
+			storageUserCustomization.bookmarks,
+			storageUserCustomization.bookmarksSettings,
+		],
 	);
 
-	const toggleShowApp = useCallback((app) => {
-		if (app.requirePermission) {
-			if (process.env.BUILD_TARGET === WEB) {
-				alert("This feature is available only on extension.");
-				return;
-			} else {
-				switch (app.name) {
-					case BOOKMARKS: {
-						toggleShowBookmarksApp(app);
-					}
-					default:
-						return;
-				}
+	const toggleTopSitesSetting = useCallback(
+		async (setting) => {
+			const isPermissionAllowed = await getPermissionAllowed(
+				TOP_SITES_PERMISSION,
+			);
+			if (isPermissionAllowed === false) {
+				const isPermissionGranted = await requestPermission(
+					TOP_SITES_PERMISSION,
+				);
+				if (isPermissionGranted === false) return;
 			}
-		} else
+			const { topSites } = storageUserCustomization;
+			let fetchedTopSites;
+			if (topSites.length === 0) fetchedTopSites = await getTopSites();
+
 			setStorageUserCustomization((prevCustomization) => ({
 				...prevCustomization,
-				[app.key]: !prevCustomization[app.key],
+				topSites: fetchedTopSites || prevCustomization.topSites,
+				bookmarksSettings: {
+					...prevCustomization.bookmarksSettings,
+					[setting.key]: !prevCustomization.bookmarksSettings[setting.key],
+				},
 			}));
-	}, []);
+		},
+		[
+			storageUserCustomization.topSites,
+			storageUserCustomization.bookmarksSettings,
+		],
+	);
 
 	return {
 		editDisplayName,
+		selectBookmarksSetting,
 		setSearchProvider,
 		setWidgetReady,
+		toggleBookmarksSetting,
 		toggleDisplayNameVisible,
 		toggleHour12Clock,
 		toggleSearchInCenter,
