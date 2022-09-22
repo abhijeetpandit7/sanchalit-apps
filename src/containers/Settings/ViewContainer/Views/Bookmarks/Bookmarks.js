@@ -47,13 +47,15 @@ const ContextMemo = memo((props) => {
 						<ul className="settings-list options-list">
 							{BOOKMARKS_FEED_SETTING_LIST.map((setting) =>
 								setting.toggleOptions ? (
-									<ToggleOptions
-										key={setting.key}
-										keyValue={setting.key}
-										value={props[setting.key]}
-										toggle={props.selectBookmarksSetting}
-										{...setting}
-									/>
+									setting.unsupported !== true && (
+										<ToggleOptions
+											key={setting.key}
+											keyValue={setting.key}
+											value={props[setting.key]}
+											toggle={props.selectBookmarksSetting}
+											{...setting}
+										/>
+									)
 								) : (
 									<ToggleSlider
 										key={setting.key}

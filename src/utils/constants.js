@@ -85,6 +85,7 @@ export const ONE_DAY = ONE_HOUR * 24;
 export const ONE_YEAR = ONE_DAY * 365;
 
 const isExtensionBuildTargetSafari = process.env.BUILD_TARGET === SAFARI;
+const isExtensionBuildTargetChromium = process.env.BUILD_TARGET === CHROMIUM;
 
 const APP_LOCATION_OPTIONS = [
 	{ name: BOOKMARKS, key: BOOKMARKS },
@@ -120,12 +121,14 @@ export const BOOKMARKS_FEED_SETTING_LIST = [
 		key: APPS_LOCATION,
 		toggleOptions: true,
 		options: APP_LOCATION_OPTIONS,
+		unsupported: isExtensionBuildTargetChromium === false,
 	},
 	{
 		name: "Show Apps in	",
 		key: CHROME_TAB_LOCATION,
 		toggleOptions: true,
 		options: APP_LOCATION_OPTIONS,
+		unsupported: isExtensionBuildTargetChromium === false,
 	},
 	{ name: "Open links in new tab", key: OPEN_IN_NEW_TAB },
 ];
