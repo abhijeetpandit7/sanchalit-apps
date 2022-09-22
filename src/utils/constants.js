@@ -10,6 +10,7 @@ export const BING = "Bing";
 export const BOOKMARKS = "Bookmarks";
 export const BOOKMARKS_PERMISSION = "bookmarks";
 const BOOKMARKS_VISIBLE = "bookmarksVisible";
+export const BROWSER_TYPE = "browserType";
 export const CHROME = "chrome";
 const CHROME_TAB_LOCATION = "chromeTabLocation";
 const CHROMIUM = "chromium";
@@ -117,7 +118,7 @@ export const BOOKMARKS_GENERAL_SETTING_LIST = [
 ];
 export const BOOKMARKS_FEED_SETTING_LIST = [
 	{
-		name: "Show Chrome Tab in",
+		name: `Show ${BROWSER_TYPE} Tab in`,
 		key: APPS_LOCATION,
 		toggleOptions: true,
 		options: APP_LOCATION_OPTIONS,

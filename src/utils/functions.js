@@ -211,6 +211,8 @@ export const setLocalStorageItem = (key, value) =>
 
 export const toCSSUrl = (link) => `url("${link}")`;
 
+export const toTitleCase = (string) => _.startCase(_.toLower(string));
+
 export const toggleAppPopup = (appRef) => {
 	toggleRefClassName(appRef, SHOW);
 	toggleRefClassName(appRef, SHOW_FADE_IN);
