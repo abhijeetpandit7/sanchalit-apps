@@ -53,11 +53,11 @@ export const useAuthPersist = () => {
 			if (isObjectEmpty(userCustomization))
 				userCustomization = DEFAULT_CUSTOMIZATION;
 
-			const { bookmarksVisible, bookmarksSettings } = userCustomization;
+			const { bookmarksVisible } = userCustomization;
 			if (bookmarksVisible)
 				userCustomization = {
 					...userCustomization,
-					bookmarks: await getBookmarks(bookmarksSettings),
+					bookmarks: await getBookmarks(),
 				};
 
 			setStorageAuth(auth);

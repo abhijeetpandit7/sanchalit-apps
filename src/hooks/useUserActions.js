@@ -229,10 +229,9 @@ export const useUserActions = () => {
 				);
 				if (isPermissionGranted === false) return;
 			}
-			const { bookmarks, bookmarksSettings } = storageUserCustomization;
+			const { bookmarks } = storageUserCustomization;
 			let fetchedBookmarks;
-			if (bookmarks.length === 0)
-				fetchedBookmarks = await getBookmarks(bookmarksSettings);
+			if (bookmarks.length === 0) fetchedBookmarks = await getBookmarks();
 
 			setStorageUserCustomization((prevCustomization) => ({
 				...prevCustomization,
@@ -240,10 +239,7 @@ export const useUserActions = () => {
 				bookmarks: fetchedBookmarks || prevCustomization.bookmarks,
 			}));
 		},
-		[
-			storageUserCustomization.bookmarks,
-			storageUserCustomization.bookmarksSettings,
-		],
+		[storageUserCustomization.bookmarks],
 	);
 
 	const toggleTopSitesSetting = useCallback(

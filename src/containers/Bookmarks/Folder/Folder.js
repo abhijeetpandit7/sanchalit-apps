@@ -3,7 +3,8 @@ import { FolderDropdown } from "./FolderDropdown/FolderDropdown";
 import { FocusOutHandler } from "../../../hooks";
 import {
 	OVERFLOW,
-	PARENT_ID,
+	BOOKMARKS_BAR_ID,
+	BOOKMARKS_BAR_FIREFOX_ID,
 	ellipsisIcon1,
 	folderIcon,
 	hideBookmarkFolder,
@@ -17,7 +18,9 @@ export const Folder = (folder) => {
 	FocusOutHandler({ ref: bookmarkFolderRef, callback: hideBookmarkFolder });
 
 	const isOverflowFolder = folder.id === OVERFLOW;
-	const isNestedFolder = folder.parentId !== PARENT_ID;
+	const isNestedFolder =
+		folder.parentId !== BOOKMARKS_BAR_ID &&
+		folder.parentId !== BOOKMARKS_BAR_FIREFOX_ID;
 	const isParentOverflow = folder.parentOverflow === true;
 
 	const toggleBookmarkItem = async () => {

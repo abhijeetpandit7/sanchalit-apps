@@ -5,7 +5,11 @@ const ContextMemo = lazy(() => import("./ContextMemo"));
 
 export const Bookmarks = () => {
 	const {
-		storageUserCustomization: { bookmarks, bookmarksVisible },
+		storageUserCustomization: {
+			bookmarks,
+			bookmarksVisible,
+			bookmarksSettings,
+		},
 	} = useUserCustomization();
 	const { setWidgetReady } = useUserActions();
 
@@ -13,7 +17,7 @@ export const Bookmarks = () => {
 		<>
 			{bookmarksVisible && (
 				<Suspense fallback={null}>
-					<ContextMemo {...{ bookmarks, setWidgetReady }} />
+					<ContextMemo {...{ bookmarks, bookmarksSettings, setWidgetReady }} />
 				</Suspense>
 			)}
 		</>

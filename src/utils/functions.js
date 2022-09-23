@@ -10,7 +10,8 @@ import {
 	FOLDER_DROPDOWN,
 	OPEN,
 	OVERFLOW,
-	PARENT_ID,
+	BOOKMARKS_BAR_ID,
+	BOOKMARKS_BAR_FIREFOX_ID,
 	SAFARI,
 	SHIFT_TO_LEFT,
 	SHOW,
@@ -56,19 +57,14 @@ export const getGreetingMessage = (userNameVisible, userName) => {
 
 export const getLocalStorageItem = (key) => localStorage.getItem(key);
 
-export const getBookmarks = async (bookmarksSettings) => {
-	const bookmarksTree = await new Promise((resolve, reject) =>
+export const getBookmarks = () =>
+	new Promise((resolve, reject) =>
 		chrome.bookmarks.getTree((bookmarks) =>
 			chrome.runtime.lastError
 				? reject(Error(chrome.runtime.lastError.message))
-				: resolve(bookmarks),
+				: resolve(bookmarks[0].children),
 		),
 	);
-	const bookmarks = bookmarksSettings.includeOtherBookmarks
-		? bookmarksTree[0]
-		: bookmarksTree[0].children[0].children;
-	return bookmarks;
-};
 
 export const getBrowserType = () => {
 	const userDeviceDetails = navigator.userAgent;
@@ -139,7 +135,27 @@ export const isBookmarkDropdownOverflowing = (bookmarksListRef) => {
 
 export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
 
-export const parseBookmarksListOverflow = (bookmarksList, bookmarksListRef) => {
+export const parseBookmarksList = (allBookmarksList, bookmarksSettings) => {
+	const {
+		includeOtherBookmarks,
+	} = bookmarksSettings;
+
+	const bookmarksBar = allBookmarksList.find(
+		(list) =>
+			list.id === BOOKMARKS_BAR_ID || list.id === BOOKMARKS_BAR_FIREFOX_ID,
+	);
+	const otherBookmarksList = [...allBookmarksList].filter(
+		(list) =>
+			list.id !== BOOKMARKS_BAR_ID && list.id !== BOOKMARKS_BAR_FIREFOX_ID,
+	);
+
+	const bookmarks = [...bookmarksBar.children];
+	if (includeOtherBookmarks) bookmarks.push(...otherBookmarksList);
+
+	return bookmarks;
+};
+
+export const parseBookmarksOverflow = (bookmarksList, bookmarksListRef) => {
 	const availableWidth = bookmarksListRef.current.offsetWidth;
 	const totalContentWidth = bookmarksListRef.current.scrollWidth;
 	const isOverflowing = totalContentWidth > availableWidth;
@@ -178,7 +194,7 @@ export const parseBookmarksListOverflow = (bookmarksList, bookmarksListRef) => {
 			[
 				{
 					id: OVERFLOW,
-					parentId: PARENT_ID,
+					parentId: BOOKMARKS_BAR_ID,
 					title: OVERFLOW,
 					width: 30,
 					children: [],
