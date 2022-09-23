@@ -9,6 +9,7 @@ export const Bookmarks = () => {
 			bookmarks,
 			bookmarksVisible,
 			bookmarksSettings,
+			topSites,
 		},
 	} = useUserCustomization();
 	const { setWidgetReady } = useUserActions();
@@ -17,7 +18,9 @@ export const Bookmarks = () => {
 		<>
 			{bookmarksVisible && (
 				<Suspense fallback={null}>
-					<ContextMemo {...{ bookmarks, bookmarksSettings, setWidgetReady }} />
+					<ContextMemo
+						{...{ bookmarks, bookmarksSettings, topSites, setWidgetReady }}
+					/>
 				</Suspense>
 			)}
 		</>

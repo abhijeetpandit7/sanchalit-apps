@@ -138,6 +138,7 @@ export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
 export const parseBookmarksList = (allBookmarksList, bookmarksSettings) => {
 	const {
 		includeOtherBookmarks,
+		includeMostVisited,
 	} = bookmarksSettings;
 
 	const bookmarksBar = allBookmarksList.find(
@@ -148,10 +149,18 @@ export const parseBookmarksList = (allBookmarksList, bookmarksSettings) => {
 		(list) =>
 			list.id !== BOOKMARKS_BAR_ID && list.id !== BOOKMARKS_BAR_FIREFOX_ID,
 	);
+	topSites.map((site, index) => (site.id = index));
+	const topSitesFolder = {
+		id: TOP_SITES,
+		parentId: BOOKMARKS_BAR_ID,
+		title: TOP_SITES,
+		children: [...topSites],
+	};
+	let bookmarks = [];
 
-	const bookmarks = [...bookmarksBar.children];
+	if (includeMostVisited) bookmarks.push(topSitesFolder);
+	bookmarks = [...bookmarks, ...bookmarksBar.children];
 	if (includeOtherBookmarks) bookmarks.push(...otherBookmarksList);
-
 	return bookmarks;
 };
 

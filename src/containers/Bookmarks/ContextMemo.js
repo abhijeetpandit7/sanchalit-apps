@@ -6,7 +6,8 @@ import {
 	parseBookmarksOverflow,
 } from "../../utils";
 
-const ContextMemo = memo(({ bookmarks, bookmarksSettings, setWidgetReady }) => {
+const ContextMemo = memo(
+({ bookmarks, bookmarksSettings, topSites, setWidgetReady }) => {
 	const bookmarksListRef = useRef(null);
 	const [bookmarksList, setBookmarksList] = useState(bookmarks);
 
@@ -14,7 +15,7 @@ const ContextMemo = memo(({ bookmarks, bookmarksSettings, setWidgetReady }) => {
 		const parsedBookmarksList = parseBookmarksList(
 			bookmarks,
 			bookmarksSettings,
-			bookmarksListRef,
+			topSites,
 		);
 		await setBookmarksList(parsedBookmarksList);
 		await setBookmarksList(
@@ -23,7 +24,11 @@ const ContextMemo = memo(({ bookmarks, bookmarksSettings, setWidgetReady }) => {
 		setWidgetReady({ widget: BOOKMARKS });
 	}, [bookmarksSettings]);
 	return (
-		<div id="bookmarks-vue" className="app-container bookmarks" data-v-10674610>
+		<div
+			id="bookmarks-vue"
+			className="app-container bookmarks"
+			data-v-10674610
+		>
 			<ul className="bookmarks-list" ref={bookmarksListRef} data-v-10674610>
 				{bookmarksList.map((bookmark) =>
 					bookmark.children ? (
@@ -35,6 +40,7 @@ const ContextMemo = memo(({ bookmarks, bookmarksSettings, setWidgetReady }) => {
 			</ul>
 		</div>
 	);
-});
+},
+);
 
 export default ContextMemo;

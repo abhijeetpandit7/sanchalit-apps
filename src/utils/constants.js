@@ -77,6 +77,7 @@ export const STATIC_RESOURCES = "static-resources";
 export const SYSTEM = "system";
 export const TODO = "Todo";
 const TODO_VISIBLE = "todoVisible";
+export const TOP_SITES = "Top Sites";
 export const TOP_SITES_PERMISSION = "topSites";
 const WEB = "web";
 
