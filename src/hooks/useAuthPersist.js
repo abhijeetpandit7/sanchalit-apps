@@ -8,6 +8,7 @@ import {
 	DEFAULT_CUSTOMIZATION,
 	getBookmarks,
 	getLocalStorageItem,
+	getTopSites,
 	isObjectEmpty,
 	setLocalStorageItem,
 } from "../utils";
@@ -53,11 +54,17 @@ export const useAuthPersist = () => {
 			if (isObjectEmpty(userCustomization))
 				userCustomization = DEFAULT_CUSTOMIZATION;
 
-			const { bookmarksVisible } = userCustomization;
+			const {
+				bookmarksVisible,
+				bookmarksSettings: { includeMostVisited },
+			} = userCustomization;
 			if (bookmarksVisible)
 				userCustomization = {
 					...userCustomization,
 					bookmarks: await getBookmarks(),
+					topSites: includeMostVisited
+						? await getTopSites()
+						: userCustomization.topSites,
 				};
 
 			setStorageAuth(auth);
