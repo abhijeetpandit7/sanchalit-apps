@@ -12,7 +12,7 @@ import {
 	SHOW_TOP_SITES,
 	START_IN_TOP_SITES,
 	TOP_SITES_PERMISSION,
-	WEB,
+	isBuildTargetWeb,
 	focusDisplayName,
 	getBookmarks,
 	getPermissionAllowed,
@@ -130,7 +130,7 @@ export const useUserActions = () => {
 	const toggleBookmarksSetting = useCallback(
 		(setting) => {
 			if (setting.requirePermission) {
-				if (process.env.BUILD_TARGET === WEB) {
+				if (isBuildTargetWeb) {
 					alert("This feature is available only on extension.");
 					return;
 				} else {
@@ -199,7 +199,7 @@ export const useUserActions = () => {
 
 	const toggleShowApp = useCallback((app) => {
 		if (app.requirePermission) {
-			if (process.env.BUILD_TARGET === WEB) {
+			if (isBuildTargetWeb) {
 				alert("This feature is available only on extension.");
 				return;
 			} else {

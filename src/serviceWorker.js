@@ -3,7 +3,7 @@ import { ExpirationPlugin } from "workbox-expiration";
 import { registerRoute } from "workbox-routing";
 import { StaleWhileRevalidate, CacheFirst } from "workbox-strategies";
 import { CacheableResponsePlugin } from "workbox-cacheable-response";
-import { IMAGES, STATIC_RESOURCES, WEB, ONE_YEAR } from "./utils";
+import { IMAGES, STATIC_RESOURCES, ONE_YEAR, isBuildTargetWeb } from "./utils";
 
 clientsClaim();
 self.skipWaiting();
@@ -25,7 +25,7 @@ registerRoute(
 	}),
 );
 
-if (process.env.BUILD_TARGET === WEB)
+if (isBuildTargetWeb)
 	registerRoute(
 		({ request }) =>
 			request.destination === "script" || request.destination === "style",

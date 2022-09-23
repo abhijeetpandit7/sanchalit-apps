@@ -77,7 +77,7 @@ export const SYSTEM = "system";
 export const TODO = "Todo";
 const TODO_VISIBLE = "todoVisible";
 export const TOP_SITES_PERMISSION = "topSites";
-export const WEB = "web";
+const WEB = "web";
 
 export const ONE_SECOND = 1;
 export const ONE_MINUTE = ONE_SECOND * 60;
@@ -87,6 +87,7 @@ export const ONE_YEAR = ONE_DAY * 365;
 
 const isExtensionBuildTargetSafari = process.env.BUILD_TARGET === SAFARI;
 const isExtensionBuildTargetChromium = process.env.BUILD_TARGET === CHROMIUM;
+export const isBuildTargetWeb = process.env.BUILD_TARGET === WEB;
 
 const APP_LOCATION_OPTIONS = [
 	{ name: BOOKMARKS, key: BOOKMARKS },
