@@ -5,6 +5,7 @@ import {
 	OVERFLOW,
 	BOOKMARKS_BAR_ID,
 	BOOKMARKS_BAR_FIREFOX_ID,
+	BOOKMARKS_ROOT_ID,
 	ellipsisIcon1,
 	folderIcon,
 	hideBookmarkFolder,
@@ -20,12 +21,14 @@ export const Folder = ({ bookmark: folder, openInNewTab }) => {
 	const isOverflowFolder = folder.id === OVERFLOW;
 	const isNestedFolder =
 		folder.parentId !== BOOKMARKS_BAR_ID &&
-		folder.parentId !== BOOKMARKS_BAR_FIREFOX_ID;
+		folder.parentId !== BOOKMARKS_BAR_FIREFOX_ID &&
+		folder.parentId !== BOOKMARKS_ROOT_ID;
+	const isParentHierarchyOverflow = folder.parentHierarchyOverflow === true;
 	const isParentOverflow = folder.parentOverflow === true;
 
 	const toggleBookmarkItem = async () => {
 		await setComponentDidMount(true);
-		const ignoreOverflow = isNestedFolder || isParentOverflow;
+		const ignoreOverflow = isNestedFolder || isParentHierarchyOverflow;
 		toggleBookmarkFolder(bookmarkFolderRef, ignoreOverflow);
 	};
 
