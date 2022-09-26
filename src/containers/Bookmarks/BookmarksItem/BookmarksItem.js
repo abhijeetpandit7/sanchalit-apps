@@ -1,11 +1,18 @@
 import React from "react";
 
-export const BookmarksItem = ({ id, title, url }) => (
+export const BookmarksItem = ({
+	bookmark: { id, title, url },
+	openInNewTab,
+}) => (
 	<li id={id} className="bookmarks-item" data-v-10674610>
 		<a
 			className="bookmark"
 			title={title}
-			href={url}
+			onClick={() =>
+				openInNewTab
+					? chrome.tabs.create({ url, active: false })
+					: chrome.tabs.update({ url })
+			}
 			draggable="false"
 			data-v-00c414ea
 			data-v-10674610

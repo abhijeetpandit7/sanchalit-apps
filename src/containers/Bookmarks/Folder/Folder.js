@@ -11,7 +11,7 @@ import {
 	toggleBookmarkFolder,
 } from "../../../utils";
 
-export const Folder = (folder) => {
+export const Folder = ({ bookmark: folder, openInNewTab }) => {
 	const bookmarkFolderRef = useRef(null);
 	const [componentDidMount, setComponentDidMount] = useState(false);
 
@@ -55,7 +55,9 @@ export const Folder = (folder) => {
 						</span>
 					)}
 				</div>
-				{componentDidMount && <FolderDropdown bookmarks={folder.children} />}
+				{componentDidMount && (
+					<FolderDropdown {...{ bookmarks: folder.children, openInNewTab }} />
+				)}
 			</span>
 		</li>
 	);

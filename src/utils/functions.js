@@ -10,12 +10,15 @@ import {
 	FOLDER_DROPDOWN,
 	OPEN,
 	OVERFLOW,
+	BOOKMARKS,
 	BOOKMARKS_BAR_ID,
 	BOOKMARKS_BAR_FIREFOX_ID,
+	BOOKMARKS_MANAGER_URL,
 	SAFARI,
 	SHIFT_TO_LEFT,
 	SHOW,
 	SHOW_FADE_IN,
+	TOP_SITES,
 	BROWSER_LIST,
 } from "../utils";
 
@@ -135,9 +138,14 @@ export const isBookmarkDropdownOverflowing = (bookmarksListRef) => {
 
 export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
 
-export const parseBookmarksList = (allBookmarksList, bookmarksSettings) => {
+export const parseBookmarksList = (
+	allBookmarksList,
+	bookmarksSettings,
+	topSites,
+) => {
 	const {
 		includeOtherBookmarks,
+		includeBookmarksManager,
 		includeMostVisited,
 	} = bookmarksSettings;
 
@@ -150,14 +158,22 @@ export const parseBookmarksList = (allBookmarksList, bookmarksSettings) => {
 			list.id !== BOOKMARKS_BAR_ID && list.id !== BOOKMARKS_BAR_FIREFOX_ID,
 	);
 	topSites.map((site, index) => (site.id = index));
+	// TODO: Add icon for bookmarks manager
+	const bookmarksManager = {
+		id: BOOKMARKS,
+		parentId: BOOKMARKS_BAR_ID,
+		title: BOOKMARKS,
+		url: BOOKMARKS_MANAGER_URL,
+	};
 	const topSitesFolder = {
 		id: TOP_SITES,
 		parentId: BOOKMARKS_BAR_ID,
 		title: TOP_SITES,
 		children: [...topSites],
 	};
-	let bookmarks = [];
 
+	let bookmarks = [];
+	if (includeBookmarksManager) bookmarks.push(bookmarksManager);
 	if (includeMostVisited) bookmarks.push(topSitesFolder);
 	bookmarks = [...bookmarks, ...bookmarksBar.children];
 	if (includeOtherBookmarks) bookmarks.push(...otherBookmarksList);

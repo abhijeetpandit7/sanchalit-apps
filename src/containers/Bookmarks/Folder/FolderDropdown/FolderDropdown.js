@@ -2,14 +2,18 @@ import React from "react";
 import { Folder } from "../Folder";
 import { FOLDER_DROPDOWN } from "../../../../utils";
 
-const FolderBookmark = ({ id, title, url }) => (
+const FolderBookmark = ({ bookmark: { id, title, url }, openInNewTab }) => (
 	<li id={id} className="dropdown-item" data-v-5504764e>
 		<a
 			className="bookmark bookmark-child"
 			data-v-5504764e
 			draggable="false"
 			title={title}
-			href={url}
+			onClick={() =>
+				openInNewTab
+					? chrome.tabs.create({ url, active: false })
+					: chrome.tabs.update({ url })
+			}
 		>
 			<span className="bookmark-icon-wrapper" data-v-5504764e>
 				<img
@@ -26,7 +30,7 @@ const FolderBookmark = ({ id, title, url }) => (
 	</li>
 );
 
-export const FolderDropdown = ({ bookmarks }) => (
+export const FolderDropdown = ({ bookmarks, openInNewTab }) => (
 	<div
 		className={`app dropdown more-dropdown dash-dropdown ${FOLDER_DROPDOWN} nipple nipple-top-left`}
 		data-v-5504764e
@@ -35,9 +39,9 @@ export const FolderDropdown = ({ bookmarks }) => (
 			<ul className="dropdown-list" data-v-5504764e>
 				{bookmarks.map((bookmark) =>
 					bookmark.children ? (
-						<Folder key={bookmark.id} {...bookmark} />
+						<Folder key={bookmark.id} {...{ bookmark, openInNewTab }} />
 					) : (
-						<FolderBookmark key={bookmark.id} {...bookmark} />
+						<FolderBookmark key={bookmark.id} {...{ bookmark, openInNewTab }} />
 					),
 				)}
 			</ul>
