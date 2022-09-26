@@ -7,40 +7,51 @@ import {
 } from "../../utils";
 
 const ContextMemo = memo(
-({ bookmarks, bookmarksSettings, topSites, setWidgetReady }) => {
-	const bookmarksListRef = useRef(null);
-	const [bookmarksList, setBookmarksList] = useState(bookmarks);
+	({ bookmarks, bookmarksSettings, topSites, setWidgetReady }) => {
+		const bookmarksListRef = useRef(null);
+		const [bookmarksList, setBookmarksList] = useState(bookmarks);
 
-	useEffect(async () => {
-		const parsedBookmarksList = parseBookmarksList(
-			bookmarks,
-			bookmarksSettings,
-			topSites,
+		const {
+			openInNewTab,
+			includeOtherBookmarks,
+			includeBookmarksManager,
+			includeMostVisited,
+		} = bookmarksSettings;
+
+		useEffect(async () => {
+			const parsedBookmarksList = parseBookmarksList(
+				bookmarks,
+				bookmarksSettings,
+				topSites,
+			);
+			await setBookmarksList(parsedBookmarksList);
+			await setBookmarksList(
+				parseBookmarksOverflow(parsedBookmarksList, bookmarksListRef),
+			);
+			setWidgetReady({ widget: BOOKMARKS });
+		}, [includeOtherBookmarks, includeBookmarksManager, includeMostVisited]);
+
+		return (
+			<div
+				id="bookmarks-vue"
+				className="app-container bookmarks"
+				data-v-10674610
+			>
+				<ul className="bookmarks-list" ref={bookmarksListRef} data-v-10674610>
+					{bookmarksList.map((bookmark) =>
+						bookmark.children ? (
+							<Folder key={bookmark.id} {...{ bookmark, openInNewTab }} />
+						) : (
+							<BookmarksItem
+								key={bookmark.id}
+								{...{ bookmark, openInNewTab }}
+							/>
+						),
+					)}
+				</ul>
+			</div>
 		);
-		await setBookmarksList(parsedBookmarksList);
-		await setBookmarksList(
-			parseBookmarksOverflow(parsedBookmarksList, bookmarksListRef),
-		);
-		setWidgetReady({ widget: BOOKMARKS });
-	}, [bookmarksSettings]);
-	return (
-		<div
-			id="bookmarks-vue"
-			className="app-container bookmarks"
-			data-v-10674610
-		>
-			<ul className="bookmarks-list" ref={bookmarksListRef} data-v-10674610>
-				{bookmarksList.map((bookmark) =>
-					bookmark.children ? (
-						<Folder key={bookmark.id} {...bookmark} />
-					) : (
-						<BookmarksItem key={bookmark.id} {...bookmark} />
-					),
-				)}
-			</ul>
-		</div>
-	);
-},
+	},
 );
 
 export default ContextMemo;
