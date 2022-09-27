@@ -73,10 +73,10 @@ export const getBookmarks = () =>
 
 export const getBrowserType = () => {
 	const userDeviceDetails = navigator.userAgent;
-	let chromeAgent = userDeviceDetails.indexOf("Chrome") > -1;
-	let edgeAgent = userDeviceDetails.indexOf("Edg") > -1;
-	let firefoxAgent = userDeviceDetails.indexOf("Firefox") > -1;
-	let safariAgent = userDeviceDetails.indexOf("Safari") > -1;
+	let chromeAgent = userDeviceDetails.indexOf(CHROME) > -1;
+	let edgeAgent = userDeviceDetails.indexOf(EDGE.slice(0, 3)) > -1;
+	let firefoxAgent = userDeviceDetails.indexOf(FIREFOX) > -1;
+	let safariAgent = userDeviceDetails.indexOf(SAFARI) > -1;
 
 	if (edgeAgent && chromeAgent) chromeAgent = false;
 	if (chromeAgent && safariAgent) safariAgent = false;
@@ -261,7 +261,7 @@ export const setLocalStorageItem = (key, value) =>
 
 export const toCSSUrl = (link) => `url("${link}")`;
 
-export const toTitleCase = (string) => _.startCase(_.toLower(string));
+export const toLowerCase = (string) => _.toLower(string);
 
 export const toggleAppPopup = (appRef) => {
 	toggleRefClassName(appRef, SHOW);

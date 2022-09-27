@@ -13,7 +13,6 @@ import {
 	BOOKMARKS_GENERAL_SETTING_LIST,
 	GENERAL_SETTING_APP_LIST,
 	getBrowserType,
-	toTitleCase,
 } from "../../../../../utils";
 
 const ContextMemo = memo((props) => {
@@ -63,7 +62,7 @@ const ContextMemo = memo((props) => {
 												setting.name.includes(BROWSER_TYPE)
 													? setting.name.replace(
 															BROWSER_TYPE,
-															toTitleCase(getBrowserType().name),
+															getBrowserType().name,
 													  )
 													: setting.name
 											}

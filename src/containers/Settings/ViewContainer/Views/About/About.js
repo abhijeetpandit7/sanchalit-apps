@@ -1,12 +1,11 @@
 import React from "react";
-import { brandLogo, getBrowserType } from "../../../../../utils";
 import chromium from "../../../../../../target/chromium/manifest.json";
 import safari from "../../../../../../target/safari/manifest.json";
 import firefox from "../../../../../../target/firefox/manifest.json";
 
 const ContextMemo = (props) => {
-	const browser = getBrowserType();
-	const manifestVersion = props[browser.key].version;
+	const browserKey = toLowerCase(getBrowserType().key);
+	const manifestVersion = props[browserKey].version;
 
 	return (
 		<div id="settings-about" className="settings-view settings-about">
