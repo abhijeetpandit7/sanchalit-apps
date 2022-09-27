@@ -36,7 +36,6 @@ export const EDITING = "editing";
 export const EMPTY_NAME = "empty-name";
 export const FADEIN = "fadein";
 export const FIREFOX = "Firefox";
-const FIREFOX_TAB_URL = "about:blank";
 export const FOLDER_DROPDOWN = "folder-dropdown";
 export const HIDE_APPS = "hide-apps";
 export const GENERAL = "General";
@@ -136,14 +135,14 @@ export const BOOKMARKS_GENERAL_SETTING_LIST = [
 export const BOOKMARKS_FEED_SETTING_LIST = [
 	{
 		name: `Show ${BROWSER_TYPE} Tab in`,
-		key: APPS_LOCATION,
+		key: HOME_TAB_LOCATION,
 		toggleOptions: true,
 		options: APP_LOCATION_OPTIONS,
-		unsupported: isExtensionBuildTargetSafari,
+		unsupported: isExtensionBuildTargetChromium === false,
 	},
 	{
 		name: "Show Apps in	",
-		key: HOME_TAB_LOCATION,
+		key: APPS_LOCATION,
 		toggleOptions: true,
 		options: APP_LOCATION_OPTIONS,
 		unsupported: isExtensionBuildTargetChromium === false,
@@ -234,10 +233,10 @@ export const BOOKMARKS_MANAGER_OBJ = {
 	url: BOOKMARKS_MANAGER_URL,
 };
 export const HOME_TAB_OBJ = {
-	id: `${isExtensionBuildTargetChromium ? CHROMIUM : FIREFOX} Tab`,
+	id: `${CHROMIUM} Tab`,
 	parentId: BOOKMARKS_ROOT_ID,
 	title: "",
-	url: isExtensionBuildTargetChromium ? CHROMIUM_TAB_URL : FIREFOX_TAB_URL,
+	url: CHROMIUM_TAB_URL,
 };
 export const OVERFLOW_FOLDER_OBJ = {
 	id: OVERFLOW,
