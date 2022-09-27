@@ -18,7 +18,6 @@ export const BOOKMARKS_PERMISSION = "bookmarks";
 const BOOKMARKS_VISIBLE = "bookmarksVisible";
 export const BROWSER_TYPE = "browserType";
 export const CHROME = "chrome";
-const CHROME_TAB_LOCATION = "chromeTabLocation";
 const CHROMIUM = "chromium";
 export const CLOCK = "Clock";
 const CLOCK_VISIBLE = "clockVisible";
@@ -43,6 +42,7 @@ const GREETING_VISIBLE = "greetingVisible";
 export const HELP = "Help";
 export const HIDE_BACKGROUND_OVERLAY = "hide-background-overlay";
 export const HIDE_VISIBILITY = "m-hide-visibility";
+const HOME_TAB_LOCATION = "homeTabLocation";
 export const HOTKEY_HOVER = "hotkey-hover";
 const ICONS_ONLY = "iconsOnly";
 export const IMAGES = "images";
@@ -139,7 +139,7 @@ export const BOOKMARKS_FEED_SETTING_LIST = [
 	},
 	{
 		name: "Show Apps in	",
-		key: CHROME_TAB_LOCATION,
+		key: HOME_TAB_LOCATION,
 		toggleOptions: true,
 		options: APP_LOCATION_OPTIONS,
 		unsupported: isExtensionBuildTargetChromium === false,
@@ -268,7 +268,7 @@ export const DEFAULT_CUSTOMIZATION = {
 		[INCLUDE_MOST_VISITED]: false,
 		[DEFAULT_MOST_VISITED]: false,
 		[APPS_LOCATION]: NONE,
-		[CHROME_TAB_LOCATION]: NONE,
+		[HOME_TAB_LOCATION]: NONE,
 	},
 	[BOOKMARKS_VISIBLE]: false,
 	[CLOCK_VISIBLE]: true,

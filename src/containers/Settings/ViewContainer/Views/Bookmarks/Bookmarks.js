@@ -125,7 +125,7 @@ const Bookmarks = () => {
 				includeOtherBookmarks,
 				openInNewTab,
 				appsLocation,
-				chromeTabLocation,
+				homeTabLocation,
 			},
 		},
 	} = useUserCustomization();
@@ -143,7 +143,7 @@ const Bookmarks = () => {
 				includeOtherBookmarks,
 				openInNewTab,
 				appsLocation,
-				chromeTabLocation,
+				homeTabLocation,
 				selectBookmarksSetting,
 				toggleBookmarksSetting,
 				toggleShowApp,
