@@ -236,7 +236,7 @@ export const BOOKMARKS_MANAGER_OBJ = {
 export const HOME_TAB_OBJ = {
 	id: `${isExtensionBuildTargetChromium ? CHROMIUM : FIREFOX} Tab`,
 	parentId: BOOKMARKS_ROOT_ID,
-	title: `${BROWSER_TYPE} Tab`,
+	title: "",
 	url: isExtensionBuildTargetChromium ? CHROMIUM_TAB_URL : FIREFOX_TAB_URL,
 };
 export const OVERFLOW_FOLDER_OBJ = {

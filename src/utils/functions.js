@@ -4,7 +4,6 @@ import _ from "lodash";
 import {
 	ACTIVE,
 	BOOKMARK_ACTION_WIDTH,
-	BROWSER_TYPE,
 	CHROME,
 	EDGE,
 	EMPTY_NAME,
@@ -173,7 +172,7 @@ export const parseBookmarksList = (
 	let topSitesFolder = TOP_SITES_FOLDER_OBJ;
 	topSitesFolder.children = topSites;
 	let homeTab = HOME_TAB_OBJ;
-	homeTab.title.replace(BROWSER_TYPE, getBrowserType().name);
+	homeTab.title = `${getBrowserType().name} Tab`;
 
 	let bookmarks = [];
 	if (showMostVisited) bookmarks = [...bookmarks, ...topSitesFolder.children];
