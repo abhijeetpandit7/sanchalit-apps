@@ -3,6 +3,7 @@ import moment from "moment";
 import _ from "lodash";
 import {
 	ACTIVE,
+	BOOKMARK_ACTION_WIDTH,
 	CHROME,
 	EDGE,
 	EMPTY_NAME,
@@ -142,16 +143,11 @@ export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
 export const parseBookmarksList = (
 	allBookmarksList,
 	bookmarksSettings,
+	showMostVisited,
 	topSites,
 ) => {
-	const {
-		includeOtherBookmarks,
-		includeBookmarksManager,
-		includeMostVisited,
-		defaultMostVisited,
-		appsLocation,
-		chromeTabLocation,
-	} = bookmarksSettings;
+	const { includeOtherBookmarks, includeBookmarksManager, includeMostVisited } =
+		bookmarksSettings;
 
 	const bookmarksBar = allBookmarksList.find(
 		(list) =>
@@ -177,14 +173,21 @@ export const parseBookmarksList = (
 	};
 
 	let bookmarks = [];
-	if (includeBookmarksManager) bookmarks.push(bookmarksManager);
-	if (includeMostVisited) bookmarks.push(topSitesFolder);
-	bookmarks = [...bookmarks, ...bookmarksBar.children];
-	if (includeOtherBookmarks) bookmarks.push(...otherBookmarksList);
+	if (showMostVisited) bookmarks = [...bookmarks, ...topSitesFolder.children];
+	else {
+		if (includeBookmarksManager) bookmarks.push(bookmarksManager);
+		if (includeMostVisited) bookmarks.push(topSitesFolder);
+		bookmarks = [...bookmarks, ...bookmarksBar.children];
+		if (includeOtherBookmarks) bookmarks.push(...otherBookmarksList);
+	}
 	return bookmarks;
 };
 
-export const parseBookmarksOverflow = (bookmarksList, bookmarksListRef) => {
+export const parseBookmarksOverflow = (
+	bookmarksList,
+	showMostVisited,
+	bookmarksListRef,
+) => {
 	const availableWidth = bookmarksListRef.current.offsetWidth;
 	const totalContentWidth = bookmarksListRef.current.scrollWidth;
 	const isOverflowing = totalContentWidth > availableWidth;
@@ -208,7 +211,7 @@ export const parseBookmarksOverflow = (bookmarksList, bookmarksListRef) => {
 			id: OVERFLOW,
 			parentId: BOOKMARKS_ROOT_ID,
 			title: OVERFLOW,
-			width: 30,
+			width: BOOKMARK_ACTION_WIDTH,
 			children: [],
 		};
 
@@ -216,7 +219,7 @@ export const parseBookmarksOverflow = (bookmarksList, bookmarksListRef) => {
 			(bookmarksListAcc, bookmark) => {
 				const bookmarksListAccWidth = bookmarksListAcc.reduce(
 					(totalWidth, bookmark) => totalWidth + bookmark.width,
-					0,
+					showMostVisited ? BOOKMARK_ACTION_WIDTH : 0,
 				);
 
 				if (bookmarksListAccWidth + bookmark.width < availableWidth)

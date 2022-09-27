@@ -8,6 +8,7 @@ export const BALANCE = "Balance";
 export const BACKGROUND = "Background";
 export const BING = "Bing";
 export const BOOKMARKS = "Bookmarks";
+export const BOOKMARK_ACTION_WIDTH = 30;
 export const BOOKMARKS_BAR_ID = "1";
 export const BOOKMARKS_BAR_FIREFOX_ID = "toolbar_____";
 export const BOOKMARKS_ROOT_ID = "0";

@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useRef, useState } from "react";
-import { BookmarksItem, Folder } from "../Bookmarks";
+import { BookmarksItem, Folder, MostVisited } from "../Bookmarks";
 import {
 	BOOKMARKS,
 	parseBookmarksList,
@@ -14,28 +14,36 @@ const ContextMemo = memo(
 		const {
 			iconsOnly,
 			openInNewTab,
-			includeOtherBookmarks,
-			includeBookmarksManager,
-			includeMostVisited,
+			defaultMostVisited,
 		} = bookmarksSettings;
+
+		const [mostVisitedView, setMostVisitedView] = useState(defaultMostVisited);
+
+		useEffect(
+			() => setMostVisitedView(defaultMostVisited),
+			[defaultMostVisited],
+		);
 
 		useEffect(async () => {
 			const parsedBookmarksList = parseBookmarksList(
 				bookmarks,
 				bookmarksSettings,
+				mostVisitedView && defaultMostVisited,
 				topSites,
 			);
 			await setBookmarksList(parsedBookmarksList);
 			await setBookmarksList(
-				parseBookmarksOverflow(parsedBookmarksList, bookmarksListRef),
+				parseBookmarksOverflow(
+					parsedBookmarksList,
+					mostVisitedView && defaultMostVisited,
+					bookmarksListRef,
+				),
 			);
 			setWidgetReady({ widget: BOOKMARKS });
-		}, [
-			iconsOnly,
-			includeOtherBookmarks,
-			includeBookmarksManager,
-			includeMostVisited,
-		]);
+		}, [bookmarksSettings, mostVisitedView]);
+
+		const toggleMostVisitedView = () =>
+			setMostVisitedView((prevValue) => !prevValue);
 
 		return (
 			<div
@@ -44,18 +52,29 @@ const ContextMemo = memo(
 				data-v-10674610
 			>
 				<ul className="bookmarks-list" ref={bookmarksListRef} data-v-10674610>
-					{bookmarksList.map((bookmark) =>
-						bookmark.children ? (
-							<Folder
-								key={bookmark.id}
-								{...{ bookmark, iconsOnly, openInNewTab }}
-							/>
-						) : (
-							<BookmarksItem
-								key={bookmark.id}
-								{...{ bookmark, iconsOnly, openInNewTab }}
-							/>
-						),
+					{mostVisitedView ? (
+						<MostVisited
+							{...{
+								bookmarksList,
+								iconsOnly,
+								openInNewTab,
+								toggleMostVisitedView,
+							}}
+						/>
+					) : (
+						bookmarksList.map((bookmark) =>
+							bookmark.children ? (
+								<Folder
+									key={bookmark.id}
+									{...{ bookmark, iconsOnly, openInNewTab }}
+								/>
+							) : (
+								<BookmarksItem
+									key={bookmark.id}
+									{...{ bookmark, iconsOnly, openInNewTab }}
+								/>
+							),
+						)
 					)}
 				</ul>
 			</div>

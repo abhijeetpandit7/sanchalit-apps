@@ -10,6 +10,20 @@ export const angleDownIcon = (
 	</svg>
 );
 
+export const backIcon = (
+	<svg
+		viewBox="0 0 24 24"
+		xmlns="http://www.w3.org/2000/svg"
+		className="bookmark-icon icon-back bookmark-child-icon"
+		data-v-00c414ea
+	>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M21 10H7.828l3.586-3.586a2 2 0 0 0-2.828-2.828l-7 7a2 2 0 0 0 0 2.828l7 7a2 2 0 1 0 2.828-2.828L7.828 14H21a2 2 0 0 0 0-4z"
+		></path>
+	</svg>
+);
+
 export const brandLogo = (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
