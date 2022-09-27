@@ -4,6 +4,7 @@ import _ from "lodash";
 import {
 	ACTIVE,
 	BOOKMARK_ACTION_WIDTH,
+	BROWSER_TYPE,
 	CHROME,
 	EDGE,
 	EMPTY_NAME,
@@ -19,7 +20,9 @@ import {
 	SHOW,
 	SHOW_FADE_IN,
 	BROWSER_LIST,
+	APPS_OBJ,
 	BOOKMARKS_MANAGER_OBJ,
+	HOME_TAB_OBJ,
 	OVERFLOW_FOLDER_OBJ,
 	TOP_SITES_FOLDER_OBJ,
 } from "../utils";
@@ -146,8 +149,16 @@ export const parseBookmarksList = (
 	showMostVisited,
 	topSites,
 ) => {
-	const { includeOtherBookmarks, includeBookmarksManager, includeMostVisited } =
-		bookmarksSettings;
+	const {
+		includeOtherBookmarks,
+		includeBookmarksManager,
+		includeMostVisited,
+		appsLocation,
+		homeTabLocation,
+	} = bookmarksSettings;
+
+	const includeApps = appsLocation === BOOKMARKS;
+	const includeHomeTab = homeTabLocation === BOOKMARKS;
 
 	const bookmarksBar = allBookmarksList.find(
 		(list) =>
@@ -158,13 +169,17 @@ export const parseBookmarksList = (
 			list.id !== BOOKMARKS_BAR_ID && list.id !== BOOKMARKS_BAR_FIREFOX_ID,
 	);
 	topSites.map((site, index) => (site.id = index));
-	// TODO: Add icon for bookmarks manager
+	// TODO: Add icon for bookmarks manager, home tab & apps
 	let topSitesFolder = TOP_SITES_FOLDER_OBJ;
 	topSitesFolder.children = topSites;
+	let homeTab = HOME_TAB_OBJ;
+	homeTab.title.replace(BROWSER_TYPE, getBrowserType().name);
 
 	let bookmarks = [];
 	if (showMostVisited) bookmarks = [...bookmarks, ...topSitesFolder.children];
 	else {
+		if (includeHomeTab) bookmarks.push(homeTab);
+		if (includeApps) bookmarks.push(APPS_OBJ);
 		if (includeBookmarksManager) bookmarks.push(BOOKMARKS_MANAGER_OBJ);
 		if (includeMostVisited) bookmarks.push(topSitesFolder);
 		bookmarks = [...bookmarks, ...bookmarksBar.children];

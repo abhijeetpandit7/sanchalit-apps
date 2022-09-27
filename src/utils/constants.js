@@ -2,6 +2,8 @@ export const ABOUT = "About";
 export const ACTIVE = "active";
 export const ADD_SHADOW = "add-shadow";
 export const API = "api";
+const APPS = "Apps";
+const APPS_URL = "chrome://apps";
 const APPS_LOCATION = "appsLocation";
 export const AUTH = "auth";
 export const BALANCE = "Balance";
@@ -19,6 +21,7 @@ const BOOKMARKS_VISIBLE = "bookmarksVisible";
 export const BROWSER_TYPE = "browserType";
 export const CHROME = "Chrome";
 const CHROMIUM = "chromium";
+const CHROMIUM_TAB_URL = "chrome-search://local-ntp/local-ntp.html";
 export const CLOCK = "Clock";
 const CLOCK_VISIBLE = "clockVisible";
 export const CUSTOMIZATION = "customization";
@@ -33,6 +36,7 @@ export const EDITING = "editing";
 export const EMPTY_NAME = "empty-name";
 export const FADEIN = "fadein";
 export const FIREFOX = "Firefox";
+const FIREFOX_TAB_URL = "about:blank";
 export const FOLDER_DROPDOWN = "folder-dropdown";
 export const HIDE_APPS = "hide-apps";
 export const GENERAL = "General";
@@ -217,11 +221,23 @@ export const QUICK_TIP_LIST = [
 	"Double-clicking your display name will let you edit it.",
 ];
 
+export const APPS_OBJ = {
+	id: APPS,
+	parentId: BOOKMARKS_ROOT_ID,
+	title: APPS,
+	url: APPS_URL,
+};
 export const BOOKMARKS_MANAGER_OBJ = {
 	id: BOOKMARKS,
 	parentId: BOOKMARKS_ROOT_ID,
 	title: BOOKMARKS,
 	url: BOOKMARKS_MANAGER_URL,
+};
+export const HOME_TAB_OBJ = {
+	id: `${isExtensionBuildTargetChromium ? CHROMIUM : FIREFOX} Tab`,
+	parentId: BOOKMARKS_ROOT_ID,
+	title: `${BROWSER_TYPE} Tab`,
+	url: isExtensionBuildTargetChromium ? CHROMIUM_TAB_URL : FIREFOX_TAB_URL,
 };
 export const OVERFLOW_FOLDER_OBJ = {
 	id: OVERFLOW,
