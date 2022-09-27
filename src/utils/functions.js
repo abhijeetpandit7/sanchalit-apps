@@ -148,6 +148,9 @@ export const parseBookmarksList = (
 		includeOtherBookmarks,
 		includeBookmarksManager,
 		includeMostVisited,
+		defaultMostVisited,
+		appsLocation,
+		chromeTabLocation,
 	} = bookmarksSettings;
 
 	const bookmarksBar = allBookmarksList.find(
@@ -187,7 +190,8 @@ export const parseBookmarksOverflow = (bookmarksList, bookmarksListRef) => {
 	const isOverflowing = totalContentWidth > availableWidth;
 
 	if (isOverflowing) {
-		bookmarksList.map(
+		let structuredBookmarksList = _.cloneDeep(bookmarksList);
+		structuredBookmarksList.map(
 			(bookmark) =>
 				(bookmark.width = bookmarksListRef.current.querySelector(
 					`[id='${bookmark.id}']`,
@@ -200,7 +204,15 @@ export const parseBookmarksOverflow = (bookmarksList, bookmarksListRef) => {
 				bookmark.children.map((child) => mapBookmarkHierarchyOverflow(child));
 		};
 
-		const reducedBookmarksList = bookmarksList.reduce(
+		const overflowFolder = {
+			id: OVERFLOW,
+			parentId: BOOKMARKS_ROOT_ID,
+			title: OVERFLOW,
+			width: 30,
+			children: [],
+		};
+
+		const reducedBookmarksList = structuredBookmarksList.reduce(
 			(bookmarksListAcc, bookmark) => {
 				const bookmarksListAccWidth = bookmarksListAcc.reduce(
 					(totalWidth, bookmark) => totalWidth + bookmark.width,
@@ -218,15 +230,7 @@ export const parseBookmarksOverflow = (bookmarksList, bookmarksListRef) => {
 					return [...bookmarksListAcc];
 				}
 			},
-			[
-				{
-					id: OVERFLOW,
-					parentId: BOOKMARKS_ROOT_ID,
-					title: OVERFLOW,
-					width: 30,
-					children: [],
-				},
-			],
+			[overflowFolder],
 		);
 
 		reducedBookmarksList.push(reducedBookmarksList.shift());

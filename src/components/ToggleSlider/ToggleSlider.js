@@ -12,7 +12,7 @@ export const ToggleSlider = (props) => {
 		) : null;
 	const Unsupported = () =>
 		props.unsupported ? (
-			<span class="unsupported">
+			<span className="unsupported">
 				This feature is not yet supported on your current browser
 			</span>
 		) : null;
@@ -22,7 +22,7 @@ export const ToggleSlider = (props) => {
 			className={`slide-toggle has-toggle ${props.value ? ON : ""} ${
 				props.unsupported ? DISABLED : ""
 			}`}
-			onClick={props.unsupported !== true && props.toggle}
+			onClick={props.unsupported !== true ? props.toggle : null}
 		>
 			<span className="setting-name">{props.name}</span>
 			<Plus />

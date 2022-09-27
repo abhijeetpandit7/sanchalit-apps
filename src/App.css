@@ -8460,6 +8460,20 @@ input[type="number"].hide-controls {
 	display: flex;
 	align-items: center;
 }
+.folder-icon-label[data-v-5504764e] {
+	position: absolute;
+	top: 2px;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--color-text);
+	font-size: 0.5625rem;
+	font-weight: 500;
+}
 .dropdown[data-v-5504764e] {
 	margin-top: 3px;
 	top: 100%;

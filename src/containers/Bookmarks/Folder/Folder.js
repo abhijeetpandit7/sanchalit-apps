@@ -13,7 +13,7 @@ import {
 	toggleBookmarkFolder,
 } from "../../../utils";
 
-export const Folder = ({ bookmark: folder, openInNewTab }) => {
+export const Folder = ({ bookmark: folder, iconsOnly, openInNewTab }) => {
 	const bookmarkFolderRef = useRef(null);
 	const [componentDidMount, setComponentDidMount] = useState(false);
 
@@ -27,6 +27,26 @@ export const Folder = ({ bookmark: folder, openInNewTab }) => {
 		folder.parentId !== BOOKMARKS_ROOT_FIREFOX_ID;
 	const isParentHierarchyOverflow = folder.parentHierarchyOverflow === true;
 	const isParentOverflow = folder.parentOverflow === true;
+
+	const BookmarkLabel = () =>
+		((isNestedFolder || isParentOverflow || iconsOnly === false) &&
+			isOverflowFolder === false && (
+				<span className="bookmark-label" data-v-5504764e>
+					{folder.title}
+				</span>
+			)) ||
+		null;
+
+	const FolderIconLabel = () =>
+		(iconsOnly &&
+			isNestedFolder === false &&
+			isParentHierarchyOverflow === false &&
+			isOverflowFolder === false && (
+				<span className="folder-icon-label bookmark-child-icon" data-v-5504764e>
+					{folder.title.charAt(0)}
+				</span>
+			)) ||
+		null;
 
 	const toggleBookmarkItem = async () => {
 		await setComponentDidMount(true);
@@ -54,11 +74,8 @@ export const Folder = ({ bookmark: folder, openInNewTab }) => {
 					data-v-5504764e
 				>
 					{isOverflowFolder ? ellipsisIcon1 : folderIcon}
-					{isOverflowFolder === false && (
-						<span className="bookmark-label" data-v-5504764e>
-							{folder.title}
-						</span>
-					)}
+					<BookmarkLabel />
+					<FolderIconLabel />
 				</div>
 				{componentDidMount && (
 					<FolderDropdown {...{ bookmarks: folder.children, openInNewTab }} />

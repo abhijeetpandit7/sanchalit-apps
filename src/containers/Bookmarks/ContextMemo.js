@@ -12,6 +12,7 @@ const ContextMemo = memo(
 		const [bookmarksList, setBookmarksList] = useState(bookmarks);
 
 		const {
+			iconsOnly,
 			openInNewTab,
 			includeOtherBookmarks,
 			includeBookmarksManager,
@@ -29,7 +30,12 @@ const ContextMemo = memo(
 				parseBookmarksOverflow(parsedBookmarksList, bookmarksListRef),
 			);
 			setWidgetReady({ widget: BOOKMARKS });
-		}, [includeOtherBookmarks, includeBookmarksManager, includeMostVisited]);
+		}, [
+			iconsOnly,
+			includeOtherBookmarks,
+			includeBookmarksManager,
+			includeMostVisited,
+		]);
 
 		return (
 			<div
@@ -40,11 +46,14 @@ const ContextMemo = memo(
 				<ul className="bookmarks-list" ref={bookmarksListRef} data-v-10674610>
 					{bookmarksList.map((bookmark) =>
 						bookmark.children ? (
-							<Folder key={bookmark.id} {...{ bookmark, openInNewTab }} />
+							<Folder
+								key={bookmark.id}
+								{...{ bookmark, iconsOnly, openInNewTab }}
+							/>
 						) : (
 							<BookmarksItem
 								key={bookmark.id}
-								{...{ bookmark, openInNewTab }}
+								{...{ bookmark, iconsOnly, openInNewTab }}
 							/>
 						),
 					)}

@@ -2,6 +2,7 @@ import React from "react";
 
 export const BookmarksItem = ({
 	bookmark: { id, title, url },
+	iconsOnly,
 	openInNewTab,
 }) => (
 	<li id={id} className="bookmarks-item" data-v-10674610>
@@ -25,9 +26,11 @@ export const BookmarksItem = ({
 					data-v-00c414ea
 				/>
 			</span>
-			<span className="bookmark-label" data-v-00c414ea>
-				{title}
-			</span>
+			{iconsOnly === false && (
+				<span className="bookmark-label" data-v-00c414ea>
+					{title}
+				</span>
+			)}
 		</a>
 	</li>
 );
