@@ -81,14 +81,17 @@ const ContextMemo = memo((props) => {
 						<div className="section section-bookmarks">
 							<h4>Bookmarks Bar</h4>
 							<ul className="settings-list options-list">
-								{BOOKMARKS_GENERAL_SETTING_LIST.map((setting) => (
-									<ToggleSlider
-										key={setting.key}
-										value={props[setting.key]}
-										toggle={() => props.toggleBookmarksSetting(setting)}
-										{...setting}
-									/>
-								))}
+								{BOOKMARKS_GENERAL_SETTING_LIST.map(
+									(setting) =>
+										setting.unsupported !== true && (
+											<ToggleSlider
+												key={setting.key}
+												value={props[setting.key]}
+												toggle={() => props.toggleBookmarksSetting(setting)}
+												{...setting}
+											/>
+										),
+								)}
 							</ul>
 						</div>
 					</>

@@ -119,7 +119,11 @@ export const BOOKMARKS_GENERAL_SETTING_LIST = [
 		requirePermission: true,
 		unsupported: isExtensionBuildTargetSafari,
 	},
-	{ name: "Show Bookmarks Manager", key: INCLUDE_BOOKMARKS_MANAGER },
+	{
+		name: "Show Bookmarks Manager",
+		key: INCLUDE_BOOKMARKS_MANAGER,
+		unsupported: isExtensionBuildTargetChromium === false,
+	},
 	{ name: "Show Other Bookmarks", key: INCLUDE_OTHER_BOOKMARKS },
 ];
 export const BOOKMARKS_FEED_SETTING_LIST = [
@@ -128,7 +132,7 @@ export const BOOKMARKS_FEED_SETTING_LIST = [
 		key: APPS_LOCATION,
 		toggleOptions: true,
 		options: APP_LOCATION_OPTIONS,
-		unsupported: isExtensionBuildTargetChromium === false,
+		unsupported: isExtensionBuildTargetSafari,
 	},
 	{
 		name: "Show Apps in	",
