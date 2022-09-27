@@ -244,9 +244,9 @@ export const randomElement = (array) =>
 export const removeRefClassName = (ref, className) =>
 	ref.current.classList.remove(className);
 
-export const requestPermission = (permssion) =>
+export const requestPermissions = (permssions) =>
 	new Promise((resolve, reject) =>
-		chrome.permissions.request({ permissions: [permssion] }, (granted) =>
+		chrome.permissions.request({ permissions: [...permssions] }, (granted) =>
 			chrome.runtime.lastError
 				? reject(Error(chrome.runtime.lastError.message))
 				: resolve(granted),

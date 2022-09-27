@@ -18,7 +18,7 @@ import {
 	getPermissionAllowed,
 	getTopSites,
 	removeRefClassName,
-	requestPermission,
+	requestPermissions,
 	toggleRefClassName,
 } from "../utils";
 
@@ -224,9 +224,9 @@ export const useUserActions = () => {
 				BOOKMARKS_PERMISSION,
 			);
 			if (isPermissionAllowed === false) {
-				const isPermissionGranted = await requestPermission(
+				const isPermissionGranted = await requestPermissions([
 					BOOKMARKS_PERMISSION,
-				);
+				]);
 				if (isPermissionGranted === false) return;
 			}
 			const { bookmarks } = storageUserCustomization;
@@ -248,10 +248,10 @@ export const useUserActions = () => {
 				TOP_SITES_PERMISSION,
 			);
 			if (isPermissionAllowed === false) {
-				const isPermissionGranted = await requestPermission(
+				const isPermissionGranted = await requestPermissions([
 					TOP_SITES_PERMISSION,
-				);
-				if (isPermissionGranted === false) return;
+				]);
+				if (isPermissionGranted === false) return false;
 			}
 			const { topSites } = storageUserCustomization;
 			let fetchedTopSites;
