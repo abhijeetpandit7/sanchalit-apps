@@ -13,7 +13,7 @@ export const BOOKMARKS_BAR_ID = "1";
 export const BOOKMARKS_BAR_FIREFOX_ID = "toolbar_____";
 export const BOOKMARKS_ROOT_ID = "0";
 export const BOOKMARKS_ROOT_FIREFOX_ID = "root________";
-export const BOOKMARKS_MANAGER_URL = "chrome://bookmarks";
+const BOOKMARKS_MANAGER_URL = "chrome://bookmarks";
 export const BOOKMARKS_PERMISSION = "bookmarks";
 const BOOKMARKS_VISIBLE = "bookmarksVisible";
 export const BROWSER_TYPE = "browserType";
@@ -216,6 +216,26 @@ export const QUICK_TIP_LIST = [
 	"You can change between a 12 hour or 24 hour clock.",
 	"Double-clicking your display name will let you edit it.",
 ];
+
+export const BOOKMARKS_MANAGER_OBJ = {
+	id: BOOKMARKS,
+	parentId: BOOKMARKS_ROOT_ID,
+	title: BOOKMARKS,
+	url: BOOKMARKS_MANAGER_URL,
+};
+export const OVERFLOW_FOLDER_OBJ = {
+	id: OVERFLOW,
+	parentId: BOOKMARKS_ROOT_ID,
+	title: OVERFLOW,
+	width: BOOKMARK_ACTION_WIDTH,
+	children: [],
+};
+export const TOP_SITES_FOLDER_OBJ = {
+	id: TOP_SITES,
+	parentId: BOOKMARKS_ROOT_ID,
+	title: TOP_SITES,
+	children: [],
+};
 
 export const DEFAULT_AUTHENTICATION = {
 	activeSubscription: false,

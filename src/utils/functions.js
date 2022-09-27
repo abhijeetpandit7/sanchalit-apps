@@ -14,14 +14,14 @@ import {
 	BOOKMARKS,
 	BOOKMARKS_BAR_ID,
 	BOOKMARKS_BAR_FIREFOX_ID,
-	BOOKMARKS_ROOT_ID,
-	BOOKMARKS_MANAGER_URL,
 	SAFARI,
 	SHIFT_TO_LEFT,
 	SHOW,
 	SHOW_FADE_IN,
-	TOP_SITES,
 	BROWSER_LIST,
+	BOOKMARKS_MANAGER_OBJ,
+	OVERFLOW_FOLDER_OBJ,
+	TOP_SITES_FOLDER_OBJ,
 } from "../utils";
 
 export const addRefClassName = (ref, className) =>
@@ -159,23 +159,13 @@ export const parseBookmarksList = (
 	);
 	topSites.map((site, index) => (site.id = index));
 	// TODO: Add icon for bookmarks manager
-	const bookmarksManager = {
-		id: BOOKMARKS,
-		parentId: BOOKMARKS_ROOT_ID,
-		title: BOOKMARKS,
-		url: BOOKMARKS_MANAGER_URL,
-	};
-	const topSitesFolder = {
-		id: TOP_SITES,
-		parentId: BOOKMARKS_ROOT_ID,
-		title: TOP_SITES,
-		children: [...topSites],
-	};
+	let topSitesFolder = TOP_SITES_FOLDER_OBJ;
+	topSitesFolder.children = topSites;
 
 	let bookmarks = [];
 	if (showMostVisited) bookmarks = [...bookmarks, ...topSitesFolder.children];
 	else {
-		if (includeBookmarksManager) bookmarks.push(bookmarksManager);
+		if (includeBookmarksManager) bookmarks.push(BOOKMARKS_MANAGER_OBJ);
 		if (includeMostVisited) bookmarks.push(topSitesFolder);
 		bookmarks = [...bookmarks, ...bookmarksBar.children];
 		if (includeOtherBookmarks) bookmarks.push(...otherBookmarksList);
@@ -207,14 +197,6 @@ export const parseBookmarksOverflow = (
 				bookmark.children.map((child) => mapBookmarkHierarchyOverflow(child));
 		};
 
-		const overflowFolder = {
-			id: OVERFLOW,
-			parentId: BOOKMARKS_ROOT_ID,
-			title: OVERFLOW,
-			width: BOOKMARK_ACTION_WIDTH,
-			children: [],
-		};
-
 		const reducedBookmarksList = structuredBookmarksList.reduce(
 			(bookmarksListAcc, bookmark) => {
 				const bookmarksListAccWidth = bookmarksListAcc.reduce(
@@ -233,7 +215,7 @@ export const parseBookmarksOverflow = (
 					return [...bookmarksListAcc];
 				}
 			},
-			[overflowFolder],
+			[OVERFLOW_FOLDER_OBJ],
 		);
 
 		reducedBookmarksList.push(reducedBookmarksList.shift());

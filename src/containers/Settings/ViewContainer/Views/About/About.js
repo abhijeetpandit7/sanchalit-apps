@@ -1,4 +1,5 @@
 import React from "react";
+import { brandLogo, getBrowserType, toLowerCase } from "../../../../../utils";
 import chromium from "../../../../../../target/chromium/manifest.json";
 import safari from "../../../../../../target/safari/manifest.json";
 import firefox from "../../../../../../target/firefox/manifest.json";
