@@ -49,6 +49,7 @@ const General = () => {
 	const {
 		storageUserCustomization: {
 			bookmarksVisible,
+			bookmarksSettings: { defaultMostVisited },
 			clockVisible,
 			greetingVisible,
 			notesVisible,
@@ -67,6 +68,7 @@ const General = () => {
 				clockVisible,
 				greetingVisible,
 				inCenter,
+				defaultMostVisited,
 				notesVisible,
 				quotesVisible,
 				searchVisible,

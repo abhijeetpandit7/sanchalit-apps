@@ -15,7 +15,9 @@ export const UserCustomizationProvider = ({ children }) => {
 
 	const [widgetManager, widgetDispatch] = useReducer(widgetReducer, {
 		app: GENERAL_SETTING_APP_LIST.reduce((acc, app) => {
-			acc[app.name] = { visibilityKey: app.key, ready: false };
+			app.ignoreVisibility
+				? null
+				: (acc[app.name] = { visibilityKey: app.key, ready: false });
 			return acc;
 		}, {}),
 		data: {

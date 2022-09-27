@@ -81,6 +81,8 @@ export const SYSTEM = "system";
 export const TODO = "Todo";
 const TODO_VISIBLE = "todoVisible";
 export const TOP_SITES = "Top Sites";
+const TOP_SITES_DESCRIPTION =
+	"Show most visited websites by default in Bookmarks Bar";
 export const TOP_SITES_PERMISSION = "topSites";
 const WEB = "web";
 
@@ -107,7 +109,7 @@ export const BOOKMARKS_GENERAL_SETTING_LIST = [
 	},
 	{
 		name: START_IN_TOP_SITES,
-		description: "Show most visited websites by default in Bookmarks Bar",
+		description: TOP_SITES_DESCRIPTION,
 		key: DEFAULT_MOST_VISITED,
 		requirePermission: true,
 		unsupported: isExtensionBuildTargetSafari,
@@ -153,6 +155,14 @@ export const GENERAL_SETTING_APP_LIST = [
 	{
 		name: BOOKMARKS,
 		key: BOOKMARKS_VISIBLE,
+		requirePermission: true,
+		unsupported: isExtensionBuildTargetSafari,
+	},
+	{
+		name: TOP_SITES,
+		description: TOP_SITES_DESCRIPTION,
+		key: DEFAULT_MOST_VISITED,
+		ignoreVisibility: true,
 		requirePermission: true,
 		unsupported: isExtensionBuildTargetSafari,
 	},

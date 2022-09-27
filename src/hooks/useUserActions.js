@@ -11,6 +11,7 @@ import {
 	SEARCH,
 	SHOW_TOP_SITES,
 	START_IN_TOP_SITES,
+	TOP_SITES,
 	TOP_SITES_PERMISSION,
 	isBuildTargetWeb,
 	focusDisplayName,
@@ -197,26 +198,50 @@ export const useUserActions = () => {
 		storageUserCustomization.searchVisible,
 	]);
 
-	const toggleShowApp = useCallback((app) => {
-		if (app.requirePermission) {
-			if (isBuildTargetWeb) {
-				alert("This feature is available only on extension.");
-				return;
-			} else {
-				switch (app.name) {
-					case BOOKMARKS:
-						return toggleShowBookmarksApp(app);
+	const toggleShowApp = useCallback(
+		async (app) => {
+			if (app.requirePermission) {
+				if (isBuildTargetWeb) {
+					alert("This feature is available only on extension.");
+					return;
+				} else {
+					switch (app.name) {
+						case BOOKMARKS:
+							return toggleShowBookmarksApp(app);
 
-					default:
-						return;
+						case TOP_SITES:
+							const {
+								bookmarksVisible,
+								bookmarksSettings: { defaultMostVisited },
+							} = storageUserCustomization;
+							const toggleResponse = await toggleTopSitesSetting(app);
+							if (
+								toggleResponse !== false &&
+								defaultMostVisited === false &&
+								bookmarksVisible === false
+							)
+								toggleShowApp(
+									GENERAL_SETTING_APP_LIST.find(
+										(app) => app.name === BOOKMARKS,
+									),
+								);
+							return;
+
+						default:
+							return;
+					}
 				}
-			}
-		} else
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				[app.key]: !prevCustomization[app.key],
-			}));
-	}, []);
+			} else
+				setStorageUserCustomization((prevCustomization) => ({
+					...prevCustomization,
+					[app.key]: !prevCustomization[app.key],
+				}));
+		},
+		[
+			storageUserCustomization.bookmarksVisible,
+			storageUserCustomization.bookmarksSettings,
+		],
+	);
 
 	const toggleShowBookmarksApp = useCallback(
 		async (app) => {
@@ -250,6 +275,7 @@ export const useUserActions = () => {
 			if (isPermissionAllowed === false) {
 				const isPermissionGranted = await requestPermissions([
 					TOP_SITES_PERMISSION,
+					BOOKMARKS_PERMISSION,
 				]);
 				if (isPermissionGranted === false) return false;
 			}
