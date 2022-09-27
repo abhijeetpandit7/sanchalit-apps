@@ -5180,7 +5180,8 @@ h3 {
 	opacity: 0.75;
 	font-size: 0.8125rem;
 }
-.dropdown-list-item.disabled {
+.dropdown-list-item.disabled,
+.button.disabled[data-v-40bf478d] {
 	opacity: 0.5;
 	pointer-events: none;
 }

@@ -6,6 +6,7 @@ import {
 } from "../../../../../components";
 import { useUserActions, useUserCustomization } from "../../../../../hooks";
 import {
+	DISABLED,
 	BOOKMARKS,
 	BROWSER_TYPE,
 	BOOKMARKS_FEED_SETTING_LIST,
@@ -16,16 +17,17 @@ import {
 } from "../../../../../utils";
 
 const ContextMemo = memo((props) => {
-	const toggleShowBookmarks = () =>
-		props.toggleShowApp(
-			GENERAL_SETTING_APP_LIST.find((app) => app.name === BOOKMARKS),
-		);
+	const bookmarksApp = GENERAL_SETTING_APP_LIST.find(
+		(app) => app.name === BOOKMARKS,
+	);
+	const toggleShowBookmarks = () => props.toggleShowApp(bookmarksApp);
 
 	const CollapsibleContent = () => (
 		<>
 			<h4>General</h4>
 			<ul className="settings-list options-list">
 				<ToggleSlider
+					{...bookmarksApp}
 					name="Enable Bookmarks"
 					description="Show bookmarks you've saved over time in your browser"
 					value={props.bookmarksVisible}
@@ -97,7 +99,11 @@ const ContextMemo = memo((props) => {
 					</>
 				) : (
 					<div className="off-state">
-						<span className="button" onClick={toggleShowBookmarks}>
+						<span
+							className={`button ${bookmarksApp.unsupported ? DISABLED : ""}`}
+							onClick={toggleShowBookmarks}
+							data-v-40bf478d
+						>
 							Enable Bookmarks
 						</span>
 					</div>
