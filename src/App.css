@@ -8447,6 +8447,10 @@ input[type="number"].hide-controls {
 [data-v-10674610] .icon-back-wrapper .icon-back {
 	--size: 14px;
 }
+/* TODO: Invert in dark-mode */
+[data-v-10674610] .bookmark-img {
+	filter: invert();
+}
 [data-v-10674610] .bookmark-icon {
 	--size: 16px;
 	height: var(--size);

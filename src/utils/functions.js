@@ -24,6 +24,10 @@ import {
 	HOME_TAB_OBJ,
 	OVERFLOW_FOLDER_OBJ,
 	TOP_SITES_FOLDER_OBJ,
+	chromeIcon,
+	edgeIcon,
+	appsBase64Source,
+	bookmarksManagerBase64Source,
 } from "../utils";
 
 export const addRefClassName = (ref, className) =>
@@ -168,18 +172,26 @@ export const parseBookmarksList = (
 			list.id !== BOOKMARKS_BAR_ID && list.id !== BOOKMARKS_BAR_FIREFOX_ID,
 	);
 	topSites.map((site, index) => (site.id = index));
-	// TODO: Add icon for bookmarks manager, home tab & apps
+
 	let topSitesFolder = TOP_SITES_FOLDER_OBJ;
 	topSitesFolder.children = topSites;
 	let homeTab = HOME_TAB_OBJ;
-	homeTab.title = `${getBrowserType().name} Tab`;
+	if (includeHomeTab) {
+		const browserType = getBrowserType().name;
+		homeTab.title = `${browserType} Tab`;
+		homeTab.svg = browserType === EDGE ? edgeIcon : chromeIcon;
+	}
+	let browserApp = APPS_OBJ;
+	browserApp.imgSrc = appsBase64Source;
+	let bookmarksManager = BOOKMARKS_MANAGER_OBJ;
+	bookmarksManager.imgSrc = bookmarksManagerBase64Source;
 
 	let bookmarks = [];
 	if (showMostVisited) bookmarks = [...bookmarks, ...topSitesFolder.children];
 	else {
 		if (includeHomeTab) bookmarks.push(homeTab);
-		if (includeApps) bookmarks.push(APPS_OBJ);
-		if (includeBookmarksManager) bookmarks.push(BOOKMARKS_MANAGER_OBJ);
+		if (includeApps) bookmarks.push(browserApp);
+		if (includeBookmarksManager) bookmarks.push(bookmarksManager);
 		if (includeMostVisited) bookmarks.push(topSitesFolder);
 		bookmarks = [...bookmarks, ...bookmarksBar.children];
 		if (includeOtherBookmarks) bookmarks.push(...otherBookmarksList);

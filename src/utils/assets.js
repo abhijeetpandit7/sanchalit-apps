@@ -10,6 +10,9 @@ export const angleDownIcon = (
 	</svg>
 );
 
+export const appsBase64Source =
+	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAkklEQVR4Xu3UoQ2AUAyE4bcJM4BiFqbBMwOGCREEe6iaC1dICHl9ScXvKr5UXAFQtViAcxwgKhREBnDvQgISkABrvosA8o4A8s77wKcIoAo8RP06uXXL8ZgB9q2oXABEDICIAbgrKiABCdBLSAB5R4DXS1ihRpfQxsXrtyVkAESvdiAqIAEJ0EtIAHlngKaWMAEX54YfOb4oBI0AAAAASUVORK5CYII=";
+
 export const backIcon = (
 	<svg
 		viewBox="0 0 24 24"
@@ -23,6 +26,9 @@ export const backIcon = (
 		></path>
 	</svg>
 );
+
+export const bookmarksManagerBase64Source =
+	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABoklEQVR42mKgBIwCbQCxZQARQRBGYYogIRJmqpMokUQAwAEURCmBAFBg/j1HYgOEAACEoAIAQgICEOQA5MTM7sq5EJFtPyw5d7m9m/bwGDP/e+/d2H/+C9MJMLIAc2IPwcgCaHFPYCTmCybeVMamgHX5v964qzwA61LNl8P2jBb7mQdgzV55H18Q1XPzHOyVYr53l44rsa+dAdjjrITWczsYdgNnXn/pknzMzsv7mpakqoJoP7vmE23cc68AnFFDLRy4aPR1Myu1eEqLvVViXzKxWIn7RtQH0EITbTzw6hqiIq3FrLAB6Z/QwOPvB6bemtZiH32bo4l230NGi7v2ZY4WmgP0uzsf1hyN4Z7cIDrSxn0VNYYD18+7H8Tbxa893vI4dpNq0QBwfM79s6IB4HgLoMTdFw0Ax4t5GKZjmVh7gABtuB4+wGijxxU3tYl2AetuNXA9TL/ouLO9lHEX65JO5jWs2etsV7ge/nrZm1/P6UOllqz2quWMmrwero8OaGZ4UxIf9MuhFg7c4a7/NNGZyCXjsygXDlw0foZP3SgYBQC3FN4vz7JMEgAAAABJRU5ErkJggg==";
 
 export const brandLogo = (
 	<svg
@@ -93,6 +99,21 @@ export const caretRight = (
 	</svg>
 );
 
+export const chromeIcon = (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 497.401 497.401"
+		className="bookmark-img"
+	>
+		<g>
+			<path d="M478.742 154.382H320.714c28.366 21.765 47.111 55.717 47.111 94.307 0 30.63-14.345 56.386-30.933 79.445-28.322 39.41-95.817 168.878-95.817 168.878 2.567.043 5.026.388 7.636.388 137.341 0 248.69-111.348 248.69-248.69-.022-33.412-6.709-65.229-18.659-94.328z" />
+			<path d="M248.172 129.619c54.402-.388 217.628-2.049 217.628-2.049C423.24 51.511 342.069 0 248.69 0 170.819 0 101.361 35.829 55.782 91.848l75.972 134.925c10.268-55.113 58.349-96.744 116.418-97.154z" />
+			<path d="M248.668 367.825c-51.964 0-91.568-35.117-111.974-79.855-20.535-45.018-98.061-171.984-98.061-171.984C14.301 154.425 0 199.832 0 248.69c0 124.744 91.935 227.744 211.696 245.648l77.288-134.019c-12.641 4.615-26.101 7.506-40.316 7.506z" />
+			<circle cx="248.668" cy="248.711" r="80.416" />
+		</g>
+	</svg>
+);
+
 export const dropdownIcon = (
 	<svg
 		fill="#fff"
@@ -104,6 +125,20 @@ export const dropdownIcon = (
 			xmlns="http://www.w3.org/2000/svg"
 			d="M16.6 8.6L12 13.2 7.4 8.6 6 10l6 6 6-6z"
 		></path>
+	</svg>
+);
+
+export const edgeIcon = (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 16 16"
+		className="bookmark-img"
+	>
+		<g fill="#444">
+			<path d="M4.667 3.764c2.918 0 5.282 1.864 5.325 4.174 0 .013.007.025.007.039V8c0 .029-.014.224-.024.292a1.989 1.989 0 01-.4.932 2.291 2.291 0 01-.165.19v.005a.285.285 0 00-.052.076.343.343 0 00-.046.162.6.6 0 00.295.452 1.425 1.425 0 00.173.109 4.882 4.882 0 002.2.435h.227a3.717 3.717 0 001.891-.524A3.838 3.838 0 0016 6.826a6.13 6.13 0 00-.15-1.338c-.011-.038-.021-.076-.032-.113a8.092 8.092 0 00-.526-1.295A8.016 8.016 0 008 0 8 8 0 00.415 5.467a5.851 5.851 0 014.252-1.703z" />
+			<path d="M4.238 11.022a5.333 5.333 0 012.784-4.765h.007c.049-.027.1-.052.152-.075l.036-.018.048-.018a1.881 1.881 0 01.968-.124A5.294 5.294 0 004.68 4.734C2.107 4.734.013 6.335.013 8.3c0 .051 0 .1.005.153v.013a7.993 7.993 0 005.543 7.15 8.055 8.055 0 001.9.339 5.3 5.3 0 01-3.223-4.933z" />
+			<path d="M4.905 11.022a4.532 4.532 0 004.4 4.645 5.787 5.787 0 001.753-.3 8.007 8.007 0 003.715-3.1.251.251 0 00-.334-.353 5.744 5.744 0 01-.658.294 6.371 6.371 0 01-2.244.4 6.305 6.305 0 01-2.666-.58c-.02-.009-.04-.021-.06-.031a4.68 4.68 0 01-2.79-3.723C6.012 8.169 6 8.065 6 7.959v-.008a4.8 4.8 0 00-1.095 3.071z" />
+		</g>
 	</svg>
 );
 

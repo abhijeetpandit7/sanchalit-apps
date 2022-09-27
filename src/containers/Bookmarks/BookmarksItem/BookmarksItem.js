@@ -1,7 +1,7 @@
 import React from "react";
 
 export const BookmarksItem = ({
-	bookmark: { id, title, url },
+	bookmark: { id, title, url, imgSrc, svg },
 	iconsOnly,
 	openInNewTab,
 }) => (
@@ -19,12 +19,16 @@ export const BookmarksItem = ({
 			data-v-10674610
 		>
 			<span className="bookmark-icon-wrapper" data-v-00c414ea>
-				<img
-					className="bookmark-icon"
-					src={`https://www.google.com/s2/favicons?domain=${url}&sz=16`}
-					draggable="false"
-					data-v-00c414ea
-				/>
+				{svg || (
+					<img
+						className="bookmark-icon"
+						src={
+							imgSrc || `https://www.google.com/s2/favicons?domain=${url}&sz=16`
+						}
+						draggable="false"
+						data-v-00c414ea
+					/>
+				)}
 			</span>
 			{iconsOnly === false && (
 				<span className="bookmark-label" data-v-00c414ea>
