@@ -229,7 +229,7 @@ export const parseBookmarksOverflow = (
 					return [...bookmarksListAcc];
 				}
 			},
-			[OVERFLOW_FOLDER_OBJ],
+			[_.cloneDeep(OVERFLOW_FOLDER_OBJ)],
 		);
 
 		reducedBookmarksList.push(reducedBookmarksList.shift());
