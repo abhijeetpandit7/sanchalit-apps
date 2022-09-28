@@ -48,7 +48,9 @@ export const focusDisplayName = (displayNameRef) => {
 
 const getDayPeriod = () => {
 	const currentHour = moment().get("hour");
-	if (currentHour < 12) {
+	if (currentHour < 4) {
+		return "evening";
+	} else if (currentHour < 12) {
 		return "morning";
 	} else if (currentHour < 17) {
 		return "afternoon";
