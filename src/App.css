@@ -3379,7 +3379,6 @@ body:not(.touch) .photo-info .app-dash:hover .title,
 }
 .search .source .dropdown {
 	margin-top: 29px;
-	left: auto;
 	top: 50%;
 	right: -100px;
 }
