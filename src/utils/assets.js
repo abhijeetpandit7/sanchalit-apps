@@ -13,6 +13,16 @@ export const angleDownIcon = (
 export const appsBase64Source =
 	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAkklEQVR4Xu3UoQ2AUAyE4bcJM4BiFqbBMwOGCREEe6iaC1dICHl9ScXvKr5UXAFQtViAcxwgKhREBnDvQgISkABrvosA8o4A8s77wKcIoAo8RP06uXXL8ZgB9q2oXABEDICIAbgrKiABCdBLSAB5R4DXS1ihRpfQxsXrtyVkAESvdiAqIAEJ0EtIAHlngKaWMAEX54YfOb4oBI0AAAAASUVORK5CYII=";
 
+export const appsIcon = (
+	<svg
+		className="icon-apps"
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 32 32"
+	>
+		<path d="M3 3h6v6H3V3zm10 0h6v6h-6V3zm10 0h6v6h-6V3zM3 13h6v6H3v-6zm10 0h6v6h-6v-6zm10 0h6v6h-6v-6zM3 23h6v6H3v-6zm10 0h6v6h-6v-6zm10 0h6v6h-6v-6z"></path>
+	</svg>
+);
+
 export const backIcon = (
 	<svg
 		viewBox="0 0 24 24"
