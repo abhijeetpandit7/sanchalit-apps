@@ -1,8 +1,9 @@
-import React, { useRef } from "react";
-import { useUserCustomization } from "../../hooks";
+import React, { useEffect, useRef } from "react";
+import { useUserActions, useUserCustomization } from "../../hooks";
 import {
 	ADD_SHADOW,
 	HOTKEY_HOVER,
+	PHOTO_INFO,
 	SHOW_ANYWAY,
 	heartIcon,
 	skipIcon,
@@ -10,10 +11,12 @@ import {
 	removeRefClassName,
 } from "../../utils";
 
-const ContextMemo = ({ hideApps, showApps }) => {
+const ContextMemo = ({ hideApps, setWidgetReady, showApps }) => {
 	const photoInfoRef = useRef(null);
 	const appDashRef = useRef(null);
 	const controlRef = useRef(null);
+
+	useEffect(() => setWidgetReady({ widget: PHOTO_INFO }), []);
 
 	const hideAppsHandler = () => {
 		const hideAppsTimeout = setTimeout(() => {
@@ -70,6 +73,7 @@ const ContextMemo = ({ hideApps, showApps }) => {
 
 export const PhotoInfo = () => {
 	const { hideApps, showApps } = useUserCustomization();
+	const { setWidgetReady } = useUserActions();
 
-	return <ContextMemo {...{ hideApps, showApps }} />;
+	return <ContextMemo {...{ hideApps, setWidgetReady, showApps }} />;
 };

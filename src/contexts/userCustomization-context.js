@@ -1,6 +1,11 @@
 import React, { createContext, useReducer, useRef, useState } from "react";
 import { widgetReducer } from "../reducers";
-import { API, BACKGROUND, GENERAL_SETTING_APP_LIST } from "../utils";
+import {
+	API,
+	BACKGROUND,
+	PHOTO_INFO,
+	GENERAL_SETTING_APP_LIST,
+} from "../utils";
 
 export const UserCustomizationContext = createContext();
 
@@ -14,12 +19,17 @@ export const UserCustomizationProvider = ({ children }) => {
 	const settingsRef = useRef(null);
 
 	const [widgetManager, widgetDispatch] = useReducer(widgetReducer, {
-		app: GENERAL_SETTING_APP_LIST.reduce((acc, app) => {
-			app.ignoreVisibility
-				? null
-				: (acc[app.name] = { visibilityKey: app.key, ready: false });
-			return acc;
-		}, {}),
+		app: GENERAL_SETTING_APP_LIST.reduce(
+			(acc, app) => {
+				app.ignoreVisibility
+					? null
+					: (acc[app.name] = { visibilityKey: app.key, ready: false });
+				return acc;
+			},
+			{
+				[PHOTO_INFO]: { ready: false },
+			},
+		),
 		data: {
 			[API]: {
 				ready: false,

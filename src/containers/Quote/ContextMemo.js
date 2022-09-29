@@ -6,7 +6,7 @@ const ContextMemo = memo(({ setWidgetReady }) => {
 
 	return (
 		<div className="app-container quote">
-			<div className="app-dash" data-resize-sensor-id="okxvl">
+			<div className="app-dash">
 				<p className="body">
 					<span className="body-text">
 						“If you can imagine it, you can achieve it. If you can dream it, you

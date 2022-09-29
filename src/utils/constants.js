@@ -65,6 +65,7 @@ export const OPEN = "open";
 const OPEN_IN_NEW_TAB = "openInNewTab";
 export const OVERFLOW = "overflow";
 export const PHOTOS = "Photos";
+export const PHOTO_INFO = "Photo Info";
 export const PRODUCTION = "production";
 export const PULSE = "pulse";
 export const QUERY_PARAM = "q";
