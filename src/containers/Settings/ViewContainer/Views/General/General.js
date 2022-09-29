@@ -1,9 +1,10 @@
 import React, { memo } from "react";
-import { ToggleSlider } from "../../../../../components/";
+import { ToggleOptions, ToggleSlider } from "../../../../../components/";
 import { useUserActions, useUserCustomization } from "../../../../../hooks";
 import {
 	SEARCH_IN_CENTER,
 	GENERAL_SETTING_APP_LIST,
+	GENERAL_SETTING_APPEARANCE_LIST,
 } from "../../../../../utils";
 
 const ContextMemo = memo((props) => (
@@ -34,6 +35,19 @@ const ContextMemo = memo((props) => (
 			/>
 		</ul>
 
+		<h4>Appearance</h4>
+		<ul id="customize-list" className="settings-list options-list">
+			{GENERAL_SETTING_APPEARANCE_LIST.map((setting) => (
+				<ToggleOptions
+					key={setting.key}
+					keyValue={setting.key}
+					value={props[setting.key]}
+					toggle={props.selectGeneralSetting}
+					{...setting}
+				/>
+			))}
+		</ul>
+
 		<section className="u--touch-hide">
 			<h5>Tip</h5>
 			<p className="tip">
@@ -56,10 +70,12 @@ const General = () => {
 			quotesVisible,
 			searchSettings: { inCenter },
 			searchVisible,
+			themeColour,
 			todoVisible,
 		},
 	} = useUserCustomization();
-	const { toggleSearchInCenter, toggleShowApp } = useUserActions();
+	const { selectGeneralSetting, toggleSearchInCenter, toggleShowApp } =
+		useUserActions();
 
 	return (
 		<ContextMemo
@@ -72,7 +88,9 @@ const General = () => {
 				notesVisible,
 				quotesVisible,
 				searchVisible,
+				themeColour,
 				todoVisible,
+				selectGeneralSetting,
 				toggleSearchInCenter,
 				toggleShowApp,
 			}}

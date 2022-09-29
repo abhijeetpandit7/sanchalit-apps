@@ -26,6 +26,8 @@ export const CLOCK = "Clock";
 const CLOCK_VISIBLE = "clockVisible";
 export const CUSTOMIZATION = "customization";
 export const DASH = "Dash";
+export const DARK = "dark";
+export const DARK_FULL = "dark-full";
 export const DEFAULT = "default";
 const DEFAULT_MOST_VISITED = "defaultMostVisited";
 export const DISABLED = "disabled";
@@ -53,6 +55,8 @@ const INCLUDE_BOOKMARKS_MANAGER = "includeBookmarksManager";
 const INCLUDE_MOST_VISITED = "includeMostVisited";
 const INCLUDE_OTHER_BOOKMARKS = "includeOtherBookmarks";
 export const INPUT_WRAPPER = "input-wrapper";
+export const LIGHT = "light";
+export const LIGHT_FULL = "light-full";
 export const LINKS_AND_BOOKMARKS = "Links & Bookmarks";
 export const MANTRAS = "Mantras";
 export const NAV_ACTIVE = "nav-active";
@@ -83,6 +87,7 @@ export const SHOW_TOP_SITES = "Show Top Sites";
 export const START_IN_TOP_SITES = "Start in Top Sites";
 export const STATIC_RESOURCES = "static-resources";
 export const SYSTEM = "system";
+const THEME_COLOUR = "themeColour";
 export const TODO = "Todo";
 const TODO_VISIBLE = "todoVisible";
 export const TOP_SITES = "Top Sites";
@@ -105,6 +110,11 @@ const APP_LOCATION_OPTIONS = [
 	{ name: BOOKMARKS, key: BOOKMARKS },
 	{ name: DASH, key: DASH },
 	{ name: NONE, key: NONE },
+];
+const THEME_OPTIONS = [
+	{ name: DARK, key: DARK },
+	{ name: LIGHT, key: LIGHT },
+	{ name: SYSTEM, key: SYSTEM },
 ];
 export const BOOKMARKS_GENERAL_SETTING_LIST = [
 	{
@@ -181,6 +191,14 @@ export const GENERAL_SETTING_APP_LIST = [
 		key: NOTES_VISIBLE,
 		plus: true,
 		description: NOTES_DESCRIPTION,
+	},
+];
+export const GENERAL_SETTING_APPEARANCE_LIST = [
+	{
+		name: "Theme",
+		key: THEME_COLOUR,
+		toggleOptions: true,
+		options: THEME_OPTIONS,
 	},
 ];
 export const SEARCH_PROVIDER_LIST = [
@@ -334,6 +352,6 @@ export const DEFAULT_CUSTOMIZATION = {
 	},
 	[TODO_VISIBLE]: true,
 	topSites: [],
-	themeColour: SYSTEM,
+	[THEME_COLOUR]: SYSTEM,
 	themeFont: DEFAULT,
 };

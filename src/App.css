@@ -1303,6 +1303,8 @@ h4 .badge {
 .toggle-option .toggle-label {
 	opacity: 0.5;
 	transition: all 0.1s var(--a-curve);
+	text-transform: capitalize;
+	cursor: pointer;
 }
 body:not(.touch) .toggle-option .toggle-label:hover {
 	opacity: 0.8;

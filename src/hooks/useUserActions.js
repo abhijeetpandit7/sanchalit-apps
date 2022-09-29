@@ -102,6 +102,15 @@ export const useUserActions = () => {
 		[storageUserCustomization.bookmarksSettings],
 	);
 
+	const selectGeneralSetting = useCallback(
+		(setting) =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				[setting.keyValue]: setting.newValue,
+			})),
+		[],
+	);
+
 	const setSearchProvider = useCallback(
 		(searchProvider) => {
 			setStorageUserCustomization((prevCustomization) => ({
@@ -301,6 +310,7 @@ export const useUserActions = () => {
 	return {
 		editDisplayName,
 		selectBookmarksSetting,
+		selectGeneralSetting,
 		setSearchProvider,
 		setWidgetReady,
 		toggleBookmarksSetting,

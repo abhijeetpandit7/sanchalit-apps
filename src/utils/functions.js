@@ -5,10 +5,14 @@ import {
 	ACTIVE,
 	BOOKMARK_ACTION_WIDTH,
 	CHROME,
+	DARK,
+	DARK_FULL,
 	EDGE,
 	EMPTY_NAME,
 	FIREFOX,
 	FOLDER_DROPDOWN,
+	LIGHT,
+	LIGHT_FULL,
 	OPEN,
 	OVERFLOW,
 	BOOKMARKS,
@@ -265,6 +269,12 @@ export const requestPermissions = (permssions) =>
 				: resolve(granted),
 		),
 	);
+
+export const setBodyTheme = (themeColour) => {
+	document.body.classList.remove(DARK, LIGHT, DARK_FULL, LIGHT_FULL);
+	document.body.classList.add(themeColour);
+	document.body.classList.add(themeColour === DARK ? DARK_FULL : LIGHT_FULL);
+};
 
 export const setLocalStorageItem = (key, value) =>
 	localStorage.setItem(key, value);
