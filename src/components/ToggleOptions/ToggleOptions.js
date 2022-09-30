@@ -6,6 +6,10 @@ export const ToggleOptions = (props) => {
 		props.plus ? <span className="badge badge-plus">PLUS</span> : null;
 	const Divider = () => <span className="toggle-divider">|</span>;
 
+	const optionBreakCount = 3;
+	const totalOptions = props.options.length;
+	const lastOptionIndex = totalOptions - 1;
+
 	return (
 		<li className="has-toggle has-toggle-options bookmark-option">
 			<span className="setting-name">{props.name}</span>
@@ -21,7 +25,17 @@ export const ToggleOptions = (props) => {
 						>
 							<span className="toggle-label">{option.name}</span>
 						</span>
-						{index !== props.options.length - 1 ? <Divider /> : null}
+						{index !== lastOptionIndex ? (
+							totalOptions > optionBreakCount ? (
+								index === optionBreakCount - 1 ? (
+									<br />
+								) : (
+									<Divider />
+								)
+							) : (
+								<Divider />
+							)
+						) : null}
 					</span>
 				))}
 			</span>

@@ -71,6 +71,7 @@ const General = () => {
 			searchSettings: { inCenter },
 			searchVisible,
 			themeColour,
+			themeFont,
 			todoVisible,
 		},
 	} = useUserCustomization();
@@ -89,6 +90,7 @@ const General = () => {
 				quotesVisible,
 				searchVisible,
 				themeColour,
+				themeFont,
 				todoVisible,
 				selectGeneralSetting,
 				toggleSearchInCenter,

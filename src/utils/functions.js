@@ -5,14 +5,10 @@ import {
 	ACTIVE,
 	BOOKMARK_ACTION_WIDTH,
 	CHROME,
-	DARK,
-	DARK_FULL,
 	EDGE,
 	EMPTY_NAME,
 	FIREFOX,
 	FOLDER_DROPDOWN,
-	LIGHT,
-	LIGHT_FULL,
 	OPEN,
 	OVERFLOW,
 	BOOKMARKS,
@@ -23,6 +19,8 @@ import {
 	SHOW,
 	SHOW_FADE_IN,
 	BROWSER_LIST,
+	THEME_COLOUR_OPTIONS,
+	THEME_FONT_OPTIONS,
 	APPS_OBJ,
 	BOOKMARKS_MANAGER_OBJ,
 	HOME_TAB_OBJ,
@@ -271,15 +269,29 @@ export const requestPermissions = (permssions) =>
 	);
 
 export const setBodyTheme = (themeColour) => {
-	document.body.classList.remove(DARK, LIGHT, DARK_FULL, LIGHT_FULL);
+	const colours = Object.values(THEME_COLOUR_OPTIONS).map(({ key }) => key);
+	colours.map((colour) => {
+		document.body.classList.remove(colour);
+		document.body.classList.remove(toColourClassName(colour));
+	});
 	document.body.classList.add(themeColour);
-	document.body.classList.add(themeColour === DARK ? DARK_FULL : LIGHT_FULL);
+	document.body.classList.add(toColourClassName(themeColour));
+};
+
+export const setBodyFont = (themeFont) => {
+	const fonts = Object.values(THEME_FONT_OPTIONS).map(({ key }) => key);
+	fonts.map((font) => document.body.classList.remove(toFontClassName(font)));
+	document.body.classList.add(toFontClassName(themeFont));
 };
 
 export const setLocalStorageItem = (key, value) =>
 	localStorage.setItem(key, value);
 
 export const toCSSUrl = (link) => `url("${link}")`;
+
+export const toColourClassName = (className) => `${className}-full`;
+
+export const toFontClassName = (className) => `f--${className}`;
 
 export const toLowerCase = (string) => _.toLower(string);
 

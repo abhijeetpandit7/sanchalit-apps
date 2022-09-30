@@ -5,6 +5,7 @@ import {
 	DARK,
 	LIGHT,
 	SYSTEM,
+	setBodyFont,
 	setBodyTheme,
 	toCSSUrl,
 } from "../../utils/";
@@ -13,7 +14,7 @@ const IMAGE_LINK =
 	"https://momentum.photos/img/f49d69a2-dbed-42d0-8443-9c0871ecd491.jpg";
 
 const ContextMemo = memo(
-	({ themeColour, setWidgetReady, showBackgroundOverlay }) => {
+	({ themeColour, themeFont, setWidgetReady, showBackgroundOverlay }) => {
 		const backgroundItemRef = useRef(null);
 
 		const callback = () => setWidgetReady({ widget: BACKGROUND, type: "data" });
@@ -42,6 +43,10 @@ const ContextMemo = memo(
 		}, [themeColour]);
 
 		useEffect(() => {
+			themeFont && setBodyFont(themeFont);
+		}, [themeFont]);
+
+		useEffect(() => {
 			const backgroundImage = new Image();
 			backgroundImage.src = IMAGE_LINK;
 			backgroundImage.onload = () => {
@@ -68,11 +73,13 @@ const ContextMemo = memo(
 export const Backgrounds = () => {
 	const {
 		showBackgroundOverlay,
-		storageUserCustomization: { themeColour },
+		storageUserCustomization: { themeColour, themeFont },
 	} = useUserCustomization();
 	const { setWidgetReady } = useUserActions();
 
 	return (
-		<ContextMemo {...{ themeColour, showBackgroundOverlay, setWidgetReady }} />
+		<ContextMemo
+			{...{ themeColour, themeFont, showBackgroundOverlay, setWidgetReady }}
+		/>
 	);
 };

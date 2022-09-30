@@ -22,12 +22,12 @@ export const BROWSER_TYPE = "browserType";
 export const CHROME = "Chrome";
 const CHROMIUM = "chromium";
 const CHROMIUM_TAB_URL = "chrome-search://local-ntp/local-ntp.html";
+const CLASSIC = "classic";
 export const CLOCK = "Clock";
 const CLOCK_VISIBLE = "clockVisible";
 export const CUSTOMIZATION = "customization";
 export const DASH = "Dash";
 export const DARK = "dark";
-export const DARK_FULL = "dark-full";
 export const DEFAULT = "default";
 const DEFAULT_MOST_VISITED = "defaultMostVisited";
 export const DISABLED = "disabled";
@@ -56,9 +56,9 @@ const INCLUDE_MOST_VISITED = "includeMostVisited";
 const INCLUDE_OTHER_BOOKMARKS = "includeOtherBookmarks";
 export const INPUT_WRAPPER = "input-wrapper";
 export const LIGHT = "light";
-export const LIGHT_FULL = "light-full";
 export const LINKS_AND_BOOKMARKS = "Links & Bookmarks";
 export const MANTRAS = "Mantras";
+const MODERN = "modern";
 export const NAV_ACTIVE = "nav-active";
 const NONE = "None";
 export const NOTES = "Notes";
@@ -73,8 +73,10 @@ export const PHOTO_INFO = "Photo Info";
 export const PRODUCTION = "production";
 export const PULSE = "pulse";
 export const QUERY_PARAM = "q";
+const QUIRKY = "quirky";
 export const QUOTES = "Quotes";
 const QUOTES_VISIBLE = "quotesVisible";
+const RETRO = "retro";
 export const SAFARI = "Safari";
 export const SEARCH = "Search";
 const SEARCH_VISIBLE = "searchVisible";
@@ -85,15 +87,18 @@ export const SHOW_ANYWAY = "show-anyway";
 export const SHOW_FADE_IN = "show-fade-in";
 export const SHOW_TOP_SITES = "Show Top Sites";
 export const START_IN_TOP_SITES = "Start in Top Sites";
+const STARTUP = "startup";
 export const STATIC_RESOURCES = "static-resources";
 export const SYSTEM = "system";
 const THEME_COLOUR = "themeColour";
+const THEME_FONT = "themeFont";
 export const TODO = "Todo";
 const TODO_VISIBLE = "todoVisible";
 export const TOP_SITES = "Top Sites";
 const TOP_SITES_DESCRIPTION =
 	"Show most visited websites by default in Bookmarks Bar";
 export const TOP_SITES_PERMISSION = "topSites";
+const WAREHOUSE = "warehouse";
 const WEB = "web";
 
 export const ONE_SECOND = 1;
@@ -111,10 +116,18 @@ const APP_LOCATION_OPTIONS = [
 	{ name: DASH, key: DASH },
 	{ name: NONE, key: NONE },
 ];
-const THEME_OPTIONS = [
+export const THEME_COLOUR_OPTIONS = [
 	{ name: DARK, key: DARK },
 	{ name: LIGHT, key: LIGHT },
 	{ name: SYSTEM, key: SYSTEM },
+];
+export const THEME_FONT_OPTIONS = [
+	{ name: CLASSIC, key: CLASSIC },
+	{ name: MODERN, key: MODERN },
+	{ name: STARTUP, key: STARTUP },
+	{ name: RETRO, key: RETRO },
+	{ name: WAREHOUSE, key: WAREHOUSE },
+	{ name: QUIRKY, key: QUIRKY },
 ];
 export const BOOKMARKS_GENERAL_SETTING_LIST = [
 	{
@@ -198,7 +211,14 @@ export const GENERAL_SETTING_APPEARANCE_LIST = [
 		name: "Theme",
 		key: THEME_COLOUR,
 		toggleOptions: true,
-		options: THEME_OPTIONS,
+		options: THEME_COLOUR_OPTIONS,
+	},
+	{
+		name: "Font",
+		key: THEME_FONT,
+		plus: true,
+		toggleOptions: true,
+		options: THEME_FONT_OPTIONS,
 	},
 ];
 export const SEARCH_PROVIDER_LIST = [
@@ -353,5 +373,5 @@ export const DEFAULT_CUSTOMIZATION = {
 	[TODO_VISIBLE]: true,
 	topSites: [],
 	[THEME_COLOUR]: SYSTEM,
-	themeFont: DEFAULT,
+	[THEME_FONT]: CLASSIC,
 };
