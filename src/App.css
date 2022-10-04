@@ -1260,7 +1260,7 @@ h4 .badge {
 	background: rgba(0, 0, 0, 0.08);
 }
 .icon-wrapper .icon {
-	/* opacity: 0.7; */
+	opacity: 0.7;
 }
 .has-icon:hover .icon-wrapper .icon,
 .icon-wrapper:hover .icon,

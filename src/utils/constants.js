@@ -350,6 +350,8 @@ export const DEFAULT_CUSTOMIZATION = {
 	displayNameVisible: true,
 	[GREETING_VISIBLE]: true,
 	hour12clock: true,
+	notes: [],
+	currentNodeId: null,
 	[NOTES_VISIBLE]: true,
 	[QUOTES_VISIBLE]: true,
 	quoteSettings: {
