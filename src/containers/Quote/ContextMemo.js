@@ -16,13 +16,13 @@ const ContextMemo = memo(({ setWidgetReady }) => {
 						<span className="source" data-v-f7053094>
 							William Arthur Ward
 						</span>
-						<span title="Favorite" className="control favorite">
+						<span title="Favorite" className="control favorite" data-v-1040273e>
 							{heartIcon}
 						</span>
-						<span title="Skip" className="control skip">
+						<span title="Skip" className="control skip" data-v-1040273e>
 							{skipIcon}
 						</span>
-						<span title="Share" className="control control-twitter">
+						<span title="Share" className="control control-twitter" data-v-1040273e>
 							<svg
 								viewBox="0 0 512.004 419.042"
 								xmlns="http://www.w3.org/2000/svg"

@@ -58,10 +58,10 @@ const ContextMemo = ({ hideApps, setWidgetReady, showApps }) => {
 				<div className="source" data-v-1040273e>
 					<span className="source-link">Cody Wilson</span>
 					<span ref={controlRef}>
-						<span title="Favorite" className="favorite control">
+						<span title="Favorite" className="favorite control" data-v-1040273e>
 							{heartIcon}
 						</span>
-						<span title="Skip" className="skip control">
+						<span title="Skip" className="skip control" data-v-1040273e>
 							{skipIcon}
 						</span>
 					</span>
