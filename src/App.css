@@ -2012,11 +2012,6 @@ body:not(.touch) .toggle-option .toggle-label:hover {
 .name-punctuation-no-wrap {
 	white-space: nowrap;
 }
-.input-wrapper {
-	margin: -5px -2px -8px;
-	padding: 5px 2px 8px;
-	position: relative;
-}
 .f--quirky .greeting .name.editing,
 .f--startup .greeting .name.editing {
 	padding-bottom: 0;
@@ -4768,18 +4763,18 @@ body:not(.touch) .search {
 	} */
 }
 
-.name-punctuation-no-wrap {
+.name-punctuation-no-wrap[data-v-4e331ed7] {
 	white-space: nowrap;
 }
-.input-wrapper {
+.input-wrapper[data-v-4e331ed7] {
 	margin: -5px -2px -8px;
 	padding: 5px 2px 8px;
 	position: relative;
 }
-.input-wrapper .hidden-span {
+.input-wrapper .hidden-span[data-v-4e331ed7] {
 	visibility: hidden;
 }
-input.name {
+input.name[data-v-4e331ed7] {
 	width: 100%;
 	position: absolute;
 	top: 0;
@@ -4787,7 +4782,7 @@ input.name {
 	bottom: 0;
 	left: 0;
 }
-.editing {
+.editing[data-v-4e331ed7] {
 	border: none;
 	font-weight: 500;
 	min-width: 1.5em;
