@@ -13,7 +13,7 @@ export const MoreToggleWrapper = (props) => {
 	};
 
 	return (
-		<div className="slot-wrapper">
+		<div className="slot-wrapper" data-v-d6260d64>
 			<div className="more more-dash" ref={moreDashRef}>
 				<div
 					className="icon-wrapper more-toggle dash-icon-wrapper u--touch-hide"

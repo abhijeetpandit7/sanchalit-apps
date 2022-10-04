@@ -5,7 +5,7 @@ export const Focus = () => {
 	return (
 		<div className="focuses app-container">
 			<div className="focus-wrapper has-dash-icon clock-view">
-				<div className="has-3-col focus-prompt-wrapper">
+				<div className="has-3-col focus-prompt-wrapper" data-v-d6260d64>
 					<div className="side-col left">
 						<SwitchNavWrapper />
 					</div>

@@ -718,12 +718,12 @@ h4 .badge {
 .has-3-col {
 	display: flex;
 }
-.has-3-col {
+.has-3-col[data-v-d6260d64] {
 	justify-content: center;
 	align-items: center;
 	padding: 0 15px;
 }
-.center-col {
+.center-col[data-v-d6260d64] {
 	min-width: 0;
 	flex-shrink: 1;
 }
@@ -4475,25 +4475,14 @@ body:not(.touch) .search {
 	opacity: 0.75;
 }
 
-.has-3-col {
-	justify-content: center;
-	align-items: center;
-	padding: 0 15px;
-}
-.has-3-col.match-width .side-col {
+.has-3-col.match-width .side-col[data-v-d6260d64] {
 	flex: 1 0 auto;
 }
-.slot-wrapper {
+.slot-wrapper[data-v-d6260d64] {
 	display: inline-flex;
 	align-items: center;
 }
-.center-col {
-	min-width: 0;
-	flex-shrink: 1;
-}
 
-.big-search-wrapper {
-}
 .touch .big-search-wrapper .side-col {
 	display: none;
 }
@@ -5007,10 +4996,6 @@ h3 {
 	background: white;
 	text-align: left;
 	transition: 0.2s ease;
-}
-.left {
-}
-.center-col {
 }
 .greeting-wrapper {
 	position: relative;
