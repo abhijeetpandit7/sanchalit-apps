@@ -7,6 +7,7 @@ import {
 	EMPTY_NAME,
 	GENERAL_SETTING_APP_LIST,
 	INPUT_WRAPPER,
+	NOTE_DELETE_TIMEOUT,
 	PULSE,
 	SEARCH,
 	SHOW_TOP_SITES,
@@ -24,6 +25,7 @@ import {
 	removeRefClassName,
 	requestPermissions,
 	toggleRefClassName,
+	toDays,
 } from "../utils";
 
 export const useUserActions = () => {
@@ -43,7 +45,8 @@ export const useUserActions = () => {
 				notes: prevCustomization.notes.filter(
 					({ deleted, empty, updatedDate }) =>
 						empty !== true &&
-						(deleted === false || getDaysDifference(updatedDate) > -14),
+						(deleted === false ||
+							getDaysDifference(updatedDate) > -toDays(NOTE_DELETE_TIMEOUT)),
 				),
 			})),
 		[],

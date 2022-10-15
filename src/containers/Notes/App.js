@@ -3,21 +3,52 @@ import { Navbar, NoteActions, UserActions, ViewContainer } from "../Notes";
 import { useUserActions, useUserCustomization } from "../../hooks";
 
 const ContextMemo = memo((props) => {
-	const activeNote =
-		props.notes
-			.filter((note) => note.deleted === false)
-			.find(({ id }) => id === props.currentNoteId) ||
-		props.notes.filter((note) => note.deleted === false)[0];
+	const {
+		notesInputRef,
+		currentNoteId,
+		hour12clock,
+		notes,
+		cleanupNotes,
+		createNoteFromEmptyState,
+		deleteNote,
+		saveNote,
+		setCurrentNoteId,
+	} = props;
 
-	useEffect(() => props.cleanupNotes(), []);
+	// TODO: Add other sorting
+	const processedNotes = notes
+		.filter((note) => note.deleted === false)
+		.sort((a, b) => new Date(b.updatedDate) - new Date(a.updatedDate));
+
+	const activeNote =
+		processedNotes.find(({ id }) => id === currentNoteId) || processedNotes[0];
+
+	useEffect(() => cleanupNotes(), []);
 
 	return (
 		<div className={`app notes-app ${activeNote ? "" : "notes-empty-active"}`}>
-			<Navbar {...{ ...props, activeNote }}>
-				<UserActions {...{ ...props }} />
+			<Navbar
+				{...{
+					activeNote,
+					hour12clock,
+					processedNotes,
+					cleanupNotes,
+					createNoteFromEmptyState,
+					setCurrentNoteId,
+				}}
+			>
+				<UserActions />
 			</Navbar>
-			<ViewContainer {...{ ...props, activeNote }}>
-				<NoteActions {...{ ...props, activeNote }} />
+			<ViewContainer {...{ notesInputRef, activeNote, saveNote }}>
+				<NoteActions
+					{...{
+						activeNote,
+						hour12clock,
+						processedNotes,
+						createNoteFromEmptyState,
+						deleteNote,
+					}}
+				/>
 			</ViewContainer>
 		</div>
 	);

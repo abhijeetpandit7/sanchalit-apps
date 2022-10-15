@@ -10,6 +10,8 @@ import {
 	EMPTY_NAME,
 	FIREFOX,
 	FOLDER_DROPDOWN,
+	ONE_DAY,
+	ONE_WEEK,
 	OPEN,
 	OVERFLOW,
 	BOOKMARKS,
@@ -405,4 +407,8 @@ export const toggleBookmarkFolder = (appRef, ignoreOverflow) => {
 export const toggleRefClassName = (ref, className) =>
 	ref.current.classList.toggle(className);
 
+export const toDays = (seconds) => seconds / ONE_DAY;
+
 export const toMilliseconds = (seconds) => seconds * 1000;
+
+export const toWeeks = (seconds) => seconds / ONE_WEEK;

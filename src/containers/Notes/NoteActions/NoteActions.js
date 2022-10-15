@@ -27,7 +27,7 @@ export const NoteActions = (props) => {
 	const getNotesDetailTitle = () => `${date} at ${time}`;
 
 	const createNewNote = () => {
-		const containsEmptyStateNote = props.notes.some(
+		const containsEmptyStateNote = props.processedNotes.some(
 			(note) => note.empty === true,
 		);
 		if (containsEmptyStateNote == false) props.createNoteFromEmptyState();
