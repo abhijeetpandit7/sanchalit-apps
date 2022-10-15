@@ -1,6 +1,7 @@
-import React, { memo, useEffect } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Navbar, NoteActions, UserActions, ViewContainer } from "../Notes";
 import { useUserActions, useUserCustomization } from "../../hooks";
+import { processNotes } from "../../utils";
 
 const ContextMemo = memo((props) => {
 	const {
@@ -16,9 +17,14 @@ const ContextMemo = memo((props) => {
 	} = props;
 
 	// TODO: Add other sorting
-	const processedNotes = notes
-		.filter((note) => note.deleted === false)
-		.sort((a, b) => new Date(b.updatedDate) - new Date(a.updatedDate));
+	const [searchText, setSearchText] = useState("");
+	const [processedNotes, setProcessedNotes] = useState(
+		processNotes(notes, searchText),
+	);
+
+	useEffect(() => {
+		setProcessedNotes(processNotes(notes, searchText));
+	}, [notes, searchText]);
 
 	const activeNote =
 		processedNotes.find(({ id }) => id === currentNoteId) || processedNotes[0];
@@ -37,7 +43,7 @@ const ContextMemo = memo((props) => {
 					setCurrentNoteId,
 				}}
 			>
-				<UserActions />
+				<UserActions {...{ searchText, setSearchText }} />
 			</Navbar>
 			<ViewContainer {...{ notesInputRef, activeNote, saveNote }}>
 				<NoteActions

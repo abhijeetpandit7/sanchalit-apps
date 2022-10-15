@@ -350,6 +350,18 @@ export const parseBookmarksOverflow = (
 	} else return bookmarksList;
 };
 
+export const processNotes = (notes, searchText) => {
+	const processedValue = searchText.trim().toLowerCase();
+	return notes
+		.filter((note) => note.deleted === false)
+		.filter((note) =>
+			processedValue === ""
+				? true
+				: note.body.toLowerCase().includes(processedValue),
+		)
+		.sort((a, b) => new Date(b.updatedDate) - new Date(a.updatedDate));
+};
+
 export const randomElement = (array) =>
 	array[Math.floor(Math.random() * array.length)];
 
