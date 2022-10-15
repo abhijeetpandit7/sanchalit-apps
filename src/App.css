@@ -8513,7 +8513,8 @@ input[type="number"].hide-controls {
 	top: 100%;
 	display: block;
 }
-.bookmark.folder.active > .dropdown[data-v-5504764e] {
+.bookmark.folder.active > .dropdown[data-v-5504764e],
+.more.active > .dropdown[data-v-5504764f] {
 	visibility: visible;
 }
 .dropdown-wrapper[data-v-5504764e] {

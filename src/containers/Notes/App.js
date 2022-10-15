@@ -29,10 +29,13 @@ const ContextMemo = memo((props) => {
 	const activeNote =
 		processedNotes.find(({ id }) => id === currentNoteId) || processedNotes[0];
 
+	const isNotesNotEmpty =
+		processedNotes.length || processNotes(notes, "").length;
+
 	useEffect(() => cleanupNotes(), []);
 
 	return (
-		<div className={`app notes-app ${activeNote ? "" : "notes-empty-active"}`}>
+		<div className={`app notes-app ${isNotesNotEmpty ? "" : "notes-empty-active"}`}>
 			<Navbar
 				{...{
 					activeNote,

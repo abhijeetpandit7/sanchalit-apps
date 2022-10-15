@@ -229,6 +229,13 @@ export const hideAppPopup = (appRef) =>
 export const hideBookmarkFolder = (appRef) =>
 	appRef.current.classList.contains(ACTIVE) && toggleBookmarkFolder(appRef);
 
+export const hideRefClassName = (appRef, classNames) => {
+	const containsClass = classNames.some((className) =>
+		appRef.current.classList.contains(className),
+	);
+	containsClass && toggleRefClassNames(appRef, classNames);
+};
+
 export const hideUserNav = (ref) =>
 	ref.current.classList.contains(OPEN) && toggleRefClassName(ref, OPEN);
 
@@ -418,6 +425,9 @@ export const toggleBookmarkFolder = (appRef, ignoreOverflow) => {
 
 export const toggleRefClassName = (ref, className) =>
 	ref.current.classList.toggle(className);
+
+export const toggleRefClassNames = (ref, classNames) =>
+	classNames.map((className) => toggleRefClassName(ref, className));
 
 export const toDays = (seconds) => seconds / ONE_DAY;
 

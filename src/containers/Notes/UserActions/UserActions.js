@@ -1,5 +1,6 @@
 import React, { memo } from "react";
-import { clearIcon } from "../../../utils";
+import { MoreToggleWrapper1 } from "../../../components";
+import { clearIcon, ellipsisIcon2, trashIcon } from "../../../utils";
 
 export const UserActions = memo((props) => (
 	<header className="header notes-list-header">
@@ -27,6 +28,16 @@ export const UserActions = memo((props) => (
 					/>
 				</span>
 			</span>
+			<MoreToggleWrapper1>
+				<div className="dropdown more-dropdown" data-v-5504764f>
+					<ul className="dropdown-list">
+						<li className="dropdown-list-item show-deleted">
+							<span className="dropdown-list-icon-wrapper">{trashIcon}</span>
+							<span className="dropdown-list-label">Deleted</span>
+						</li>
+					</ul>
+				</div>
+			</MoreToggleWrapper1>
 		</div>
 		<div className="list-bar-toggle">
 			<span
