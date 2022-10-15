@@ -14,8 +14,11 @@ import {
 	TOP_SITES,
 	TOP_SITES_PERMISSION,
 	isBuildTargetWeb,
+	createNote,
 	focusDisplayName,
+	focusNotesInput,
 	getBookmarks,
+	getDaysDifference,
 	getPermissionAllowed,
 	getTopSites,
 	removeRefClassName,
@@ -26,11 +29,46 @@ import {
 export const useUserActions = () => {
 	const {
 		displayNameRef,
+		notesInputRef,
 		searchInputRef,
 		storageUserCustomization,
 		setStorageUserCustomization,
 		widgetDispatch,
 	} = useUserCustomization();
+
+	const cleanupNotes = useCallback(
+		() =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				notes: prevCustomization.notes.filter(
+					({ deleted, empty, updatedDate }) =>
+						empty !== true &&
+						(deleted === false || getDaysDifference(updatedDate) > -14),
+				),
+			})),
+		[],
+	);
+
+	const createNoteFromEmptyState = useCallback(async () => {
+		const newNote = createNote();
+		await setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			notes: [...prevCustomization.notes, newNote],
+		}));
+		await setCurrentNoteId(newNote.id);
+		focusNotesInput(notesInputRef);
+	}, []);
+
+	const deleteNote = useCallback(
+		(taegetNote) =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				notes: prevCustomization.notes.map((note) =>
+					note.id === taegetNote.id ? { ...note, deleted: true } : note,
+				),
+			})),
+		[],
+	);
 
 	const editDisplayName = useCallback(async () => {
 		const { displayName, displayNameVisible } = storageUserCustomization;
@@ -89,6 +127,34 @@ export const useUserActions = () => {
 			}));
 		else element.innerText = storageUserCustomization.displayName;
 	};
+
+	const saveNote = useCallback((event, activeNote) => {
+		const body = event.target.value;
+		setStorageUserCustomization((prevCustomization) => {
+			const targetNote = prevCustomization.notes.find(
+				(note) => note.id === activeNote.id,
+			);
+			targetNote.body = body;
+			targetNote.updatedDate = new Date().getTime();
+			delete targetNote["empty"];
+
+			return {
+				...prevCustomization,
+				notes: prevCustomization.notes.map((note) =>
+					note.id === activeNote.id ? targetNote : note,
+				),
+			};
+		});
+	}, []);
+
+	const setCurrentNoteId = useCallback(
+		(id) =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				currentNoteId: id,
+			})),
+		[],
+	);
 
 	const selectBookmarksSetting = useCallback(
 		(setting) =>
@@ -308,9 +374,14 @@ export const useUserActions = () => {
 	);
 
 	return {
+		cleanupNotes,
+		createNoteFromEmptyState,
+		deleteNote,
 		editDisplayName,
+		saveNote,
 		selectBookmarksSetting,
 		selectGeneralSetting,
+		setCurrentNoteId,
 		setSearchProvider,
 		setWidgetReady,
 		toggleBookmarksSetting,

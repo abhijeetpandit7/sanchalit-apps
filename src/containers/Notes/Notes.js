@@ -15,7 +15,7 @@ import { NOTES, toggleAppPopup } from "../../utils";
 
 const App = lazy(() => import("./App"));
 
-const ContextMemo = memo(({ currentNodeId, notes, setWidgetReady }) => {
+const ContextMemo = memo(({ setWidgetReady }) => {
 	const notesRef = useRef(null);
 	const [componentDidMount, setComponentDidMount] = useState(false);
 
@@ -33,7 +33,7 @@ const ContextMemo = memo(({ currentNodeId, notes, setWidgetReady }) => {
 			<div className="app-wrapper app-placeholder nipple nipple-bottom-right">
 				{componentDidMount && (
 					<Suspense fallback={null}>
-						<App {...{ currentNodeId, notes }} />
+						<App />
 					</Suspense>
 				)}
 			</div>
@@ -46,15 +46,9 @@ const ContextMemo = memo(({ currentNodeId, notes, setWidgetReady }) => {
 
 export const Notes = () => {
 	const {
-		storageUserCustomization: { currentNodeId, notes, notesVisible },
+		storageUserCustomization: { notesVisible },
 	} = useUserCustomization();
 	const { setWidgetReady } = useUserActions();
 
-	return (
-		<>
-			{notesVisible && (
-				<ContextMemo {...{ currentNodeId, notes, setWidgetReady }} />
-			)}
-		</>
-	);
+	return <>{notesVisible && <ContextMemo {...{ setWidgetReady }} />}</>;
 };

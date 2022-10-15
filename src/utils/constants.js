@@ -30,6 +30,7 @@ export const DASH = "Dash";
 export const DARK = "dark";
 export const DEFAULT = "default";
 const DEFAULT_MOST_VISITED = "defaultMostVisited";
+export const DELETE_CONF_ACTIVE = "delete-conf-active";
 export const DISABLED = "disabled";
 export const DUCK_DUCK_GO = "DuckDuckGo";
 export const EDGE = "Edge";
@@ -258,6 +259,14 @@ export const QUICK_TIP_LIST = [
 	"You can change between a 12 hour or 24 hour clock.",
 	"Double-clicking your display name will let you edit it.",
 ];
+export const NOTE_DELIGHTER_LIST = [
+	"Record some wisdom",
+	"This is your canvas",
+	"Think of the possibilities...",
+	"Type a tidbit",
+	"Type something cool!",
+	"Use your words",
+];
 
 export const APPS_OBJ = {
 	id: APPS,
@@ -289,6 +298,14 @@ export const TOP_SITES_FOLDER_OBJ = {
 	parentId: BOOKMARKS_ROOT_ID,
 	title: TOP_SITES,
 	children: [],
+};
+export const DEFAULT_NOTE_OBJ = {
+	id: "",
+	body: "",
+	createdDate: new Date(),
+	deleted: false,
+	empty: true,
+	updatedDate: new Date().getTime(),
 };
 
 export const DEFAULT_AUTHENTICATION = {
@@ -351,7 +368,7 @@ export const DEFAULT_CUSTOMIZATION = {
 	[GREETING_VISIBLE]: true,
 	hour12clock: true,
 	notes: [],
-	currentNodeId: null,
+	currentNoteId: null,
 	[NOTES_VISIBLE]: true,
 	[QUOTES_VISIBLE]: true,
 	quoteSettings: {
