@@ -12,50 +12,79 @@ const ContextMemo = memo((props) => {
 		cleanupNotes,
 		createNoteFromEmptyState,
 		deleteNote,
+		restoreNote,
 		saveNote,
 		setCurrentNoteId,
 	} = props;
 
 	// TODO: Add other sorting
 	const [searchText, setSearchText] = useState("");
+	const [trashSubView, setTrashSubView] = useState(false);
 	const [processedNotes, setProcessedNotes] = useState(
-		processNotes(notes, searchText),
+		processNotes(notes, searchText, trashSubView),
 	);
 
 	useEffect(() => {
-		setProcessedNotes(processNotes(notes, searchText));
-	}, [notes, searchText]);
+		setProcessedNotes(processNotes(notes, searchText, trashSubView));
+	}, [notes, searchText, trashSubView]);
 
 	const activeNote =
 		processedNotes.find(({ id }) => id === currentNoteId) || processedNotes[0];
 
 	const isNotesNotEmpty =
-		processedNotes.length || processNotes(notes, "").length;
+		processedNotes.length || processNotes(notes, "", trashSubView).length;
+
+	const isDeletedNotesNotEmpty = () => processNotes(notes, "", true).length;
 
 	useEffect(() => cleanupNotes(), []);
 
 	return (
-		<div className={`app notes-app ${isNotesNotEmpty ? "" : "notes-empty-active"}`}>
+		<div
+			className={`app notes-app 
+			${
+				trashSubView
+					? isDeletedNotesNotEmpty()
+						? ""
+						: "deleted-empty deleted-empty-active"
+					: isNotesNotEmpty
+					? ""
+					: "notes-empty-active"
+			}
+			`}
+		>
 			<Navbar
 				{...{
 					activeNote,
 					hour12clock,
 					processedNotes,
+					trashSubView,
 					cleanupNotes,
 					createNoteFromEmptyState,
 					setCurrentNoteId,
+					setTrashSubView,
 				}}
 			>
-				<UserActions {...{ searchText, setSearchText }} />
+				<UserActions {...{ searchText, setSearchText, setTrashSubView }} />
 			</Navbar>
-			<ViewContainer {...{ notesInputRef, activeNote, saveNote }}>
+			<ViewContainer
+				{...{
+					notesInputRef,
+					activeNote,
+					trashSubView,
+					saveNote,
+				}}
+			>
 				<NoteActions
 					{...{
 						activeNote,
 						hour12clock,
 						processedNotes,
+						trashSubView,
 						createNoteFromEmptyState,
 						deleteNote,
+						restoreNote,
+						setCurrentNoteId,
+						setTrashSubView,
 					}}
 				/>
 			</ViewContainer>
@@ -72,6 +101,7 @@ const App = () => {
 		cleanupNotes,
 		createNoteFromEmptyState,
 		deleteNote,
+		restoreNote,
 		saveNote,
 		setCurrentNoteId,
 	} = useUserActions();
@@ -86,6 +116,7 @@ const App = () => {
 				cleanupNotes,
 				createNoteFromEmptyState,
 				deleteNote,
+				restoreNote,
 				saveNote,
 				setCurrentNoteId,
 			}}

@@ -8,6 +8,7 @@ import {
 	menuIcon,
 	plusIcon,
 	trashIcon,
+	trashRestoreIcon,
 	formatDate,
 	formatTime,
 } from "../../../utils";
@@ -27,10 +28,17 @@ export const NoteActions = (props) => {
 	const getNotesDetailTitle = () => `${date} at ${time}`;
 
 	const createNewNote = () => {
+		if (props.trashSubView) props.setTrashSubView(false);
 		const containsEmptyStateNote = props.processedNotes.some(
 			(note) => note.empty === true,
 		);
 		if (containsEmptyStateNote == false) props.createNoteFromEmptyState();
+	};
+
+	const restoreNoteAndSubView = () => {
+		props.restoreNote(props.activeNote);
+		props.setTrashSubView(false);
+		props.setCurrentNoteId(props.activeNote.id);
 	};
 
 	return (
@@ -71,6 +79,13 @@ export const NoteActions = (props) => {
 								onClick={() => setIsDeletingNote(true)}
 							>
 								<span className="icon-wrapper">{trashIcon}</span>
+							</span>
+							<span
+								className="control restore"
+								title="Restore"
+								onClick={restoreNoteAndSubView}
+							>
+								<span className="icon-wrapper">{trashRestoreIcon}</span>
 							</span>
 							{/* TODO: fullscreen onClick */}
 							<span

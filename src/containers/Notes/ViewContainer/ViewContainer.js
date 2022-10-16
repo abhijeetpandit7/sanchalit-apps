@@ -4,7 +4,7 @@ export const ViewContainer = (props) => {
 	return (
 		<div className="detail-view">
 			{props.activeNote && (
-				<div className="notes-detail">
+				<div className={`notes-detail ${props.trashSubView ? "deleted" : ""}`}>
 					<div className="list-bar-wrapper">
 						<div className="list-bar"></div>
 					</div>

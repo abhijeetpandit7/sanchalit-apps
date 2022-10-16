@@ -31,7 +31,10 @@ export const UserActions = memo((props) => (
 			<MoreToggleWrapper1>
 				<div className="dropdown more-dropdown" data-v-5504764f>
 					<ul className="dropdown-list">
-						<li className="dropdown-list-item show-deleted">
+						<li
+							className="dropdown-list-item show-deleted"
+							onClick={() => props.setTrashSubView(true)}
+						>
 							<span className="dropdown-list-icon-wrapper">{trashIcon}</span>
 							<span className="dropdown-list-label">Deleted</span>
 						</li>

@@ -357,10 +357,10 @@ export const parseBookmarksOverflow = (
 	} else return bookmarksList;
 };
 
-export const processNotes = (notes, searchText) => {
+export const processNotes = (notes, searchText, trashSubView) => {
 	const processedValue = searchText.trim().toLowerCase();
 	return notes
-		.filter((note) => note.deleted === false)
+		.filter((note) => (note.deleted === trashSubView ? true : false))
 		.filter((note) =>
 			processedValue === ""
 				? true

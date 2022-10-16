@@ -62,16 +62,16 @@ export const useUserActions = () => {
 		focusNotesInput(notesInputRef);
 	}, []);
 
-	const deleteNote = useCallback(
-		(taegetNote) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				notes: prevCustomization.notes.map((note) =>
-					note.id === taegetNote.id ? { ...note, deleted: true } : note,
-				),
-			})),
-		[],
-	);
+	const deleteNote = useCallback((targetNote) => {
+		setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			notes: prevCustomization.notes.map((note) =>
+				note.id === targetNote.id
+					? { ...note, deleted: true, updatedDate: new Date().getTime() }
+					: note,
+			),
+		}));
+	}, []);
 
 	const editDisplayName = useCallback(async () => {
 		const { displayName, displayNameVisible } = storageUserCustomization;
@@ -108,6 +108,17 @@ export const useUserActions = () => {
 		storageUserCustomization.displayName,
 		storageUserCustomization.displayNameVisible,
 	]);
+
+	const restoreNote = useCallback((targetNote) => {
+		setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			notes: prevCustomization.notes.map((note) =>
+				note.id === targetNote.id
+					? { ...note, deleted: false, updatedDate: new Date().getTime() }
+					: note,
+			),
+		}));
+	}, []);
 
 	const saveDisplayName = (isDisplayNameEmpty) => {
 		const element = displayNameRef.current;
@@ -381,6 +392,7 @@ export const useUserActions = () => {
 		createNoteFromEmptyState,
 		deleteNote,
 		editDisplayName,
+		restoreNote,
 		saveNote,
 		selectBookmarksSetting,
 		selectGeneralSetting,
