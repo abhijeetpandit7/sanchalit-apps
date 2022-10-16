@@ -42,17 +42,7 @@ export const UserActions = memo((props) => (
 				</div>
 			</MoreToggleWrapper1>
 		</div>
-		<div className="list-bar-toggle">
-			<span
-				className="control icon-wrapper toggle-list-icons"
-				title="Note List"
-			>
-				<i className="icon icon-list-toggle u--no-transition">
-					<span className="list-toggle-top"></span>
-					<span className="list-toggle-middle"></span>
-					<span className="list-toggle-bottom"></span>
-				</i>
-			</span>
-		</div>
+		{/* TODO: Add Note List toggle */}
+		<div className="list-bar-toggle"></div>
 	</header>
 ));

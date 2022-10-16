@@ -1,6 +1,7 @@
 import React from "react";
 
 export const ViewContainer = (props) => {
+	// TODO: Restore this note to edit for deleted notes
 	return (
 		<div className="detail-view">
 			{props.activeNote && (
