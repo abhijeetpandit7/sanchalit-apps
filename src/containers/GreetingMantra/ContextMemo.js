@@ -68,7 +68,7 @@ const ContextMemo = memo(
 					<div className="center-col" data-v-d6260d64>
 						<span className="content">
 							<span className="message">{greetingMessage}</span>
-							<span className="name-punctuation-no-wrap">
+							<span className="name-punctuation-no-wrap" data-v-4e331ed7>
 								<span className="name-wrapper">
 									<span
 										className="name"

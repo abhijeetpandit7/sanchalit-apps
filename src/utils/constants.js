@@ -30,6 +30,7 @@ export const DASH = "Dash";
 export const DARK = "dark";
 export const DEFAULT = "default";
 const DEFAULT_MOST_VISITED = "defaultMostVisited";
+export const DELETE_CONF_ACTIVE = "delete-conf-active";
 export const DISABLED = "disabled";
 export const DUCK_DUCK_GO = "DuckDuckGo";
 export const EDGE = "Edge";
@@ -39,6 +40,8 @@ export const EMPTY_NAME = "empty-name";
 export const FADEIN = "fadein";
 export const FIREFOX = "Firefox";
 export const FOLDER_DROPDOWN = "folder-dropdown";
+export const FULLSCREEN = "fullscreen";
+export const FULLSCREEN_TEXTAREA = "fullscreen-textarea";
 export const HIDE_APPS = "hide-apps";
 export const GENERAL = "General";
 export const GOOGLE = "Google";
@@ -47,6 +50,7 @@ const GREETING_VISIBLE = "greetingVisible";
 export const HELP = "Help";
 export const HIDE_BACKGROUND_OVERLAY = "hide-background-overlay";
 export const HIDE_VISIBILITY = "m-hide-visibility";
+export const HIDE_CONTENT = "hide-content";
 const HOME_TAB_LOCATION = "homeTabLocation";
 export const HOTKEY_HOVER = "hotkey-hover";
 const ICONS_ONLY = "iconsOnly";
@@ -60,6 +64,8 @@ export const LINKS_AND_BOOKMARKS = "Links & Bookmarks";
 export const MANTRAS = "Mantras";
 const MODERN = "modern";
 export const NAV_ACTIVE = "nav-active";
+export const NIPPLE = "nipple";
+export const NIPPLE_BOTTOM_RIGHT = "nipple-bottom-right";
 const NONE = "None";
 export const NOTES = "Notes";
 const NOTES_VISIBLE = "notesVisible";
@@ -105,7 +111,9 @@ export const ONE_SECOND = 1;
 export const ONE_MINUTE = ONE_SECOND * 60;
 export const ONE_HOUR = ONE_MINUTE * 60;
 export const ONE_DAY = ONE_HOUR * 24;
+export const ONE_WEEK = ONE_DAY * 7;
 export const ONE_YEAR = ONE_DAY * 365;
+export const NOTE_DELETE_TIMEOUT = ONE_WEEK * 2;
 
 const isExtensionBuildTargetSafari = process.env.BUILD_TARGET === "safari";
 const isExtensionBuildTargetChromium = process.env.BUILD_TARGET === CHROMIUM;
@@ -258,6 +266,14 @@ export const QUICK_TIP_LIST = [
 	"You can change between a 12 hour or 24 hour clock.",
 	"Double-clicking your display name will let you edit it.",
 ];
+export const NOTE_DELIGHTER_LIST = [
+	"Record some wisdom",
+	"This is your canvas",
+	"Think of the possibilities...",
+	"Type a tidbit",
+	"Type something cool!",
+	"Use your words",
+];
 
 export const APPS_OBJ = {
 	id: APPS,
@@ -289,6 +305,14 @@ export const TOP_SITES_FOLDER_OBJ = {
 	parentId: BOOKMARKS_ROOT_ID,
 	title: TOP_SITES,
 	children: [],
+};
+export const DEFAULT_NOTE_OBJ = {
+	id: "",
+	body: "",
+	createdDate: new Date(),
+	deleted: false,
+	empty: true,
+	updatedDate: new Date().getTime(),
 };
 
 export const DEFAULT_AUTHENTICATION = {
@@ -350,6 +374,8 @@ export const DEFAULT_CUSTOMIZATION = {
 	displayNameVisible: true,
 	[GREETING_VISIBLE]: true,
 	hour12clock: true,
+	notes: [],
+	currentNoteId: null,
 	[NOTES_VISIBLE]: true,
 	[QUOTES_VISIBLE]: true,
 	quoteSettings: {

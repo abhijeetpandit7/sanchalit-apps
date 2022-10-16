@@ -15,6 +15,7 @@ export const UserCustomizationProvider = ({ children }) => {
 	const appsRef = useRef(null);
 	const displayNameRef = useRef(null);
 	const mainViewRef = useRef(null);
+	const notesInputRef = useRef(null);
 	const searchInputRef = useRef(null);
 	const settingsRef = useRef(null);
 
@@ -46,6 +47,7 @@ export const UserCustomizationProvider = ({ children }) => {
 				appsRef,
 				displayNameRef,
 				mainViewRef,
+				notesInputRef,
 				searchInputRef,
 				settingsRef,
 				storageUserCustomization,

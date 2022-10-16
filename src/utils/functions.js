@@ -1,28 +1,39 @@
 import React from "react";
 import moment from "moment";
 import _ from "lodash";
+import { v4 as uuidv4 } from "uuid";
 import {
 	ACTIVE,
+	BOOKMARKS,
 	BOOKMARK_ACTION_WIDTH,
+	BOOKMARKS_BAR_ID,
+	BOOKMARKS_BAR_FIREFOX_ID,
 	CHROME,
 	EDGE,
 	EMPTY_NAME,
 	FIREFOX,
 	FOLDER_DROPDOWN,
+	FULLSCREEN,
+	FULLSCREEN_TEXTAREA,
+	HIDE_CONTENT,
+	NIPPLE,
+	NIPPLE_BOTTOM_RIGHT,
+	ONE_DAY,
+	ONE_WEEK,
 	OPEN,
 	OVERFLOW,
-	BOOKMARKS,
-	BOOKMARKS_BAR_ID,
-	BOOKMARKS_BAR_FIREFOX_ID,
+	SHOW_ANYWAY,
 	SAFARI,
 	SHIFT_TO_LEFT,
 	SHOW,
 	SHOW_FADE_IN,
 	BROWSER_LIST,
+	NOTE_DELIGHTER_LIST,
 	THEME_COLOUR_OPTIONS,
 	THEME_FONT_OPTIONS,
 	APPS_OBJ,
 	BOOKMARKS_MANAGER_OBJ,
+	DEFAULT_NOTE_OBJ,
 	HOME_TAB_OBJ,
 	OVERFLOW_FOLDER_OBJ,
 	TOP_SITES_FOLDER_OBJ,
@@ -35,6 +46,21 @@ import {
 export const addRefClassName = (ref, className) =>
 	ref.current.classList.add(className);
 
+export const checkForMultiLineNote = (body) => {
+	let e, i;
+	return (
+		!!(e =
+			-1 != (i = body.indexOf("\n")) ? body.slice(i, body.length - 1) : null) &&
+		-1 !== e.search(/[^\s]+/)
+	);
+};
+
+export const createNote = () => {
+	const newNote = _.cloneDeep(DEFAULT_NOTE_OBJ);
+	newNote.id = uuidv4();
+	return newNote;
+};
+
 export const focusDisplayName = (displayNameRef) => {
 	const element = displayNameRef.current;
 	if (element.innerText === EMPTY_NAME) element.innerText = "";
@@ -46,6 +72,78 @@ export const focusDisplayName = (displayNameRef) => {
 	set.removeAllRanges();
 	set.addRange(setpos);
 	element.focus();
+};
+
+export const focusNotesInput = (notesInputRef) => {
+	const element = notesInputRef.current;
+	element.setSelectionRange(element.value.length, element.value.length);
+	element.focus();
+};
+
+export const formatDate = ({
+	timestamp,
+	hour12clock,
+	relativeDay = false,
+} = {}) => {
+	const date = moment(timestamp);
+	const dateIsInThisYear = date.isSame(moment(), "year");
+	const dateDifference = date
+		.startOf("day")
+		.diff(moment().startOf("day"), "days");
+	if (relativeDay) {
+		switch (dateDifference) {
+			case 0:
+				return "Today";
+			case 1:
+				return "Tomorrow";
+			case -1:
+				return "Yesterday";
+			default:
+				const monthlyDayFormat = date.format("MMMM D");
+				return dateIsInThisYear
+					? monthlyDayFormat
+					: formatYearRelative(monthlyDayFormat, timestamp);
+		}
+	} else {
+		const dateIsToday = date.isSame(moment(), "day");
+		const dateIsInLast7d = dateDifference > -7 && dateDifference < 0;
+		const monthlyDayFormat = date.format("MMM D");
+
+		if (dateIsToday) return formatTime({ timestamp, hour12clock });
+		else if (dateIsInLast7d) return date.format("ddd");
+		else if (dateIsInThisYear) return monthlyDayFormat;
+		else return formatYearRelative(monthlyDayFormat, timestamp);
+	}
+};
+
+const formatYearRelative = (dateFormat, timestamp) =>
+	`${dateFormat}, ${moment(timestamp).get("year")}`;
+
+export const formatTime = ({ timestamp, hour12clock }) => {
+	const date = moment(timestamp);
+	const currentHour = date.get("hour");
+	const time = hour12clock ? date.format("h:mm") : date.format("HH:mm");
+	return hour12clock ? `${time} ${currentHour >= 12 ? "PM" : "AM"}` : time;
+};
+
+export const getBodyPreview = (body) => {
+	const bodyPreviewMaxLength = 150;
+	const bodyTitle = getBodyTitle(body);
+	return body.substr(bodyTitle.length, bodyPreviewMaxLength).trim();
+};
+
+export const getBodyTitle = (body) => {
+	const titleLengthGuide = 60;
+	let t, e, i;
+	return (
+		-1 !=
+			(i = (t =
+				-1 != (e = body.indexOf("\n")) ? body.slice(0, e) : body).indexOf(
+				" ",
+				titleLengthGuide - 1,
+			)) && (t = t.slice(0, i)),
+		t
+	);
 };
 
 const getDayPeriod = () => {
@@ -106,6 +204,9 @@ export const getBrowserType = () => {
 	return browserType;
 };
 
+export const getDaysDifference = (timestamp) =>
+	moment(timestamp).diff(moment(), "days");
+
 export const getPermissionAllowed = (permission) =>
 	new Promise((resolve, reject) =>
 		chrome.permissions.contains({ permissions: [permission] }, (allowed) =>
@@ -114,6 +215,8 @@ export const getPermissionAllowed = (permission) =>
 				: resolve(allowed),
 		),
 	);
+
+export const getRandomDelighter = () => randomElement(NOTE_DELIGHTER_LIST);
 
 export const getTopSites = () =>
 	new Promise((resolve, reject) =>
@@ -131,6 +234,13 @@ export const hideAppPopup = (appRef) =>
 
 export const hideBookmarkFolder = (appRef) =>
 	appRef.current.classList.contains(ACTIVE) && toggleBookmarkFolder(appRef);
+
+export const hideRefClassName = (appRef, classNames) => {
+	const containsClass = classNames.some((className) =>
+		appRef.current.classList.contains(className),
+	);
+	containsClass && toggleRefClassNames(appRef, classNames);
+};
 
 export const hideUserNav = (ref) =>
 	ref.current.classList.contains(OPEN) && toggleRefClassName(ref, OPEN);
@@ -253,6 +363,18 @@ export const parseBookmarksOverflow = (
 	} else return bookmarksList;
 };
 
+export const processNotes = (notes, searchText, trashSubView) => {
+	const processedValue = searchText.trim().toLowerCase();
+	return notes
+		.filter((note) => (note.deleted === trashSubView ? true : false))
+		.filter((note) =>
+			processedValue === ""
+				? true
+				: note.body.toLowerCase().includes(processedValue),
+		)
+		.sort((a, b) => new Date(b.updatedDate) - new Date(a.updatedDate));
+};
+
 export const randomElement = (array) =>
 	array[Math.floor(Math.random() * array.length)];
 
@@ -307,7 +429,35 @@ export const toggleBookmarkFolder = (appRef, ignoreOverflow) => {
 			addRefClassName(appRef, SHIFT_TO_LEFT);
 };
 
+export const toggleFullscreen = async (
+	notesRef,
+	appWrapperRef,
+	notesAppRef,
+) => {
+	addRefClassName(notesRef, HIDE_CONTENT);
+	await new Promise((resolve) =>
+		setTimeout(() => resolve(removeRefClassName(notesRef, HIDE_CONTENT)), 300),
+	);
+	toggleRefClassNames(notesRef, [FULLSCREEN, SHOW_ANYWAY]);
+	toggleRefClassNames(appWrapperRef, [NIPPLE, NIPPLE_BOTTOM_RIGHT]);
+	toggleRefClassName(notesAppRef, FULLSCREEN_TEXTAREA);
+	const isFullscreen = notesRef.current.classList.contains(FULLSCREEN);
+	notesAppRef.current.style.position = isFullscreen ? "fixed" : "";
+	notesAppRef.current.style.inset = isFullscreen ? "0px" : "";
+	notesAppRef.current.style.transition = isFullscreen
+		? "all 200ms ease 0s"
+		: "";
+	return isFullscreen;
+};
+
 export const toggleRefClassName = (ref, className) =>
 	ref.current.classList.toggle(className);
 
+export const toggleRefClassNames = (ref, classNames) =>
+	classNames.map((className) => toggleRefClassName(ref, className));
+
+export const toDays = (seconds) => seconds / ONE_DAY;
+
 export const toMilliseconds = (seconds) => seconds * 1000;
+
+export const toWeeks = (seconds) => seconds / ONE_WEEK;
