@@ -4,19 +4,25 @@ import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 import {
 	ACTIVE,
+	BOOKMARKS,
 	BOOKMARK_ACTION_WIDTH,
+	BOOKMARKS_BAR_ID,
+	BOOKMARKS_BAR_FIREFOX_ID,
 	CHROME,
 	EDGE,
 	EMPTY_NAME,
 	FIREFOX,
 	FOLDER_DROPDOWN,
+	FULLSCREEN,
+	FULLSCREEN_TEXTAREA,
+	HIDE_CONTENT,
+	NIPPLE,
+	NIPPLE_BOTTOM_RIGHT,
 	ONE_DAY,
 	ONE_WEEK,
 	OPEN,
 	OVERFLOW,
-	BOOKMARKS,
-	BOOKMARKS_BAR_ID,
-	BOOKMARKS_BAR_FIREFOX_ID,
+	SHOW_ANYWAY,
 	SAFARI,
 	SHIFT_TO_LEFT,
 	SHOW,
@@ -421,6 +427,27 @@ export const toggleBookmarkFolder = (appRef, ignoreOverflow) => {
 	if (ignoreOverflow === false)
 		if (isBookmarkDropdownOverflowing(appRef))
 			addRefClassName(appRef, SHIFT_TO_LEFT);
+};
+
+export const toggleFullscreen = async (
+	notesRef,
+	appWrapperRef,
+	notesAppRef,
+) => {
+	addRefClassName(notesRef, HIDE_CONTENT);
+	await new Promise((resolve) =>
+		setTimeout(() => resolve(removeRefClassName(notesRef, HIDE_CONTENT)), 300),
+	);
+	toggleRefClassNames(notesRef, [FULLSCREEN, SHOW_ANYWAY]);
+	toggleRefClassNames(appWrapperRef, [NIPPLE, NIPPLE_BOTTOM_RIGHT]);
+	toggleRefClassName(notesAppRef, FULLSCREEN_TEXTAREA);
+	const isFullscreen = notesRef.current.classList.contains(FULLSCREEN);
+	notesAppRef.current.style.position = isFullscreen ? "fixed" : "";
+	notesAppRef.current.style.inset = isFullscreen ? "0px" : "";
+	notesAppRef.current.style.transition = isFullscreen
+		? "all 200ms ease 0s"
+		: "";
+	return isFullscreen;
 };
 
 export const toggleRefClassName = (ref, className) =>

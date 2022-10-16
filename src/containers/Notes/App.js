@@ -1,10 +1,12 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { Navbar, NoteActions, UserActions, ViewContainer } from "../Notes";
 import { useUserActions, useUserCustomization } from "../../hooks";
-import { processNotes } from "../../utils";
+import { processNotes, toggleFullscreen } from "../../utils";
 
 const ContextMemo = memo((props) => {
 	const {
+		appWrapperRef,
+		notesRef,
 		notesInputRef,
 		currentNoteId,
 		hour12clock,
@@ -12,17 +14,22 @@ const ContextMemo = memo((props) => {
 		cleanupNotes,
 		createNoteFromEmptyState,
 		deleteNote,
+		hideApps,
 		restoreNote,
 		saveNote,
 		setCurrentNoteId,
+		showApps,
 	} = props;
 
+	const notesAppRef = useRef(null);
 	// TODO: Add other sorting
 	const [searchText, setSearchText] = useState("");
 	const [trashSubView, setTrashSubView] = useState(false);
 	const [processedNotes, setProcessedNotes] = useState(
 		processNotes(notes, searchText, trashSubView),
 	);
+
+	useEffect(() => cleanupNotes(), []);
 
 	useEffect(() => {
 		setProcessedNotes(processNotes(notes, searchText, trashSubView));
@@ -36,7 +43,14 @@ const ContextMemo = memo((props) => {
 
 	const isDeletedNotesNotEmpty = () => processNotes(notes, "", true).length;
 
-	useEffect(() => cleanupNotes(), []);
+	const toggleFullscreenHandler = async () => {
+		const isFullscreen = await toggleFullscreen(
+			notesRef,
+			appWrapperRef,
+			notesAppRef,
+		);
+		isFullscreen ? hideApps() : showApps();
+	};
 
 	return (
 		<div
@@ -51,6 +65,7 @@ const ContextMemo = memo((props) => {
 					: "notes-empty-active"
 			}
 			`}
+			ref={notesAppRef}
 		>
 			<Navbar
 				{...{
@@ -85,6 +100,7 @@ const ContextMemo = memo((props) => {
 						restoreNote,
 						setCurrentNoteId,
 						setTrashSubView,
+						toggleFullscreenHandler,
 					}}
 				/>
 			</ViewContainer>
@@ -92,10 +108,12 @@ const ContextMemo = memo((props) => {
 	);
 });
 
-const App = () => {
+const App = ({ appWrapperRef, notesRef }) => {
 	const {
 		notesInputRef,
 		storageUserCustomization: { currentNoteId, hour12clock, notes },
+		hideApps,
+		showApps,
 	} = useUserCustomization();
 	const {
 		cleanupNotes,
@@ -109,6 +127,8 @@ const App = () => {
 	return (
 		<ContextMemo
 			{...{
+				appWrapperRef,
+				notesRef,
 				notesInputRef,
 				currentNoteId,
 				hour12clock,
@@ -116,9 +136,11 @@ const App = () => {
 				cleanupNotes,
 				createNoteFromEmptyState,
 				deleteNote,
+				hideApps,
 				restoreNote,
 				saveNote,
 				setCurrentNoteId,
+				showApps,
 			}}
 		/>
 	);

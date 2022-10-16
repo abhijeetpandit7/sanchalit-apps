@@ -11,11 +11,17 @@ import {
 	useUserActions,
 	useUserCustomization,
 } from "../../hooks";
-import { NOTES, toggleAppPopup } from "../../utils";
+import {
+	NIPPLE,
+	NIPPLE_BOTTOM_RIGHT,
+	NOTES,
+	toggleAppPopup,
+} from "../../utils";
 
 const App = lazy(() => import("./App"));
 
 const ContextMemo = memo(({ setWidgetReady }) => {
+	const appWrapperRef = useRef(null);
 	const notesRef = useRef(null);
 	const [componentDidMount, setComponentDidMount] = useState(false);
 
@@ -30,10 +36,13 @@ const ContextMemo = memo(({ setWidgetReady }) => {
 
 	return (
 		<div id="notes" className="app-container notes" ref={notesRef}>
-			<div className="app-wrapper app-placeholder nipple nipple-bottom-right">
+			<div
+				className={`app-wrapper app-placeholder ${NIPPLE} ${NIPPLE_BOTTOM_RIGHT}`}
+				ref={appWrapperRef}
+			>
 				{componentDidMount && (
 					<Suspense fallback={null}>
-						<App />
+						<App {...{ notesRef, appWrapperRef }} />
 					</Suspense>
 				)}
 			</div>

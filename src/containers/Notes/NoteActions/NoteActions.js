@@ -87,10 +87,10 @@ export const NoteActions = (props) => {
 							>
 								<span className="icon-wrapper">{trashRestoreIcon}</span>
 							</span>
-							{/* TODO: fullscreen onClick */}
 							<span
 								className="control toggle-fullscreen"
 								title="Toggle Fullscreen"
+								onClick={props.toggleFullscreenHandler}
 							>
 								<span className="icon-wrapper">{expandIcon}</span>
 							</span>
