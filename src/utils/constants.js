@@ -92,6 +92,9 @@ export const SHOW = "show";
 export const SHOW_ANYWAY = "show-anyway";
 export const SHOW_FADE_IN = "show-fade-in";
 export const SHOW_TOP_SITES = "Show Top Sites";
+export const SOUNDSCAPES = "Soundscapes";
+const SOUNDSCAPES_DESCRIPTION = "Sounds to help you focus and relax";
+const SOUNDSCAPES_VISIBLE = "soundscapesVisible";
 export const START_IN_TOP_SITES = "Start in Top Sites";
 const STARTUP = "startup";
 export const STATIC_RESOURCES = "static-resources";
@@ -212,6 +215,13 @@ export const GENERAL_SETTING_APP_LIST = [
 		key: NOTES_VISIBLE,
 		plus: true,
 		description: NOTES_DESCRIPTION,
+	},
+	{
+		name: SOUNDSCAPES,
+		key: SOUNDSCAPES_VISIBLE,
+		plus: true,
+		preview: true,
+		description: SOUNDSCAPES_DESCRIPTION,
 	},
 ];
 export const GENERAL_SETTING_APPEARANCE_LIST = [
@@ -396,6 +406,7 @@ export const DEFAULT_CUSTOMIZATION = {
 		inCenter: true,
 		provider: SEARCH_PROVIDER_LIST[0].name,
 	},
+	[SOUNDSCAPES_VISIBLE]: true,
 	[TODO_VISIBLE]: true,
 	topSites: [],
 	[THEME_COLOUR]: SYSTEM,

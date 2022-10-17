@@ -1,9 +1,10 @@
 import React from "react";
-import { DashLinks, Search } from "../../containers";
+import { DashLinks, Search, Soundscapes } from "../../containers";
 
 export const TopRow = () => (
 	<div className="top-row">
 		<div className="region top-left">
+			<Soundscapes />
 			<Search topRow={true} />
 			<DashLinks />
 		</div>

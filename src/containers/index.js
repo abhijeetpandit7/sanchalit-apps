@@ -10,4 +10,5 @@ export { PhotoInfo } from "./PhotoInfo/PhotoInfo";
 export { Quote } from "./Quote/Quote";
 export { Search } from "./Search/Search";
 export { Settings } from "./Settings/Settings";
+export { Soundscapes } from "./Soundscapes/Soundscapes";
 export { Todo } from "./Todo/Todo";
