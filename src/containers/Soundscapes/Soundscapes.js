@@ -14,9 +14,11 @@ import {
 import { SOUNDSCAPES, soundWaveIcon, toggleAppPopup } from "../../utils";
 
 const Loading = () => (
-	<div className="app">
-		<div className="app-placeholder-loading">
-			<i className="loading-icon"></i>Loading...
+	<div className="app-wrapper app-placeholder">
+		<div className="app">
+			<div className="app-placeholder-loading">
+				<i className="loading-icon"></i>Loading...
+			</div>
 		</div>
 	</div>
 );
@@ -42,13 +44,6 @@ const ContextMemo = memo(({ setWidgetReady }) => {
 			className="app-container soundscapes"
 			ref={soundscapesRef}
 		>
-			<div className="app-wrapper app-placeholder">
-				{componentDidMount && (
-					<Suspense fallback={<Loading />}>
-						<App />
-					</Suspense>
-				)}
-			</div>
 			<div
 				className="app-dash app-dash-icon add-shadow -toggle toggle"
 				onClick={toggleSoundscapesApp}
@@ -56,6 +51,11 @@ const ContextMemo = memo(({ setWidgetReady }) => {
 				{soundWaveIcon}
 				<span className="app-dash-icon-label"></span>
 			</div>
+			{componentDidMount && (
+				<Suspense fallback={<Loading />}>
+					<App />
+				</Suspense>
+			)}
 		</div>
 	);
 });

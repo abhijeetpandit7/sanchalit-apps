@@ -1,3 +1,18 @@
+import {
+	beachIcon,
+	cafeIcon,
+	campfireIcon,
+	creekIcon,
+	customIcon,
+	forestIcon,
+	gardenIcon,
+	officeIcon,
+	rainfallIcon,
+	randomIcon,
+	thunderstormIcon,
+	trainIcon,
+} from "./assets";
+
 export const ABOUT = "About";
 export const ACTIVE = "active";
 export const ADD_SHADOW = "add-shadow";
@@ -270,6 +285,56 @@ export const SETTINGS_NAV_LIST = [
 	{ value: BOOKMARKS },
 	{ value: HELP, secondary: true },
 	{ value: ABOUT, secondary: true },
+];
+export const SOUNDSCAPES_SCENE_LIST = [
+	{
+		name: "Campfire",
+		icon: campfireIcon,
+	},
+	{
+		name: "Beach",
+		icon: beachIcon,
+	},
+	{
+		name: "Train",
+		icon: trainIcon,
+	},
+	{
+		name: "Rainfall",
+		icon: rainfallIcon,
+	},
+	{
+		name: "Forest",
+		icon: forestIcon,
+	},
+	{
+		name: "Garden",
+		icon: gardenIcon,
+	},
+	{
+		name: "Café",
+		icon: cafeIcon,
+	},
+	{
+		name: "Thunderstorm",
+		icon: thunderstormIcon,
+	},
+	{
+		name: "Creek",
+		icon: creekIcon,
+	},
+	{
+		name: "Office",
+		icon: officeIcon,
+	},
+	{
+		name: "Random",
+		icon: randomIcon,
+	},
+	{
+		name: "Custom",
+		icon: customIcon,
+	},
 ];
 export const QUICK_TIP_LIST = [
 	"Sanchalit's Photo, Quote & Mantra change automatically each day.",
