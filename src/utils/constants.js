@@ -1,16 +1,37 @@
 import {
+	airConditionerIcon,
 	beachIcon,
+	birdsIcon,
 	cafeIcon,
 	campfireIcon,
+	chimesIcon,
+	coffeeMakerIcon,
+	copierIcon,
+	coWorkersIcon,
+	cricketsIcon,
 	creekIcon,
+	cupIcon,
 	customIcon,
+	fireIcon,
+	fluorescentHumIcon,
 	forestIcon,
 	gardenIcon,
+	insectsIcon,
+	loudRainIcon,
+	mechanicalKeyboardIcon,
+	oceanIcon,
 	officeIcon,
+	rainIcon,
 	rainfallIcon,
+	rainOnSurfaceIcon,
 	randomIcon,
+	seagullsIcon,
+	streamIcon,
+	thunderIcon,
 	thunderstormIcon,
+	tracksIcon,
 	trainIcon,
+	windIcon,
 } from "./assets";
 
 export const ABOUT = "About";
@@ -137,6 +158,113 @@ const isExtensionBuildTargetSafari = process.env.BUILD_TARGET === "safari";
 const isExtensionBuildTargetChromium = process.env.BUILD_TARGET === CHROMIUM;
 export const isBuildTargetWeb = process.env.BUILD_TARGET === WEB;
 
+const SOUNDS = {
+	fire: {
+		name: "Fire",
+		icon: fireIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/276f1472-734e-492c-9138-c1584fb6cd80",
+	},
+	crickets: {
+		name: "Crickets",
+		icon: cricketsIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/7969c39a-f659-40e3-a357-11060161ce74",
+	},
+	ocean: {
+		name: "Ocean",
+		icon: oceanIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/3f851f30-5854-4fdb-805a-3f302ba56a81",
+	},
+	wind: {
+		name: "Wind",
+		icon: windIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/ebcb630e-5cb3-4a64-a2d4-eec16c9abf41",
+	},
+	seagulls: {
+		name: "Seagulls",
+		icon: seagullsIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/c0b4e5c6-ab66-42ce-aea3-5d6a419583cb",
+	},
+	tracks: {
+		name: "Tracks",
+		icon: tracksIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/38228a91-cfa9-45b1-ada9-c16b619c2568",
+	},
+	rainOnSurface: {
+		name: "Rain on surface",
+		icon: rainOnSurfaceIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/08e95b57-7dbe-4ba8-83a7-8b19fc254ae1",
+	},
+	rain: {
+		name: "Rain",
+		icon: rainIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/eac6cdc4-1f53-4fc5-92dd-0a4c053de028",
+	},
+	birds: {
+		name: "Birds",
+		icon: birdsIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/84d9d4e7-1d54-4300-a347-8f2650eafd51",
+	},
+	insects: {
+		name: "Insects",
+		icon: insectsIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/5875d483-396c-4bfe-a5d4-160384c18832",
+	},
+	chimes: {
+		name: "Chimes",
+		icon: chimesIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/c30b03c9-91e0-43ce-9aa9-199e7aa0b76a",
+	},
+	cafe: {
+		name: "Café",
+		icon: cupIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/6f8cf03d-c7f2-45b7-898d-576385236122",
+	},
+	coffeeMaker: {
+		name: "Coffee Maker",
+		icon: coffeeMakerIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/43769f50-e91e-4595-91b4-8248372f39d2",
+	},
+	thunder: {
+		name: "Thunder",
+		icon: thunderIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/8291e604-c11a-4b45-b844-2e464527a2e1",
+	},
+	loudRain: {
+		name: "Loud Rain",
+		icon: loudRainIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/31fca0bf-8792-458f-8c13-f605b5618275",
+	},
+	stream: {
+		name: "Stream",
+		icon: streamIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/2374f3af-35fd-4ab8-96c3-5e70775ca33a",
+	},
+	coWorkers: {
+		name: "Co-workers",
+		icon: coWorkersIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/7a5fc995-0278-4386-bf30-b5672dfdd95b",
+	},
+	copier: {
+		name: "Copier",
+		icon: copierIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/3e1f826c-dca2-4fe7-a10f-bf07c56ecfa8",
+	},
+	airConditioner: {
+		name: "Air Conditioner",
+		icon: airConditionerIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/e55e01b5-6fe8-43b3-b50b-18ce4f670472",
+	},
+	fluorescentHum: {
+		name: "Fluorescent Hum",
+		icon: fluorescentHumIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/58fdb1ba-8821-4abe-8daf-704ee656e369",
+	},
+	mechanicalKeyboard: {
+		name: "Mechanical Keyboard",
+		icon: mechanicalKeyboardIcon,
+		url: "https://az814671.vo.msecnd.net/blogimages/f295aec4-9d59-47b2-b31a-ba88f23d4628",
+	},
+};
 const APP_LOCATION_OPTIONS = [
 	{ name: BOOKMARKS, key: BOOKMARKS },
 	{ name: DASH, key: DASH },
@@ -290,42 +418,174 @@ export const SOUNDSCAPES_SCENE_LIST = [
 	{
 		name: "Campfire",
 		icon: campfireIcon,
+		tracks: [
+			{
+				...SOUNDS.fire,
+				volume: 90,
+			},
+			{
+				...SOUNDS.crickets,
+				volume: 2,
+			},
+		],
 	},
 	{
 		name: "Beach",
 		icon: beachIcon,
+		tracks: [
+			{
+				...SOUNDS.ocean,
+				volume: 50,
+			},
+			{
+				...SOUNDS.wind,
+				volume: 15,
+			},
+			{
+				...SOUNDS.seagulls,
+				volume: 5,
+			},
+		],
 	},
 	{
 		name: "Train",
 		icon: trainIcon,
+		tracks: [
+			{
+				...SOUNDS.tracks,
+				volume: 90,
+			},
+			{
+				...SOUNDS.wind,
+				volume: 10,
+			},
+		],
 	},
 	{
 		name: "Rainfall",
 		icon: rainfallIcon,
+		tracks: [
+			{
+				...SOUNDS.rainOnSurface,
+				volume: 50,
+			},
+			{
+				...SOUNDS.rain,
+				volume: 50,
+			},
+		],
 	},
 	{
 		name: "Forest",
 		icon: forestIcon,
+		tracks: [
+			{
+				...SOUNDS.birds,
+				volume: 75,
+			},
+			{
+				...SOUNDS.wind,
+				volume: 10,
+			},
+			{
+				...SOUNDS.insects,
+				volume: 5,
+			},
+		],
 	},
 	{
 		name: "Garden",
 		icon: gardenIcon,
+		tracks: [
+			{
+				...SOUNDS.chimes,
+				volume: 50,
+			},
+			{
+				...SOUNDS.insects,
+				volume: 1,
+			},
+			{
+				...SOUNDS.wind,
+				volume: 10,
+			},
+		],
 	},
 	{
 		name: "Café",
 		icon: cafeIcon,
+		tracks: [
+			{
+				...SOUNDS.cafe,
+				volume: 50,
+			},
+			{
+				...SOUNDS.coffeeMaker,
+				volume: 55,
+			},
+		],
 	},
 	{
 		name: "Thunderstorm",
 		icon: thunderstormIcon,
+		tracks: [
+			{
+				...SOUNDS.thunder,
+				volume: 90,
+			},
+			{
+				...SOUNDS.loudRain,
+				volume: 55,
+			},
+			{
+				...SOUNDS.wind,
+				volume: 45,
+			},
+			{
+				...SOUNDS.rain,
+				volume: 25,
+			},
+		],
 	},
 	{
 		name: "Creek",
 		icon: creekIcon,
+		tracks: [
+			{
+				...SOUNDS.stream,
+				volume: 20,
+			},
+			{
+				...SOUNDS.wind,
+				volume: 10,
+			},
+		],
 	},
 	{
 		name: "Office",
 		icon: officeIcon,
+		tracks: [
+			{
+				...SOUNDS.coWorkers,
+				volume: 13,
+			},
+			{
+				...SOUNDS.copier,
+				volume: 8,
+			},
+			{
+				...SOUNDS.airConditioner,
+				volume: 7,
+			},
+			{
+				...SOUNDS.fluorescentHum,
+				volume: 3,
+			},
+			{
+				...SOUNDS.mechanicalKeyboard,
+				volume: 1,
+			},
+		],
 	},
 	{
 		name: "Random",
@@ -334,6 +594,7 @@ export const SOUNDSCAPES_SCENE_LIST = [
 	{
 		name: "Custom",
 		icon: customIcon,
+		tracks: Object.values(SOUNDS),
 	},
 ];
 export const QUICK_TIP_LIST = [

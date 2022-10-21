@@ -450,6 +450,14 @@ export const toggleFullscreen = async (
 	return isFullscreen;
 };
 
+export const toPlayerIcon = (icon) => {
+	const iconClassList = Array.from(icon.classList);
+	iconClassList.map((className) => icon.classList.remove(className));
+	icon.classList.add("icon");
+	icon.classList.add("player-icon");
+	icon.setAttribute("data-v-1d87a849", "");
+};
+
 export const toggleRefClassName = (ref, className) =>
 	ref.current.classList.toggle(className);
 
