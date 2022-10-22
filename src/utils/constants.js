@@ -118,6 +118,8 @@ export const QUERY_PARAM = "q";
 const QUIRKY = "quirky";
 export const QUOTES = "Quotes";
 const QUOTES_VISIBLE = "quotesVisible";
+export const RANDOM = "Random"
+export const CUSTOM = "Custom"
 const RETRO = "retro";
 export const SAFARI = "Safari";
 export const SEARCH = "Search";
@@ -588,11 +590,11 @@ export const SOUNDSCAPES_SCENE_LIST = [
 		],
 	},
 	{
-		name: "Random",
+		name: RANDOM,
 		icon: randomIcon,
 	},
 	{
-		name: "Custom",
+		name: CUSTOM,
 		icon: customIcon,
 		tracks: Object.values(SOUNDS),
 	},

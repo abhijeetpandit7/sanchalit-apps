@@ -218,6 +218,9 @@ export const getPermissionAllowed = (permission) =>
 
 export const getRandomDelighter = () => randomElement(NOTE_DELIGHTER_LIST);
 
+export const getRandomIntBetween = (min, max) =>
+	Math.floor(Math.random() * (max - min + 1)) + min;
+
 export const getTopSites = () =>
 	new Promise((resolve, reject) =>
 		chrome.topSites.get((topSitesArray) =>
@@ -257,6 +260,8 @@ export const isBookmarkDropdownOverflowing = (bookmarksListRef) => {
 		availableWidth < bookmarkFolderOffsetLeft + folderDropdownWidth;
 	return isOverflowing;
 };
+
+export const isBoolean = (value) => typeof value === "boolean";
 
 export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
 

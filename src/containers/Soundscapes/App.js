@@ -1,5 +1,6 @@
 import React, { memo, useState } from "react";
 import { Home, Player, Scene } from "../Soundscapes";
+import { RANDOM, CUSTOM, getRandomIntBetween } from "../../utils";
 
 const ContextMemo = memo(() => {
 	const [isHome, setIsHome] = useState(true);
@@ -10,13 +11,29 @@ const ContextMemo = memo(() => {
 	const backClickHandler = () => setIsHome(true);
 
 	const sceneClickHandler = (scene) => {
+		const { name } = scene;
+		if (name === RANDOM || name === CUSTOM) {
+			scene.tracks.map((track) => (track.enable = false));
+			const randomTracks = scene.tracks
+				.map((track) => ({ sort: Math.random(), value: track }))
+				.sort((a, b) => a.sort - b.sort)
+				.map((track) => track.value)
+				.slice(0, 3);
+			randomTracks.map((track) => {
+				track.enable = true;
+				track.volume = getRandomIntBetween(15, 85);
+			});
+		}
 		setScene(scene);
 		setPlay(true);
 		setIsHome(false);
 	};
 
 	// TODO: Add slide-down & slide-left animation
-	// TODO: Fix random & custom
+	// TODO: Fix random
+	// TODO: Fix onBlur
+	// TODO: Add icon change, play || pause actions
+	// TODO: In random, next button with fade effect
 	return (
 		<div className="app popup nipple nipple-top-left" data-v-74bd37f6>
 			<div className="resize-wrapper tr-height" data-v-0f8972b1 data-v-74bd37f6>
