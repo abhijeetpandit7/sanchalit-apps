@@ -1,6 +1,12 @@
 import React, { memo, useState } from "react";
 import { Home, Player, Scene } from "../Soundscapes";
-import { RANDOM, CUSTOM, getRandomIntBetween } from "../../utils";
+import {
+	RANDOM,
+	CUSTOM,
+	SOUNDSCAPES_SCENE_LIST,
+	getRandomIntBetween,
+	randomElement,
+} from "../../utils";
 
 const ContextMemo = memo(() => {
 	const [isHome, setIsHome] = useState(true);
@@ -12,7 +18,7 @@ const ContextMemo = memo(() => {
 
 	const sceneClickHandler = (scene) => {
 		const { name } = scene;
-		if (name === RANDOM || name === CUSTOM) {
+		if (name === CUSTOM) {
 			scene.tracks.map((track) => (track.enable = false));
 			const randomTracks = scene.tracks
 				.map((track) => ({ sort: Math.random(), value: track }))
@@ -23,6 +29,12 @@ const ContextMemo = memo(() => {
 				track.enable = true;
 				track.volume = getRandomIntBetween(15, 85);
 			});
+		} else if (name === RANDOM) {
+			scene = randomElement(
+				SOUNDSCAPES_SCENE_LIST.filter(
+					({ name }) => name !== CUSTOM && name !== RANDOM,
+				),
+			);
 		}
 		setScene(scene);
 		setPlay(true);
@@ -30,9 +42,8 @@ const ContextMemo = memo(() => {
 	};
 
 	// TODO: Add slide-down & slide-left animation
-	// TODO: Fix random
 	// TODO: Add icon change, play || pause actions
-	// TODO: In random, next button with fade effect
+	// TODO: In random, next button
 	return (
 		<div
 			className="app app-wrapper popup nipple nipple-top-left"
