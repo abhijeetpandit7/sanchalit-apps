@@ -1219,6 +1219,20 @@ export const pinIcon = (
 	</svg>
 );
 
+export const playIcon = (
+	<svg
+		className="icon icon-play"
+		data-v-391f1319
+		viewBox="0 0 124.512 124.512"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M113.956 57.006l-97.4-56.2c-4-2.3-9 .6-9 5.2v112.5c0 4.6 5 7.5 9 5.2l97.4-56.2c4-2.401 4-8.2 0-10.5z"
+		></path>
+	</svg>
+);
+
 export const plusIcon = (
 	<svg
 		className="icon icon-plus"
