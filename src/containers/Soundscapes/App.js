@@ -31,11 +31,13 @@ const ContextMemo = memo(() => {
 
 	// TODO: Add slide-down & slide-left animation
 	// TODO: Fix random
-	// TODO: Fix onBlur
 	// TODO: Add icon change, play || pause actions
 	// TODO: In random, next button with fade effect
 	return (
-		<div className="app popup nipple nipple-top-left" data-v-74bd37f6>
+		<div
+			className="app app-wrapper popup nipple nipple-top-left"
+			data-v-74bd37f6
+		>
 			<div className="resize-wrapper tr-height" data-v-0f8972b1 data-v-74bd37f6>
 				<div data-v-0f8972b1>
 					{isHome ? (
