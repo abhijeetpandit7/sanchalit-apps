@@ -1,8 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { VolumeController } from "../../../../components";
 
-const Tile = ({ track }) => {
+const Tile = ({ track, controllerVolume, controllerPlay }) => {
+	const audioElement = useRef(new Audio());
+	const audio = audioElement.current;
+
 	const [play, setPlay] = useState(true);
+	const [playerVolume, setPlayerVolume] = useState(track.volume);
+
+	useEffect(() => {
+		audio.src = track.url;
+		audio.loop = true;
+	}, []);
+
+	useEffect(() => {
+		controllerPlay && play ? audio.play() : audio.pause();
+		return () => audio.pause();
+	}, [controllerPlay, play]);
+
+	useEffect(
+		() => (audio.volume = ((playerVolume / 100) * controllerVolume) / 100),
+		[controllerVolume, playerVolume],
+	);
 
 	return (
 		<div
@@ -19,7 +38,7 @@ const Tile = ({ track }) => {
 					{track.icon}
 				</div>
 			</div>
-			<VolumeController {...{ play, track }} />
+			<VolumeController {...{ play, playerVolume, track, setPlayerVolume }} />
 		</div>
 	);
 };

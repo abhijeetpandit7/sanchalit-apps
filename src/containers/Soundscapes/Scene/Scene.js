@@ -7,7 +7,12 @@ export const Scene = (props) => (
 		<section className="tracks tracks" data-v-6038c89b data-v-1d87a849>
 			<div className="tile-list" data-v-6038c89b>
 				{props.scene.tracks.map((track) => (
-					<Tile {...{ track }} key={track.name} />
+					<Tile
+						{...{ track }}
+						controllerVolume={props.playerVolume}
+						controllerPlay={props.play}
+						key={track.name}
+					/>
 				))}
 			</div>
 		</section>

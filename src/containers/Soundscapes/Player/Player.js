@@ -1,15 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { VolumeController } from "../../../components";
 import { backIcon1, pauseIcon, playIcon, toPlayerIcon } from "../../../utils";
 
 export const Player = ({
+	play,
 	playerVolume,
 	scene,
 	backClickHandler,
+	setPlay,
 	setPlayerVolume,
 }) => {
 	const spanIconRef = useRef(null);
-	const [play, setPlay] = useState(true);
 
 	useEffect(() => {
 		const icon = spanIconRef.current.querySelector("svg");

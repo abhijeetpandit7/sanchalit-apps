@@ -3,6 +3,7 @@ import { Home, Player, Scene } from "../Soundscapes";
 
 const ContextMemo = memo(() => {
 	const [isHome, setIsHome] = useState(true);
+	const [play, setPlay] = useState(true);
 	const [scene, setScene] = useState(false);
 	const [playerVolume, setPlayerVolume] = useState(50);
 
@@ -10,6 +11,7 @@ const ContextMemo = memo(() => {
 
 	const sceneClickHandler = (scene) => {
 		setScene(scene);
+		setPlay(true);
 		setIsHome(false);
 	};
 
@@ -22,9 +24,16 @@ const ContextMemo = memo(() => {
 					{isHome ? (
 						<Home {...{ sceneClickHandler }} />
 					) : (
-						<Scene {...{ scene }}>
+						<Scene {...{ play, playerVolume, scene }}>
 							<Player
-								{...{ playerVolume, scene, backClickHandler, setPlayerVolume }}
+								{...{
+									play,
+									playerVolume,
+									scene,
+									backClickHandler,
+									setPlay,
+									setPlayerVolume,
+								}}
 							/>
 						</Scene>
 					)}

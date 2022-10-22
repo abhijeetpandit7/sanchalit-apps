@@ -10,7 +10,6 @@ export const VolumeController = ({
 	const titleRef = useRef(null);
 
 	const [isMouseDown, setIsMouseDown] = useState(false);
-	const [volume, setVolume] = useState(track ? track.volume : 50);
 
 	useEffect(() => {
 		[sliderRef, titleRef].forEach((ref) =>
@@ -27,7 +26,7 @@ export const VolumeController = ({
 				((event.clientX - sliderRef.current.offsetLeft) * 100) /
 					sliderRef.current.offsetWidth,
 			);
-			track ? setVolume(newVolume) : setPlayerVolume(newVolume);
+			setPlayerVolume(newVolume);
 		}
 	};
 
@@ -35,7 +34,9 @@ export const VolumeController = ({
 		<div
 			className={track ? `tile-slider ${play ? "on" : ""}` : "volume"}
 			title={`${
-				track ? `${track.name} volume: ${volume}` : `Volume: ${playerVolume}`
+				track
+					? `${track.name} volume: ${playerVolume}`
+					: `Volume: ${playerVolume}`
 			}`}
 			ref={titleRef}
 		>
@@ -51,12 +52,12 @@ export const VolumeController = ({
 				<div className="bar off" data-v-14a0b4e3></div>
 				<div
 					className="bar on"
-					style={{ width: `${playerVolume || volume}%` }}
+					style={{ width: `${playerVolume}%` }}
 					data-v-14a0b4e3
 				></div>
 				<div
 					className="dial"
-					style={{ left: `${playerVolume || volume}%` }}
+					style={{ left: `${playerVolume}%` }}
 					data-v-14a0b4e3
 				></div>
 			</div>
