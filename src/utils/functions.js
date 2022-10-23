@@ -9,6 +9,8 @@ import {
 	BOOKMARKS_BAR_ID,
 	BOOKMARKS_BAR_FIREFOX_ID,
 	CHROME,
+	DISPLAY_LEFT,
+	DISPLAY_RIGHT,
 	EDGE,
 	EMPTY_NAME,
 	FIREFOX,
@@ -18,10 +20,13 @@ import {
 	HIDE_CONTENT,
 	NIPPLE,
 	NIPPLE_BOTTOM_RIGHT,
+	NIPPLE_TOP_LEFT,
+	NIPPLE_TOP_RIGHT,
 	ONE_DAY,
 	ONE_WEEK,
 	OPEN,
 	OVERFLOW,
+	POPUP,
 	SHOW_ANYWAY,
 	SAFARI,
 	SHIFT_TO_LEFT,
@@ -248,7 +253,7 @@ export const hideRefClassName = (appRef, classNames) => {
 export const hideUserNav = (ref) =>
 	ref.current.classList.contains(OPEN) && toggleRefClassName(ref, OPEN);
 
-export const isBookmarkDropdownOverflowing = (bookmarksListRef) => {
+const isBookmarkDropdownOverflowing = (bookmarksListRef) => {
 	const folderDropdown = bookmarksListRef.current.querySelector(
 		`.${FOLDER_DROPDOWN}`,
 	);
@@ -261,9 +266,32 @@ export const isBookmarkDropdownOverflowing = (bookmarksListRef) => {
 	return isOverflowing;
 };
 
+const isAppPopupOverflowing = (metricRef) => {
+	const metricOffsetLeft =
+		metricRef.current.offsetLeft +
+		metricRef.current.offsetParent.offsetParent.offsetLeft;
+	const metricWidth = metricRef.current.offsetWidth;
+	const appPopup = metricRef.current.querySelector(`.${POPUP}`);
+	const appPopupWidth = appPopup.offsetWidth;
+	const isOverflowing = metricOffsetLeft + metricWidth < appPopupWidth;
+	return isOverflowing;
+};
+
 export const isBoolean = (value) => typeof value === "boolean";
 
 export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
+
+export const parseAppPopupOverflow = (metricRef, topRight) => {
+	const isOverflowing = isAppPopupOverflowing(metricRef);
+	const appPopup = metricRef.current.querySelector(`.${POPUP}`);
+	appPopup.classList.add(isOverflowing ? DISPLAY_RIGHT : DISPLAY_LEFT);
+	appPopup.classList.add(isOverflowing ? NIPPLE_TOP_LEFT : NIPPLE_TOP_RIGHT);
+	appPopup.style.setProperty(
+		isOverflowing ? "--left" : "--right",
+		`calc(50% - ${topRight ? 16 : 40}px)`,
+	);
+	appPopup.style.setProperty("--nipple-displacement", `${topRight ? 9 : 33}px`);
+};
 
 export const parseBookmarksList = (
 	allBookmarksList,

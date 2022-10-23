@@ -1,3 +1,4 @@
+export { AddMetric } from "./AddMetric/AddMetric";
 export { Backgrounds } from "./Backgrounds/Backgrounds";
 export { Bookmarks } from "./Bookmarks/Bookmarks";
 export { Clock } from "./Clock/Clock";

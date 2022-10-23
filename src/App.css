@@ -3562,17 +3562,17 @@ body:not(.touch) .photo-info .app-dash:hover .title,
 	left: var(--left);
 	display: flex;
 	flex-direction: column;
-	align-items: stretch;
+	align-items: flex-end;
 	background-color: var(--color-bg);
 	border-radius: var(--border-radius);
 	transition: top 0.2s ease, right 0.2s ease;
 }
-.nipple-top-left:after[data-v-6eb8778d],
-.nipple-bottom-left:after[data-v-6eb8778d] {
+.nipple-top-left[data-v-6eb8778d]:after,
+.nipple-bottom-left[data-v-6eb8778d]:after {
 	left: var(--nipple-displacement);
 }
-.nipple-top-right:after[data-v-6eb8778d],
-.nipple-bottom-right:after[data-v-6eb8778d] {
+.nipple-top-right[data-v-6eb8778d]:after,
+.nipple-bottom-right[data-v-6eb8778d]:after {
 	right: var(--nipple-displacement);
 }
 /* This needs to be in this component (or general stylesheet) or else the transition won't work when the component is async. I don't know why. */
@@ -3888,7 +3888,8 @@ body:not(.touch) .search {
 	order: 100;
 	align-self: flex-start;
 }
-.active .app-dash[data-v-76a7e140] {
+.active .app-dash[data-v-76a7e140],
+.show .app-dash[data-v-76a7e140] {
 	opacity: 1;
 }
 .placeholder[data-v-76a7e140] {
