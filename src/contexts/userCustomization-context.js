@@ -13,6 +13,7 @@ export const UserCustomizationProvider = ({ children }) => {
 	const [storageUserCustomization, setStorageUserCustomization] = useState({});
 
 	const appsRef = useRef(null);
+	const dashAppRef = useRef(null);
 	const displayNameRef = useRef(null);
 	const mainViewRef = useRef(null);
 	const notesInputRef = useRef(null);
@@ -39,12 +40,22 @@ export const UserCustomizationProvider = ({ children }) => {
 				ready: false,
 			},
 		},
+		dashApp: {
+			app: null,
+			styles: {
+				nippleDisplacement: null,
+				width: null,
+				top: null,
+				right: null,
+			},
+		},
 	});
 
 	return (
 		<UserCustomizationContext.Provider
 			value={{
 				appsRef,
+				dashAppRef,
 				displayNameRef,
 				mainViewRef,
 				notesInputRef,

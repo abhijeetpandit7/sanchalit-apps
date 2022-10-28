@@ -11,6 +11,7 @@ import {
 export const useUserCustomization = () => {
 	const {
 		appsRef,
+		dashAppRef,
 		displayNameRef,
 		mainViewRef,
 		notesInputRef,
@@ -44,6 +45,7 @@ export const useUserCustomization = () => {
 
 	return {
 		appsRef,
+		dashAppRef,
 		displayNameRef,
 		mainViewRef,
 		notesInputRef,

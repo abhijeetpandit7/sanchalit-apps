@@ -61,6 +61,9 @@ const CHROMIUM_TAB_URL = "chrome-search://local-ntp/local-ntp.html";
 const CLASSIC = "classic";
 export const CLOCK = "Clock";
 const CLOCK_VISIBLE = "clockVisible";
+export const COUNTDOWNS = "Countdowns";
+const COUNTDOWN_DESCRIPTION = "Count down to important dates and deadlines";
+const COUNTDOWN_VISIBLE = "countdownVisible";
 export const CUSTOMIZATION = "customization";
 export const DASH = "Dash";
 export const DARK = "dark";
@@ -340,6 +343,14 @@ export const BROWSER_LIST = [
 	{ name: FIREFOX, key: FIREFOX },
 	{ name: SAFARI, key: SAFARI },
 ];
+export const DASH_APP_LIST = [
+	{
+		name: COUNTDOWNS,
+		key: COUNTDOWN_VISIBLE,
+		plus: true,
+		description: COUNTDOWN_DESCRIPTION,
+	},
+];
 export const GENERAL_SETTING_APP_LIST = [
 	{
 		name: BOOKMARKS,
@@ -360,6 +371,7 @@ export const GENERAL_SETTING_APP_LIST = [
 	{ name: GREETING, key: GREETING_VISIBLE },
 	{ name: TODO, key: TODO_VISIBLE },
 	{ name: QUOTES, key: QUOTES_VISIBLE },
+	...DASH_APP_LIST,
 	{
 		name: NOTES,
 		key: NOTES_VISIBLE,
@@ -713,6 +725,7 @@ export const DEFAULT_CUSTOMIZATION = {
 	},
 	[BOOKMARKS_VISIBLE]: false,
 	[CLOCK_VISIBLE]: true,
+	[COUNTDOWN_VISIBLE]: false,
 	displayName: null,
 	displayNameVisible: true,
 	[GREETING_VISIBLE]: true,
@@ -739,6 +752,7 @@ export const DEFAULT_CUSTOMIZATION = {
 		inCenter: true,
 		provider: SEARCH_PROVIDER_LIST[0].name,
 	},
+	"showRandomMetric-Countdown": true,
 	[SOUNDSCAPES_VISIBLE]: true,
 	[TODO_VISIBLE]: true,
 	topSites: [],

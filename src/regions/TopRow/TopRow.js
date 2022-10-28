@@ -1,6 +1,8 @@
 import React from "react";
 import {
 	AddMetric,
+	Countdowns,
+	DashApp,
 	DashLinks,
 	Search,
 	Soundscapes,
@@ -18,7 +20,9 @@ export const TopRow = () => (
 			<div className="base-metric app-container" data-v-f48f9f48>
 				<div className="dash-items" data-v-f48f9f48>
 					<AddMetric />
+					<Countdowns />
 				</div>
+				<DashApp />
 			</div>
 		</div>
 		<div className="flash-message-container"></div>

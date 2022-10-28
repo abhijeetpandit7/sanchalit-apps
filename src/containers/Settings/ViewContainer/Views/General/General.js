@@ -65,6 +65,7 @@ const General = () => {
 			bookmarksVisible,
 			bookmarksSettings: { defaultMostVisited },
 			clockVisible,
+			countdownVisible,
 			greetingVisible,
 			notesVisible,
 			quotesVisible,
@@ -84,6 +85,7 @@ const General = () => {
 			{...{
 				bookmarksVisible,
 				clockVisible,
+				countdownVisible,
 				greetingVisible,
 				inCenter,
 				defaultMostVisited,

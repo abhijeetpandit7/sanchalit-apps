@@ -1,7 +1,9 @@
 import React from "react";
-import { POPUP, countdownIcon } from "../../utils";
+import { COUNTDOWNS, POPUP, countdownIcon } from "../../utils";
 
-const App = () => (
+const App = ({ setDashApp }) => {
+	
+	return (
 	<div
 		className={`app app-wrapper display-bottom nipple ${POPUP}`}
 		data-v-6eb8778d
@@ -16,7 +18,12 @@ const App = () => (
 			</div>
 		</div>
 		<div className="tiles" data-v-76a7e140 data-v-6eb8778d>
-			<div className="tile" data-v-76a7e140 data-v-6eb8778d>
+			<div
+				className="tile"
+				onClick={() => setDashApp(COUNTDOWNS)}
+				data-v-76a7e140
+				data-v-6eb8778d
+			>
 				{countdownIcon}
 				<div className="widget-name" data-v-76a7e140 data-v-6eb8778d>
 					Countdown
@@ -28,6 +35,6 @@ const App = () => (
 			</div>
 		</div>
 	</div>
-);
+)};
 
 export default App;

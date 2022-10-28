@@ -191,6 +191,24 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const setDashApp = useCallback(
+		(app) =>
+			widgetDispatch({
+				type: "SET_DASH_APP",
+				payload: { app },
+			}),
+		[],
+	);
+
+	const setDashAppStyles = useCallback(
+		(styles) =>
+			widgetDispatch({
+				type: "SET_DASH_APP_STYLES",
+				payload: { styles },
+			}),
+		[],
+	);
+
 	const setSearchProvider = useCallback(
 		(searchProvider) => {
 			setStorageUserCustomization((prevCustomization) => ({
@@ -397,6 +415,8 @@ export const useUserActions = () => {
 		selectBookmarksSetting,
 		selectGeneralSetting,
 		setCurrentNoteId,
+		setDashApp,
+		setDashAppStyles,
 		setSearchProvider,
 		setWidgetReady,
 		toggleBookmarksSetting,

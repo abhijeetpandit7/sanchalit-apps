@@ -131,6 +131,39 @@ export const formatTime = ({ timestamp, hour12clock }) => {
 	return hour12clock ? `${time} ${currentHour >= 12 ? "PM" : "AM"}` : time;
 };
 
+export const getDashAppStyles = (metricRef, topRight) => {
+	const BOOKMARKS_BAR_HEIGHT = 36;
+	let dashAppStyles = {
+		nippleDisplacement: null,
+		width: "230px",
+		top: null,
+		right: null,
+	};
+
+	const metricOffsetTop =
+		metricRef.current.offsetTop +
+		metricRef.current.offsetParent.offsetParent.offsetParent.offsetTop;
+	const metricHeight = metricRef.current.offsetHeight;
+	const metricOffsetLeft =
+		metricRef.current.offsetLeft +
+		metricRef.current.offsetParent.offsetParent.offsetLeft;
+	const metricWidth = metricRef.current.offsetWidth;
+	const metricOffsetRight =
+		window.innerWidth - (metricOffsetLeft + metricWidth);
+
+	dashAppStyles.nippleDisplacement = `${topRight ? 9 : 33}px`;
+	dashAppStyles.top = `${
+		metricOffsetTop === 0
+			? metricHeight
+			: metricOffsetTop > BOOKMARKS_BAR_HEIGHT
+			? metricHeight + metricOffsetTop
+			: metricHeight
+	}px`;
+	dashAppStyles.right = `${metricOffsetRight}px`;
+
+	return dashAppStyles;
+};
+
 export const getBodyPreview = (body) => {
 	const bodyPreviewMaxLength = 150;
 	const bodyTitle = getBodyTitle(body);
