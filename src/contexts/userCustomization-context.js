@@ -4,6 +4,7 @@ import {
 	API,
 	BACKGROUND,
 	PHOTO_INFO,
+	DASH_APP_STYLES,
 	GENERAL_SETTING_APP_LIST,
 } from "../utils";
 
@@ -43,10 +44,7 @@ export const UserCustomizationProvider = ({ children }) => {
 		dashApp: {
 			app: null,
 			styles: {
-				nippleDisplacement: null,
-				width: null,
-				top: null,
-				right: null,
+				...DASH_APP_STYLES
 			},
 		},
 	});

@@ -34,6 +34,11 @@ import {
 	windIcon,
 } from "./assets";
 
+export const _LEFT = "--left";
+export const _NIPPLE_DISPLACEMENT = "--nipple-displacement";
+export const _RIGHT = "--right";
+export const _TOP = "--top";
+export const _WIDTH = "--width";
 export const ABOUT = "About";
 export const ACTIVE = "active";
 export const ADD_SHADOW = "add-shadow";
@@ -275,6 +280,12 @@ const SOUNDS = {
 		url: "https://az814671.vo.msecnd.net/blogimages/f295aec4-9d59-47b2-b31a-ba88f23d4628",
 	},
 };
+export const DASH_APP_STYLES = {
+	[_NIPPLE_DISPLACEMENT]: null,
+	[_WIDTH]: null,
+	[_TOP]: null,
+	[_RIGHT]: null,
+};
 const APP_LOCATION_OPTIONS = [
 	{ name: BOOKMARKS, key: BOOKMARKS },
 	{ name: DASH, key: DASH },
@@ -347,6 +358,7 @@ export const DASH_APP_LIST = [
 	{
 		name: COUNTDOWNS,
 		key: COUNTDOWN_VISIBLE,
+		ignoreVisibility: true /* remove */,
 		plus: true,
 		description: COUNTDOWN_DESCRIPTION,
 	},

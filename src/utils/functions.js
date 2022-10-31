@@ -3,6 +3,11 @@ import moment from "moment";
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 import {
+	_LEFT,
+	_NIPPLE_DISPLACEMENT,
+	_RIGHT,
+	_TOP,
+	_WIDTH,
 	ACTIVE,
 	BOOKMARKS,
 	BOOKMARK_ACTION_WIDTH,
@@ -38,6 +43,7 @@ import {
 	THEME_FONT_OPTIONS,
 	APPS_OBJ,
 	BOOKMARKS_MANAGER_OBJ,
+	DASH_APP_STYLES,
 	DEFAULT_NOTE_OBJ,
 	HOME_TAB_OBJ,
 	OVERFLOW_FOLDER_OBJ,
@@ -134,11 +140,9 @@ export const formatTime = ({ timestamp, hour12clock }) => {
 export const getDashAppStyles = (metricRef, topRight) => {
 	const BOOKMARKS_BAR_HEIGHT = 36;
 	let dashAppStyles = {
-		nippleDisplacement: null,
-		width: "230px",
-		top: null,
-		right: null,
+		...DASH_APP_STYLES,
 	};
+	dashAppStyles[_WIDTH] = "230px";
 
 	const metricOffsetTop =
 		metricRef.current.offsetTop +
@@ -151,15 +155,15 @@ export const getDashAppStyles = (metricRef, topRight) => {
 	const metricOffsetRight =
 		window.innerWidth - (metricOffsetLeft + metricWidth);
 
-	dashAppStyles.nippleDisplacement = `${topRight ? 9 : 33}px`;
-	dashAppStyles.top = `${
+	dashAppStyles[_NIPPLE_DISPLACEMENT] = `${topRight ? 9 : 33}px`;
+	dashAppStyles[_TOP] = `${
 		metricOffsetTop === 0
 			? metricHeight
 			: metricOffsetTop > BOOKMARKS_BAR_HEIGHT
 			? metricHeight + metricOffsetTop
 			: metricHeight
 	}px`;
-	dashAppStyles.right = `${metricOffsetRight}px`;
+	dashAppStyles[_RIGHT] = `${metricOffsetRight}px`;
 
 	return dashAppStyles;
 };
@@ -320,10 +324,10 @@ export const parseAppPopupOverflow = (metricRef, topRight) => {
 	appPopup.classList.add(isOverflowing ? DISPLAY_RIGHT : DISPLAY_LEFT);
 	appPopup.classList.add(isOverflowing ? NIPPLE_TOP_LEFT : NIPPLE_TOP_RIGHT);
 	appPopup.style.setProperty(
-		isOverflowing ? "--left" : "--right",
+		isOverflowing ? _LEFT : _RIGHT,
 		`calc(50% - ${topRight ? 16 : 40}px)`,
 	);
-	appPopup.style.setProperty("--nipple-displacement", `${topRight ? 9 : 33}px`);
+	appPopup.style.setProperty(_NIPPLE_DISPLACEMENT, `${topRight ? 9 : 33}px`);
 };
 
 export const parseBookmarksList = (
