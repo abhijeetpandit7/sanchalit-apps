@@ -1,5 +1,5 @@
 import React from "react";
-import { countdownIcon, ellipsisIcon1, plusIcon } from "../../../../utils";
+import { countdownIcon1, ellipsisIcon1, plusIcon } from "../../../../utils";
 
 const Countdowns = () => {
 	return (
@@ -8,7 +8,7 @@ const Countdowns = () => {
 				<header className="header app-header" data-v-53b21e9c data-v-d653fa6c>
 					<div className="header-center" data-v-53b21e9c>
 						<div className="title-wrapper" data-v-53b21e9c>
-							{countdownIcon}
+							{countdownIcon1}
 							<div className="title" data-v-53b21e9c>
 								Countdowns
 							</div>
