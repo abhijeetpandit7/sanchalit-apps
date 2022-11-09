@@ -9,6 +9,7 @@ import {
 	_TOP,
 	_WIDTH,
 	ACTIVE,
+	AM,
 	BOOKMARKS,
 	BOOKMARK_ACTION_WIDTH,
 	BOOKMARKS_BAR_ID,
@@ -44,6 +45,7 @@ import {
 	APPS_OBJ,
 	BOOKMARKS_MANAGER_OBJ,
 	DASH_APP_STYLES,
+	DEFAULT_COUNTDOWN_OBJ,
 	DEFAULT_NOTE_OBJ,
 	HOME_TAB_OBJ,
 	OVERFLOW_FOLDER_OBJ,
@@ -64,6 +66,12 @@ export const checkForMultiLineNote = (body) => {
 			-1 != (i = body.indexOf("\n")) ? body.slice(i, body.length - 1) : null) &&
 		-1 !== e.search(/[^\s]+/)
 	);
+};
+
+export const createCountdown = () => {
+	const newCountdown = _.cloneDeep(DEFAULT_COUNTDOWN_OBJ);
+	newCountdown.id = uuidv4();
+	return newCountdown;
 };
 
 export const createNote = () => {
@@ -188,6 +196,20 @@ export const getBodyTitle = (body) => {
 	);
 };
 
+export const getDaysInMonth = (month, year) => {
+	const date = moment([year, month]);
+	const daysInMonth = date.daysInMonth();
+	return daysInMonth || 0;
+};
+
+export const getDateFromToday = (numberOfDays) => {
+	const date = moment();
+	date.add(numberOfDays, "days");
+	return new Date(date);
+};
+
+export const getMonthNames = () => moment.monthsShort();
+
 const getDayPeriod = () => {
 	const currentHour = moment().get("hour");
 	if (currentHour < 4) {
@@ -262,6 +284,42 @@ export const getRandomDelighter = () => randomElement(NOTE_DELIGHTER_LIST);
 
 export const getRandomIntBetween = (min, max) =>
 	Math.floor(Math.random() * (max - min + 1)) + min;
+
+export const getTimeDifferenceFormat = (timestamp, hasHours) => {
+	const date = moment(timestamp);
+	if (hasHours) {
+		const secondsDifference = date.diff(moment(), "seconds");
+		const minuteDifference = date.diff(moment(), "minutes");
+		const hourDifference = date.diff(moment(), "hours");
+		const daysDifference = getDaysDifference(timestamp);
+		if (minuteDifference === 0 && secondsDifference <= 0) return "Now";
+		else if (minuteDifference < 0 && minuteDifference > -60)
+			return `${-minuteDifference}m ago`;
+		else if (
+			minuteDifference === 0 ||
+			(minuteDifference > 0 && minuteDifference < 59)
+		)
+			return `${minuteDifference + 1}m`;
+		else if (hourDifference == 0) return `${hourDifference + 1}h`;
+		else if (hourDifference < 0 && hourDifference > -24)
+			return `${-hourDifference}h ago`;
+		else if (hourDifference > 0 && hourDifference < 24)
+			return `${hourDifference}h`;
+		else
+			return `${
+				daysDifference < 0 ? `${-daysDifference}d ago` : `${daysDifference}d`
+			}`;
+	} else {
+		const daysDifference = date
+			.startOf("day")
+			.diff(moment().startOf("day"), "days");
+		if (daysDifference == 0) return "Today";
+		else
+			return `${
+				daysDifference < 0 ? `${-daysDifference}d ago` : `${daysDifference}d`
+			}`;
+	}
+};
 
 export const getTopSites = () =>
 	new Promise((resolve, reject) =>
@@ -433,6 +491,14 @@ export const parseBookmarksOverflow = (
 	} else return bookmarksList;
 };
 
+export const precedeZero = (number, size) => {
+	let numString = number.toString();
+	while (numString.length < (size || 2)) {
+		numString = "0" + numString;
+	}
+	return numString;
+};
+
 export const processNotes = (notes, searchText, trashSubView) => {
 	const processedValue = searchText.trim().toLowerCase();
 	return notes
@@ -519,6 +585,9 @@ export const toggleFullscreen = async (
 		: "";
 	return isFullscreen;
 };
+
+export const to24HourFormat = (hour, timePeriod) =>
+	timePeriod === AM ? +hour % 12 : +hour === 12 ? 12 : +hour + 12;
 
 export const toPlayerIcon = (icon) => {
 	const iconClassList = Array.from(icon.classList);

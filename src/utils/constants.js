@@ -41,6 +41,8 @@ export const _TOP = "--top";
 export const _WIDTH = "--width";
 export const ABOUT = "About";
 export const ACTIVE = "active";
+export const AM = "AM";
+export const ADD = "Add";
 export const ADD_SHADOW = "add-shadow";
 export const API = "api";
 const APPS = "Apps";
@@ -97,6 +99,7 @@ export const HELP = "Help";
 export const HIDE_BACKGROUND_OVERLAY = "hide-background-overlay";
 export const HIDE_VISIBILITY = "m-hide-visibility";
 export const HIDE_CONTENT = "hide-content";
+export const HOME = "Home";
 const HOME_TAB_LOCATION = "homeTabLocation";
 export const HOTKEY_HOVER = "hotkey-hover";
 const ICONS_ONLY = "iconsOnly";
@@ -124,6 +127,7 @@ const OPEN_IN_NEW_TAB = "openInNewTab";
 export const OVERFLOW = "overflow";
 export const PHOTOS = "Photos";
 export const PHOTO_INFO = "Photo Info";
+export const PM = "PM";
 export const POPUP = "popup";
 export const PRODUCTION = "production";
 export const PULSE = "pulse";
@@ -673,6 +677,16 @@ export const TOP_SITES_FOLDER_OBJ = {
 	title: TOP_SITES,
 	children: [],
 };
+export const DEFAULT_COUNTDOWN_OBJ = {
+	id: "",
+	archived: false,
+	createdDate: new Date(),
+	dueDate: null,
+	hasHours: false,
+	name: "",
+	pinned: false,
+	updatedDate: new Date().getTime(),
+};
 export const DEFAULT_NOTE_OBJ = {
 	id: "",
 	body: "",
@@ -737,6 +751,7 @@ export const DEFAULT_CUSTOMIZATION = {
 	},
 	[BOOKMARKS_VISIBLE]: false,
 	[CLOCK_VISIBLE]: true,
+	countdowns: [],
 	[COUNTDOWN_VISIBLE]: false,
 	displayName: null,
 	displayNameVisible: true,

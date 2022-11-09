@@ -15,6 +15,7 @@ import {
 	TOP_SITES,
 	TOP_SITES_PERMISSION,
 	isBuildTargetWeb,
+	createCountdown,
 	createNote,
 	focusDisplayName,
 	focusNotesInput,
@@ -117,6 +118,22 @@ export const useUserActions = () => {
 					? { ...note, deleted: false, updatedDate: new Date().getTime() }
 					: note,
 			),
+		}));
+	}, []);
+
+	const saveCountdown = useCallback((name, date, showTime, pinned) => {
+		let newCountdown = createCountdown();
+		newCountdown = {
+			...newCountdown,
+			dueDate: date,
+			hasHours: showTime,
+			name,
+			pinned,
+		};
+
+		setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			countdowns: [...prevCustomization.countdowns, newCountdown],
 		}));
 	}, []);
 
@@ -411,6 +428,7 @@ export const useUserActions = () => {
 		deleteNote,
 		editDisplayName,
 		restoreNote,
+		saveCountdown,
 		saveNote,
 		selectBookmarksSetting,
 		selectGeneralSetting,
