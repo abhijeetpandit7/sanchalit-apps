@@ -3889,7 +3889,7 @@ body:not(.touch) .search {
 }
 
 .app-container[data-v-76a7e140] {
-	order: 100;
+	order: -1;
 	align-self: flex-start;
 }
 .active .app-dash[data-v-76a7e140],

@@ -185,7 +185,6 @@ const Add = ({ hour12clock, saveCountdown, setActiveView }) => {
 	);
 
 	const onAdd = async () => {
-		console.log(name);
 		if (name === "") return;
 		await saveCountdown(name, date, showTime, pinned);
 		setActiveView(HOME);

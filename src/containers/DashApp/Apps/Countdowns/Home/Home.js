@@ -8,6 +8,7 @@ import {
 	gearIcon,
 	pinIcon,
 	plusIcon,
+	getDateFullFormat,
 	getTimeDifferenceFormat,
 	toMilliseconds,
 } from "../../../../../utils";
@@ -51,7 +52,7 @@ const Home = ({ countdowns, setActiveView }) => {
 		return (
 			<li
 				className="list-row"
-				title="Sat Oct 22, 2022"
+				title={getDateFullFormat(dueDate)}
 				data-v-00432268
 				data-v-b9a9e05a
 			>

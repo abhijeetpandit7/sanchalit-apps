@@ -362,7 +362,6 @@ export const DASH_APP_LIST = [
 	{
 		name: COUNTDOWNS,
 		key: COUNTDOWN_VISIBLE,
-		ignoreVisibility: true /* remove */,
 		plus: true,
 		description: COUNTDOWN_DESCRIPTION,
 	},

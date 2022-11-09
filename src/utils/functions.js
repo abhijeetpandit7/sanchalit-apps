@@ -208,6 +208,9 @@ export const getDateFromToday = (numberOfDays) => {
 	return new Date(date);
 };
 
+export const getDateFullFormat = (timestamp) =>
+	moment(timestamp).format("ddd MMM D, YYYY");
+
 export const getMonthNames = () => moment.monthsShort();
 
 const getDayPeriod = () => {
