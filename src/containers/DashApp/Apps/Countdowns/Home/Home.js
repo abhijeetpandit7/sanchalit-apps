@@ -13,75 +13,75 @@ import {
 	toMilliseconds,
 } from "../../../../../utils";
 
-const Home = ({ countdowns, setActiveView }) => {
-	const NoCountdownsYet = () => (
-		<section className="empty" data-v-16d4966f data-v-b9a9e05a>
-			<ul className="list" data-v-16d4966f>
-				<li className="list-row" data-v-16d4966f></li>
-				<li className="list-row" data-v-16d4966f></li>
-				<li className="list-row" data-v-16d4966f></li>
-			</ul>
-			<div className="content" data-v-16d4966f>
-				<div className="title" data-v-16d4966f>
-					No countdowns yet
-				</div>
-				<div className="description" data-v-16d4966f>
-					Add a countdown to get started
-				</div>
-				<button
-					className="button"
-					onClick={() => setActiveView(ADD)}
-					data-v-16d4966f
-				>
-					+ Add Countdown
-				</button>
+const NoCountdownsYet = ({ setActiveView }) => (
+	<section className="empty" data-v-16d4966f data-v-b9a9e05a>
+		<ul className="list" data-v-16d4966f>
+			<li className="list-row" data-v-16d4966f></li>
+			<li className="list-row" data-v-16d4966f></li>
+			<li className="list-row" data-v-16d4966f></li>
+		</ul>
+		<div className="content" data-v-16d4966f>
+			<div className="title" data-v-16d4966f>
+				No countdowns yet
 			</div>
-		</section>
-	);
-
-	const CountdownItem = ({ name, dueDate, hasHours, pinned }) => {
-		const [timeDifference, setTimeDifference] = useState(0);
-
-		useEffect(() => {
-			setTimeDifference(getTimeDifferenceFormat(dueDate, hasHours));
-			setInterval(() => {
-				setTimeDifference(getTimeDifferenceFormat(dueDate, hasHours));
-			}, toMilliseconds(ONE_SECOND));
-		}, [dueDate]);
-
-		return (
-			<li
-				className="list-row"
-				title={getDateFullFormat(dueDate)}
-				data-v-00432268
-				data-v-b9a9e05a
+			<div className="description" data-v-16d4966f>
+				Add a countdown to get started
+			</div>
+			<button
+				className="button"
+				onClick={() => setActiveView(ADD)}
+				data-v-16d4966f
 			>
-				<div className="title-container" data-v-00432268>
-					<div className="metric-stat" data-v-00432268>
-						{timeDifference}
-					</div>
-					<div className="list-icons" data-v-00432268>
-						<div className="icon-wrapper edit" data-v-00432268 title="Edit">
-							{gearIcon}
-						</div>
-						<div
-							className={`icon-wrapper pin ${pinned ? ACTIVE : ""}`}
-							data-v-00432268
-							title={pinned ? "Unpin" : "Pin"}
-						>
-							{pinIcon}
-						</div>
-					</div>
-				</div>
-				<div className="metric-label" data-v-00432268>
-					<div className="metric-label-name" data-v-00432268>
-						{name}
-					</div>
-				</div>
-			</li>
-		);
-	};
+				+ Add Countdown
+			</button>
+		</div>
+	</section>
+);
 
+const CountdownItem = ({ name, dueDate, hasHours, pinned }) => {
+	const [timeDifference, setTimeDifference] = useState(0);
+
+	useEffect(() => {
+		setTimeDifference(getTimeDifferenceFormat(dueDate, hasHours));
+		setInterval(() => {
+			setTimeDifference(getTimeDifferenceFormat(dueDate, hasHours));
+		}, toMilliseconds(ONE_SECOND));
+	}, [dueDate]);
+
+	return (
+		<li
+			className="list-row"
+			title={getDateFullFormat(dueDate)}
+			data-v-00432268
+			data-v-b9a9e05a
+		>
+			<div className="title-container" data-v-00432268>
+				<div className="metric-stat" data-v-00432268>
+					{timeDifference}
+				</div>
+				<div className="list-icons" data-v-00432268>
+					<div className="icon-wrapper edit" data-v-00432268 title="Edit">
+						{gearIcon}
+					</div>
+					<div
+						className={`icon-wrapper pin ${pinned ? ACTIVE : ""}`}
+						data-v-00432268
+						title={pinned ? "Unpin" : "Pin"}
+					>
+						{pinIcon}
+					</div>
+				</div>
+			</div>
+			<div className="metric-label" data-v-00432268>
+				<div className="metric-label-name" data-v-00432268>
+					{name}
+				</div>
+			</div>
+		</li>
+	);
+};
+
+const Home = ({ countdowns, setActiveView }) => {
 	return (
 		<>
 			<header className="header app-header" data-v-53b21e9c data-v-d653fa6c>
@@ -120,7 +120,7 @@ const Home = ({ countdowns, setActiveView }) => {
 								))}
 							</ul>
 						) : (
-							<NoCountdownsYet />
+							<NoCountdownsYet {...{ setActiveView }} />
 						)}
 					</div>
 				</div>

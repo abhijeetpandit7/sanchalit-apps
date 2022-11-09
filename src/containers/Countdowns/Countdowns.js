@@ -1,10 +1,21 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
+import { useUserActions, useUserCustomization } from "./../../hooks";
 
-/*  TODO: Create ContextMemo and setWidgetReady if
- *  (1) no item exist
- *  (2) added items && random item
- */
+const ContextMemo = lazy(() => import("./ContextMemo"));
 
 export const Countdowns = () => {
-	return null;
+	const {
+		storageUserCustomization: { countdownVisible, countdowns },
+	} = useUserCustomization();
+	const { setDashAppStyles, setWidgetReady } = useUserActions();
+
+	return (
+		<div className="metric-type" data-v-f48f9f48>
+			<Suspense fallback={null}>
+				{countdownVisible && (
+					<ContextMemo {...{ countdowns, setDashAppStyles, setWidgetReady }} />
+				)}
+			</Suspense>
+		</div>
+	);
 };
