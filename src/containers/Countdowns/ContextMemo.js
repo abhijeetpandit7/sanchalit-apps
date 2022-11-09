@@ -14,9 +14,10 @@ const MetricItem = ({ name, dueDate, hasHours }) => {
 
 	useEffect(() => {
 		setTimeDifference(getTimeDifferenceFormat(dueDate, hasHours));
-		setInterval(() => {
+		const timeInterval = setInterval(() => {
 			setTimeDifference(getTimeDifferenceFormat(dueDate, hasHours));
 		}, toMilliseconds(ONE_SECOND));
+		return () => clearInterval(timeInterval);
 	}, [dueDate]);
 
 	return (
