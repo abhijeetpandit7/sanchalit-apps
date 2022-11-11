@@ -13,7 +13,12 @@ import {
 	to24HourFormat,
 } from "../../../../../utils";
 
-const Add = ({ hour12clock, saveCountdown, setActiveView }) => {
+const Add = ({
+	hour12clock,
+	createNewCountdown,
+	saveCountdown,
+	setActiveView,
+}) => {
 	const monthNames = getMonthNames();
 	const defaultDate = getDateFromToday(7);
 	const currentYear = new Date().getFullYear();
@@ -186,7 +191,7 @@ const Add = ({ hour12clock, saveCountdown, setActiveView }) => {
 
 	const onAdd = async () => {
 		if (name === "") return;
-		await saveCountdown(name, date, showTime, pinned);
+		await createNewCountdown(name, date, showTime, pinned);
 		setActiveView(HOME);
 	};
 

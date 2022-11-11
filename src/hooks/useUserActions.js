@@ -53,6 +53,22 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const createNewCountdown = useCallback((name, date, showTime, pinned) => {
+		let newCountdown = createCountdown();
+		newCountdown = {
+			...newCountdown,
+			dueDate: date,
+			hasHours: showTime,
+			name,
+			pinned,
+		};
+
+		setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			countdowns: [...prevCustomization.countdowns, newCountdown],
+		}));
+	}, []);
+
 	const createNoteFromEmptyState = useCallback(async () => {
 		const newNote = createNote();
 		await setStorageUserCustomization((prevCustomization) => ({
@@ -121,21 +137,7 @@ export const useUserActions = () => {
 		}));
 	}, []);
 
-	const saveCountdown = useCallback((name, date, showTime, pinned) => {
-		let newCountdown = createCountdown();
-		newCountdown = {
-			...newCountdown,
-			dueDate: date,
-			hasHours: showTime,
-			name,
-			pinned,
-		};
-
-		setStorageUserCustomization((prevCustomization) => ({
-			...prevCustomization,
-			countdowns: [...prevCustomization.countdowns, newCountdown],
-		}));
-	}, []);
+	const saveCountdown = useCallback(() => {}, []);
 
 	const saveDisplayName = (isDisplayNameEmpty) => {
 		const element = displayNameRef.current;
@@ -424,6 +426,7 @@ export const useUserActions = () => {
 
 	return {
 		cleanupNotes,
+		createNewCountdown,
 		createNoteFromEmptyState,
 		deleteNote,
 		editDisplayName,
