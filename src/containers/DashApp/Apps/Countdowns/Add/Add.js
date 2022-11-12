@@ -13,6 +13,139 @@ import {
 	to24HourFormat,
 } from "../../../../../utils";
 
+const Month = ({ month, monthNames, setMonth }) => (
+	<div className="select-wrapper month-group" data-v-59dbdd92>
+		<select
+			id="month"
+			className="month"
+			name="month"
+			value={month}
+			onChange={(event) => setMonth(event.target.value)}
+			data-v-59dbdd92
+		>
+			{[...monthNames].map((monthName) => (
+				<option value={monthName} key={monthName} data-v-59dbdd92>
+					{monthName}
+				</option>
+			))}
+		</select>
+	</div>
+);
+
+const Day = ({ day, daysInMonth, setDay }) => (
+	<div className="select-wrapper day-group" data-v-59dbdd92>
+		<select
+			id="day"
+			className="day"
+			name="day"
+			value={day}
+			onChange={(event) => setDay(event.target.value)}
+			data-v-59dbdd92
+		>
+			{[...Array(daysInMonth).keys()].map((day) => (
+				<option value={day + 1} key={day} data-v-59dbdd92>
+					{day + 1}
+				</option>
+			))}
+		</select>
+	</div>
+);
+
+const Year = ({ currentYear, year, setYear }) => (
+	<div className="select-wrapper year-group" data-v-59dbdd92>
+		<select
+			id="year"
+			className="year"
+			name="year"
+			value={year}
+			onChange={(event) => setYear(event.target.value)}
+			data-v-59dbdd92
+		>
+			{/* TODO: Previous & future year handler */}
+			{[...Array(5).keys()].map((i) => (
+				<option value={currentYear + i} key={i} data-v-59dbdd92>
+					{currentYear + i}
+				</option>
+			))}
+		</select>
+	</div>
+);
+
+const Time = ({
+	hour,
+	hour12clock,
+	minute,
+	timePeriod,
+	setHour,
+	setMinute,
+	timePeriodChangeHandler,
+}) => (
+	<div className="resize-wrapper tr-height" data-v-0f8972b1 data-v-a966943c>
+		<div data-v-0f8972b1>
+			<div className="option-wrapper form-row" data-v-59dbdd92 data-v-0f8972b1>
+				<div className="option-form add-time-wrapper" data-v-59dbdd92>
+					<div className="add-time-group" data-v-59dbdd92>
+						<div className="select-wrapper select-hour" data-v-59dbdd92>
+							<select
+								id="hour"
+								name="hour"
+								value={hour}
+								onChange={(event) => setHour(event.target.value)}
+								data-v-59dbdd92
+							>
+								{[...Array(hour12clock ? 12 : 24).keys()].map((hour) => (
+									<option
+										value={hour12clock ? hour + 1 : hour}
+										key={hour}
+										data-v-59dbdd92
+									>
+										{precedeZero(hour12clock ? hour + 1 : hour)}
+									</option>
+								))}
+							</select>
+						</div>
+						<span className="hour-punctuation" data-v-59dbdd92>
+							:
+						</span>
+						<div className="select-wrapper" data-v-59dbdd92>
+							<select
+								id="minute"
+								name="minute"
+								value={minute}
+								onChange={(event) => setMinute(event.target.value)}
+								data-v-59dbdd92
+							>
+								{[...Array(60).keys()].map((minute) => (
+									<option value={minute} key={minute} data-v-59dbdd92>
+										{precedeZero(minute)}
+									</option>
+								))}
+							</select>
+						</div>
+						{hour12clock && (
+							<div className="select-wrapper period" data-v-59dbdd92>
+								<select
+									id="period"
+									name="period"
+									value={timePeriod}
+									onChange={timePeriodChangeHandler}
+									data-v-59dbdd92
+								>
+									{[AM, PM].map((period) => (
+										<option value={period} key={period} data-v-59dbdd92>
+											{period}
+										</option>
+									))}
+								</select>
+							</div>
+						)}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+);
+
 const Add = ({
 	hour12clock,
 	createNewCountdown,
@@ -59,135 +192,6 @@ const Add = ({
 	const nameChangeHandler = (event) => setName(event.target.value);
 
 	const timePeriodChangeHandler = (event) => setTimePeriod(event.target.value);
-
-	const Month = () => (
-		<div className="select-wrapper month-group" data-v-59dbdd92>
-			<select
-				id="month"
-				className="month"
-				name="month"
-				value={month}
-				onChange={(event) => setMonth(event.target.value)}
-				data-v-59dbdd92
-			>
-				{[...monthNames].map((monthName) => (
-					<option value={monthName} key={monthName} data-v-59dbdd92>
-						{monthName}
-					</option>
-				))}
-			</select>
-		</div>
-	);
-
-	const Day = () => (
-		<div className="select-wrapper day-group" data-v-59dbdd92>
-			<select
-				id="day"
-				className="day"
-				name="day"
-				value={day}
-				onChange={(event) => setDay(event.target.value)}
-				data-v-59dbdd92
-			>
-				{[...Array(daysInMonth).keys()].map((day) => (
-					<option value={day + 1} key={day} data-v-59dbdd92>
-						{day + 1}
-					</option>
-				))}
-			</select>
-		</div>
-	);
-
-	const Year = () => (
-		<div className="select-wrapper year-group" data-v-59dbdd92>
-			<select
-				id="year"
-				className="year"
-				name="year"
-				value={year}
-				onChange={(event) => setYear(event.target.value)}
-				data-v-59dbdd92
-			>
-				{/* TODO: Previous & future year handler */}
-				{[...Array(5).keys()].map((i) => (
-					<option value={currentYear + i} key={i} data-v-59dbdd92>
-						{currentYear + i}
-					</option>
-				))}
-			</select>
-		</div>
-	);
-
-	const Time = () => (
-		<div className="resize-wrapper tr-height" data-v-0f8972b1 data-v-a966943c>
-			<div data-v-0f8972b1>
-				<div
-					className="option-wrapper form-row"
-					data-v-59dbdd92
-					data-v-0f8972b1
-				>
-					<div className="option-form add-time-wrapper" data-v-59dbdd92>
-						<div className="add-time-group" data-v-59dbdd92>
-							<div className="select-wrapper select-hour" data-v-59dbdd92>
-								<select
-									id="hour"
-									name="hour"
-									value={hour}
-									onChange={(event) => setHour(event.target.value)}
-									data-v-59dbdd92
-								>
-									{[...Array(hour12clock ? 12 : 24).keys()].map((hour) => (
-										<option
-											value={hour12clock ? hour + 1 : hour}
-											key={hour}
-											data-v-59dbdd92
-										>
-											{precedeZero(hour12clock ? hour + 1 : hour)}
-										</option>
-									))}
-								</select>
-							</div>
-							<span className="hour-punctuation" data-v-59dbdd92>
-								:
-							</span>
-							<div className="select-wrapper" data-v-59dbdd92>
-								<select
-									id="minute"
-									name="minute"
-									value={minute}
-									onChange={(event) => setMinute(event.target.value)}
-									data-v-59dbdd92
-								>
-									{[...Array(60).keys()].map((minute) => (
-										<option value={minute} key={minute} data-v-59dbdd92>
-											{precedeZero(minute)}
-										</option>
-									))}
-								</select>
-							</div>
-							{hour12clock && (
-								<div className="select-wrapper period" data-v-59dbdd92>
-									<select
-										id="period"
-										name="period"
-										value={timePeriod}
-										onChange={timePeriodChangeHandler}
-										data-v-59dbdd92
-									>
-										{[AM, PM].map((period) => (
-											<option value={period} key={period} data-v-59dbdd92>
-												{period}
-											</option>
-										))}
-									</select>
-								</div>
-							)}
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
 
 	const onAdd = async () => {
 		if (name === "") return;
@@ -250,11 +254,11 @@ const Add = ({
 								<div data-v-59dbdd92 data-v-25a5017e>
 									<div className="date-row" data-v-59dbdd92>
 										<label data-v-59dbdd92>Date</label>
-										<Month />
-										<Day />
+										<Month {...{ month, monthNames, setMonth }} />
+										<Day {...{ day, daysInMonth, setDay }} />
 										{/* TODO: Add custom year */}
 										{/* other-active */}
-										<Year />
+										<Year {...{ currentYear, year, setYear }} />
 										{/* <input
 											id="countdown-year-other"
 											className="countdown-year-other"
@@ -302,7 +306,19 @@ const Add = ({
 												</svg>
 											</span>
 										</div>
-										{showTime && <Time />}
+										{showTime && (
+											<Time
+												{...{
+													hour,
+													hour12clock,
+													minute,
+													timePeriod,
+													setHour,
+													setMinute,
+													timePeriodChangeHandler,
+												}}
+											/>
+										)}
 									</div>
 								</div>
 							</div>
