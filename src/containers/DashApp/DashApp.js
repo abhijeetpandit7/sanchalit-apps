@@ -22,18 +22,27 @@ const ContextMemo = memo(
 	({
 		dashAppRef,
 		app,
+		currentCountdownId,
 		hour12clock,
 		styles,
 		countdowns,
 		createNewCountdown,
 		saveCountdown,
+		setCurrentCountdownId,
 	}) => {
 		const DASH_APP_COMPONENT_LIST = [
 			{
 				name: getDashAppName(COUNTDOWNS),
 				component: (
 					<Countdowns
-						{...{ hour12clock, countdowns, createNewCountdown, saveCountdown }}
+						{...{
+							currentCountdownId,
+							hour12clock,
+							countdowns,
+							createNewCountdown,
+							saveCountdown,
+							setCurrentCountdownId,
+						}}
 					/>
 				),
 			},
@@ -69,9 +78,10 @@ export const DashApp = () => {
 		storageUserCustomization: { hour12clock, countdowns },
 		widgetManager,
 	} = useUserCustomization();
-	const { createNewCountdown, saveCountdown } = useUserActions();
+	const { createNewCountdown, saveCountdown, setCurrentCountdownId } =
+		useUserActions();
 
-	const { app, styles } = widgetManager.dashApp;
+	const { app, currentCountdownId, styles } = widgetManager.dashApp;
 
 	return (
 		app !== null && (
@@ -79,11 +89,13 @@ export const DashApp = () => {
 				{...{
 					dashAppRef,
 					app,
+					currentCountdownId,
 					hour12clock,
 					styles,
 					countdowns,
 					createNewCountdown,
 					saveCountdown,
+					setCurrentCountdownId,
 				}}
 			/>
 		)

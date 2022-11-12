@@ -137,7 +137,28 @@ export const useUserActions = () => {
 		}));
 	}, []);
 
-	const saveCountdown = useCallback(() => {}, []);
+	const saveCountdown = useCallback(
+		(currentCountdownId, name, date, showTime, pinned) => {
+			setStorageUserCustomization((prevCustomization) => {
+				const targetCountdown = prevCustomization.countdowns.find(
+					(countdown) => countdown.id === currentCountdownId,
+				);
+				targetCountdown.dueDate = date;
+				targetCountdown.hasHours = showTime;
+				targetCountdown.name = name;
+				targetCountdown.pinned = pinned;
+				targetCountdown.updatedDate = new Date().getTime();
+
+				return {
+					...prevCustomization,
+					countdowns: prevCustomization.countdowns.map((countdown) =>
+						countdown.id === currentCountdownId ? targetCountdown : countdown,
+					),
+				};
+			});
+		},
+		[],
+	);
 
 	const saveDisplayName = (isDisplayNameEmpty) => {
 		const element = displayNameRef.current;
@@ -207,6 +228,15 @@ export const useUserActions = () => {
 				...prevCustomization,
 				[setting.keyValue]: setting.newValue,
 			})),
+		[],
+	);
+
+	const setCurrentCountdownId = useCallback(
+		(id) =>
+			widgetDispatch({
+				type: "SET_CURRENT_COUNTDOWN_ID",
+				payload: { id },
+			}),
 		[],
 	);
 
@@ -436,6 +466,7 @@ export const useUserActions = () => {
 		selectBookmarksSetting,
 		selectGeneralSetting,
 		setCurrentNoteId,
+		setCurrentCountdownId,
 		setDashApp,
 		setDashAppStyles,
 		setSearchProvider,

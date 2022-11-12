@@ -43,6 +43,7 @@ export const UserCustomizationProvider = ({ children }) => {
 		},
 		dashApp: {
 			app: null,
+			currentCountdownId: null,
 			styles: {
 				...DASH_APP_STYLES
 			},

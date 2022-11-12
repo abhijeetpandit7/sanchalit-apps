@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
 	ACTIVE,
 	ADD,
+	EDIT,
 	ONE_SECOND,
 	countdownIcon1,
 	ellipsisIcon1,
@@ -38,7 +39,15 @@ const NoCountdownsYet = ({ setActiveView }) => (
 	</section>
 );
 
-const CountdownItem = ({ name, dueDate, hasHours, pinned }) => {
+const CountdownItem = ({
+	id,
+	name,
+	dueDate,
+	hasHours,
+	pinned,
+	setActiveView,
+	setCurrentCountdownId,
+}) => {
 	const [timeDifference, setTimeDifference] = useState(0);
 
 	useEffect(() => {
@@ -48,6 +57,11 @@ const CountdownItem = ({ name, dueDate, hasHours, pinned }) => {
 		}, toMilliseconds(ONE_SECOND));
 		return () => clearInterval(timeInterval);
 	}, [dueDate]);
+
+	const editCountdown = () => {
+		setCurrentCountdownId(id);
+		setActiveView(EDIT);
+	};
 
 	return (
 		<li
@@ -61,7 +75,12 @@ const CountdownItem = ({ name, dueDate, hasHours, pinned }) => {
 					{timeDifference}
 				</div>
 				<div className="list-icons" data-v-00432268>
-					<div className="icon-wrapper edit" data-v-00432268 title="Edit">
+					<div
+						className="icon-wrapper edit"
+						onClick={editCountdown}
+						title="Edit"
+						data-v-00432268
+					>
 						{gearIcon}
 					</div>
 					<div
@@ -82,7 +101,7 @@ const CountdownItem = ({ name, dueDate, hasHours, pinned }) => {
 	);
 };
 
-const Home = ({ countdowns, setActiveView }) => {
+const Home = ({ countdowns, setActiveView, setCurrentCountdownId }) => {
 	return (
 		<>
 			<header className="header app-header" data-v-53b21e9c data-v-d653fa6c>
@@ -117,7 +136,10 @@ const Home = ({ countdowns, setActiveView }) => {
 						{countdowns.length ? (
 							<ul className="list" data-v-b9a9e05a>
 								{countdowns.map((countdown) => (
-									<CountdownItem {...countdown} key={countdown.id} />
+									<CountdownItem
+										{...{ ...countdown, setActiveView, setCurrentCountdownId }}
+										key={countdown.id}
+									/>
 								))}
 							</ul>
 						) : (

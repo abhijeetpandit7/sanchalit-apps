@@ -82,6 +82,7 @@ export const DISPLAY_LEFT = "display-left";
 export const DISPLAY_RIGHT = "display-right";
 export const DUCK_DUCK_GO = "DuckDuckGo";
 export const EDGE = "Edge";
+export const EDIT = "Edit";
 export const ECOSIA = "Ecosia";
 export const EDITING = "editing";
 export const EMPTY_NAME = "empty-name";

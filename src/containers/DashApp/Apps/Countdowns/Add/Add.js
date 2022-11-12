@@ -147,13 +147,16 @@ const Time = ({
 );
 
 const Add = ({
+	currentCountdownId,
+	edit,
 	hour12clock,
 	createNewCountdown,
+	countdowns,
 	saveCountdown,
 	setActiveView,
 }) => {
 	const monthNames = getMonthNames();
-	const defaultDate = getDateFromToday(7);
+	let defaultDate = getDateFromToday(7);
 	const currentYear = new Date().getFullYear();
 
 	const [name, setName] = useState("");
@@ -170,6 +173,25 @@ const Add = ({
 	const daysInMonth = getDaysInMonth(monthNames.indexOf(month), year);
 
 	useEffect(() => {
+		if (edit) {
+			const currentCountdown = countdowns.find(
+				(countdown) => countdown.id === currentCountdownId,
+			);
+			defaultDate = new Date(currentCountdown.dueDate);
+			const dueDateTimePeriod = defaultDate.getHours() > 12 ? PM : AM;
+			setName(currentCountdown.name);
+			setPinned(currentCountdown.pinned);
+			if (currentCountdown.hasHours) {
+				setShowTime(true);
+				setHour(
+					to24HourFormat(defaultDate.getHours(), dueDateTimePeriod, false),
+				);
+				setMinute(defaultDate.getMinutes());
+				if (hour12clock) {
+					setTimePeriod(dueDateTimePeriod);
+				}
+			}
+		}
 		setDay(defaultDate.getDate());
 		setMonth(monthNames[defaultDate.getMonth()]);
 		setYear(defaultDate.getFullYear());
@@ -193,9 +215,13 @@ const Add = ({
 
 	const timePeriodChangeHandler = (event) => setTimePeriod(event.target.value);
 
-	const onAdd = async () => {
+	const onClick = async () => {
 		if (name === "") return;
-		await createNewCountdown(name, date, showTime, pinned);
+		if (edit) {
+			await saveCountdown(currentCountdownId, name, date, showTime, pinned);
+		} else {
+			await createNewCountdown(name, date, showTime, pinned);
+		}
 		setActiveView(HOME);
 	};
 
@@ -222,7 +248,7 @@ const Add = ({
 					<div className="header-center" data-v-53b21e9c>
 						<div className="title-wrapper" data-v-53b21e9c>
 							<div className="title" data-v-53b21e9c>
-								Add countdown
+								{edit ? "Edit" : "Add"} countdown
 							</div>
 						</div>
 					</div>
@@ -341,7 +367,7 @@ const Add = ({
 							</div>
 							<div
 								className="save-button-container"
-								onClick={onAdd}
+								onClick={onClick}
 								data-v-3db61620
 							>
 								<button
@@ -349,7 +375,7 @@ const Add = ({
 									data-v-3db61620
 									type="button"
 								>
-									Add
+									{edit ? "Save" : "Add"}
 								</button>
 							</div>
 						</div>
