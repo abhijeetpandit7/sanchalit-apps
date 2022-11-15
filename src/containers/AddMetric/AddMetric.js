@@ -7,6 +7,7 @@ export const AddMetric = () => {
 	const { setDashApp, setDashAppStyles } = useUserActions();
 	// TODO: Show if not plus user
 	const {
+		countdownsRef,
 		dashAppRef,
 		storageUserCustomization: { countdownVisible },
 		widgetManager,
@@ -18,7 +19,15 @@ export const AddMetric = () => {
 		<>
 			{countdownVisible && (
 				<Suspense fallback={null}>
-					<ContextMemo {...{ dashAppRef, app, setDashApp, setDashAppStyles }} />
+					<ContextMemo
+						{...{
+							countdownsRef,
+							dashAppRef,
+							app,
+							setDashApp,
+							setDashAppStyles,
+						}}
+					/>
 				</Suspense>
 			)}
 		</>

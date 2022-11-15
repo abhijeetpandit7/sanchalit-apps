@@ -14,6 +14,7 @@ export const UserCustomizationProvider = ({ children }) => {
 	const [storageUserCustomization, setStorageUserCustomization] = useState({});
 
 	const appsRef = useRef(null);
+	const countdownsRef = useRef(null);
 	const dashAppRef = useRef(null);
 	const displayNameRef = useRef(null);
 	const mainViewRef = useRef(null);
@@ -54,6 +55,7 @@ export const UserCustomizationProvider = ({ children }) => {
 		<UserCustomizationContext.Provider
 			value={{
 				appsRef,
+				countdownsRef,
 				dashAppRef,
 				displayNameRef,
 				mainViewRef,

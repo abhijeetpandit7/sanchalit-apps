@@ -10,7 +10,7 @@ import {
 } from "../../utils";
 
 const ContextMemo = memo(
-	({ dashAppRef, app, setDashApp, setDashAppStyles }) => {
+	({ countdownsRef, dashAppRef, app, setDashApp, setDashAppStyles }) => {
 		const addMetricRef = useRef(null);
 
 		const [componentDidMount, setComponentDidMount] = useState(false);
@@ -23,7 +23,12 @@ const ContextMemo = memo(
 						: !addMetricRef.current.contains(event.target)
 				) {
 					hideAppPopup(addMetricRef);
-					setDashApp(null);
+					if (
+						countdownsRef.current &&
+						!countdownsRef.current.contains(event.target)
+					) {
+						setDashApp(null);
+					}
 				}
 			};
 			document.addEventListener("mousedown", onFocusOutHandler);

@@ -12,7 +12,7 @@ const Countdowns = ({
 	saveCountdown,
 	setCurrentCountdownId,
 }) => {
-	const [activeView, setActiveView] = useState(ADD);
+	const [activeView, setActiveView] = useState(HOME);
 
 	const COMPONENT_VIEW_LIST = [
 		{

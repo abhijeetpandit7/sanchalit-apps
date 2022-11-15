@@ -1,7 +1,8 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import {
 	COUNTDOWNS,
 	ONE_SECOND,
+	getDashAppStyles,
 	getDateFullFormat,
 	getTimeDifferenceFormat,
 	toMilliseconds,
@@ -9,7 +10,16 @@ import {
 
 // TODO: random item
 
-const MetricItem = ({ name, dueDate, hasHours }) => {
+const MetricItem = ({
+	id,
+	name,
+	dueDate,
+	hasHours,
+	setCurrentCountdownId,
+	setDashApp,
+	setDashAppStyles,
+}) => {
+	const metricItemRef = useRef(null);
 	const [timeDifference, setTimeDifference] = useState(0);
 
 	useEffect(() => {
@@ -20,10 +30,19 @@ const MetricItem = ({ name, dueDate, hasHours }) => {
 		return () => clearInterval(timeInterval);
 	}, [dueDate]);
 
+	// TODO: Close metric item popup on toggle
+	const handleClick = () => {
+		setCurrentCountdownId(id);
+		setDashApp(COUNTDOWNS);
+		setDashAppStyles(getDashAppStyles(metricItemRef));
+	};
+
 	return (
 		<div
 			className="app-dash metric-item add-shadow"
 			title={getDateFullFormat(dueDate)}
+			onClick={handleClick}
+			ref={metricItemRef}
 			data-v-6544f510
 			data-v-f48f9f48
 		>
@@ -39,22 +58,38 @@ const MetricItem = ({ name, dueDate, hasHours }) => {
 	);
 };
 
-const ContextMemo = memo((props) => {
-	const filteredCountdowns = props.countdowns.filter(
-		(countdown) => countdown.pinned,
-	);
+const ContextMemo = memo(
+	({
+		countdowns,
+		setCurrentCountdownId,
+		setDashApp,
+		setDashAppStyles,
+		setWidgetReady,
+	}) => {
+		const filteredCountdowns = countdowns.filter(
+			(countdown) => countdown.pinned,
+		);
 
-	useEffect(() => {
-		props.setWidgetReady({ widget: COUNTDOWNS });
-	}, []);
+		useEffect(() => {
+			setWidgetReady({ widget: COUNTDOWNS });
+		}, []);
 
-	return (
-		<>
-			{filteredCountdowns.map((countdown) => (
-				<MetricItem {...countdown} key={countdown.id} />
-			))}
-		</>
-	);
-});
+		return (
+			<>
+				{filteredCountdowns.map((countdown) => (
+					<MetricItem
+						{...{
+							...countdown,
+							setCurrentCountdownId,
+							setDashApp,
+							setDashAppStyles,
+						}}
+						key={countdown.id}
+					/>
+				))}
+			</>
+		);
+	},
+);
 
 export default ContextMemo;

@@ -5,15 +5,29 @@ const ContextMemo = lazy(() => import("./ContextMemo"));
 
 export const Countdowns = () => {
 	const {
+		countdownsRef,
 		storageUserCustomization: { countdownVisible, countdowns },
 	} = useUserCustomization();
-	const { setDashAppStyles, setWidgetReady } = useUserActions();
+	const {
+		setCurrentCountdownId,
+		setDashApp,
+		setDashAppStyles,
+		setWidgetReady,
+	} = useUserActions();
 
 	return (
-		<div className="metric-type" data-v-f48f9f48>
+		<div className="metric-type" ref={countdownsRef} data-v-f48f9f48>
 			<Suspense fallback={null}>
 				{countdownVisible && (
-					<ContextMemo {...{ countdowns, setDashAppStyles, setWidgetReady }} />
+					<ContextMemo
+						{...{
+							countdowns,
+							setCurrentCountdownId,
+							setDashApp,
+							setDashAppStyles,
+							setWidgetReady,
+						}}
+					/>
 				)}
 			</Suspense>
 		</div>
