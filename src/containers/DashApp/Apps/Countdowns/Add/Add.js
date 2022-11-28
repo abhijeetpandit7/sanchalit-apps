@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
+import { useUserActions, useUserCustomization } from "../../../../../hooks";
 import {
 	ACTIVE,
 	AM,
@@ -146,243 +147,270 @@ const Time = ({
 	</div>
 );
 
-const Add = ({
-	currentCountdownId,
-	edit,
-	hour12clock,
-	createNewCountdown,
-	countdowns,
-	saveCountdown,
-	setActiveView,
-}) => {
-	const monthNames = getMonthNames();
-	let defaultDate = getDateFromToday(7);
-	const currentYear = new Date().getFullYear();
+const ContextMemo = memo(
+	({
+		currentCountdownId,
+		edit,
+		hour12clock,
+		countdowns,
+		createNewCountdown,
+		saveCountdown,
+		setActiveView,
+	}) => {
+		const monthNames = getMonthNames();
+		let defaultDate = getDateFromToday(7);
+		const currentYear = new Date().getFullYear();
 
-	const [name, setName] = useState("");
-	const [date, setDate] = useState("");
-	const [day, setDay] = useState("");
-	const [month, setMonth] = useState("");
-	const [year, setYear] = useState("");
-	const [hour, setHour] = useState(9);
-	const [minute, setMinute] = useState(0);
-	const [timePeriod, setTimePeriod] = useState(AM);
-	const [showTime, setShowTime] = useState(false);
-	const [pinned, setPinned] = useState(false);
+		const [name, setName] = useState("");
+		const [date, setDate] = useState("");
+		const [day, setDay] = useState("");
+		const [month, setMonth] = useState("");
+		const [year, setYear] = useState("");
+		const [hour, setHour] = useState(9);
+		const [minute, setMinute] = useState(0);
+		const [timePeriod, setTimePeriod] = useState(AM);
+		const [showTime, setShowTime] = useState(false);
+		const [pinned, setPinned] = useState(false);
 
-	const daysInMonth = getDaysInMonth(monthNames.indexOf(month), year);
+		const daysInMonth = getDaysInMonth(monthNames.indexOf(month), year);
 
-	useEffect(() => {
-		if (edit) {
-			const currentCountdown = countdowns.find(
-				(countdown) => countdown.id === currentCountdownId,
-			);
-			defaultDate = new Date(currentCountdown.dueDate);
-			const dueDateTimePeriod = defaultDate.getHours() > 12 ? PM : AM;
-			setName(currentCountdown.name);
-			setPinned(currentCountdown.pinned);
-			if (currentCountdown.hasHours) {
-				setShowTime(true);
-				setHour(
-					to24HourFormat(defaultDate.getHours(), dueDateTimePeriod, false),
+		useEffect(() => {
+			if (edit) {
+				const currentCountdown = countdowns.find(
+					(countdown) => countdown.id === currentCountdownId,
 				);
-				setMinute(defaultDate.getMinutes());
-				if (hour12clock) {
-					setTimePeriod(dueDateTimePeriod);
+				defaultDate = new Date(currentCountdown.dueDate);
+				const dueDateTimePeriod = defaultDate.getHours() > 12 ? PM : AM;
+				setName(currentCountdown.name);
+				setPinned(currentCountdown.pinned);
+				if (currentCountdown.hasHours) {
+					setShowTime(true);
+					setHour(
+						to24HourFormat(defaultDate.getHours(), dueDateTimePeriod, false),
+					);
+					setMinute(defaultDate.getMinutes());
+					if (hour12clock) {
+						setTimePeriod(dueDateTimePeriod);
+					}
 				}
 			}
-		}
-		setDay(defaultDate.getDate());
-		setMonth(monthNames[defaultDate.getMonth()]);
-		setYear(defaultDate.getFullYear());
-	}, []);
+			setDay(defaultDate.getDate());
+			setMonth(monthNames[defaultDate.getMonth()]);
+			setYear(defaultDate.getFullYear());
+		}, []);
 
-	useEffect(
-		() =>
-			setDate(
-				new Date(
-					year,
-					monthNames.indexOf(month),
-					day,
-					hour12clock ? to24HourFormat(hour, timePeriod) : hour,
-					minute,
+		useEffect(
+			() =>
+				setDate(
+					new Date(
+						year,
+						monthNames.indexOf(month),
+						day,
+						hour12clock ? to24HourFormat(hour, timePeriod) : hour,
+						minute,
+					),
 				),
-			),
-		[day, month, year, hour, minute, timePeriod, hour12clock],
-	);
+			[day, month, year, hour, minute, timePeriod, hour12clock],
+		);
 
-	const nameChangeHandler = (event) => setName(event.target.value);
+		const nameChangeHandler = (event) => setName(event.target.value);
 
-	const timePeriodChangeHandler = (event) => setTimePeriod(event.target.value);
+		const timePeriodChangeHandler = (event) =>
+			setTimePeriod(event.target.value);
 
-	const onClick = async () => {
-		if (name === "") return;
-		if (edit) {
-			await saveCountdown(currentCountdownId, name, date, showTime, pinned);
-		} else {
-			await createNewCountdown(name, date, showTime, pinned);
-		}
-		setActiveView(HOME);
-	};
+		const onClick = async () => {
+			if (name === "") return;
+			if (edit) {
+				await saveCountdown(currentCountdownId, name, date, showTime, pinned);
+			} else {
+				await createNewCountdown(name, date, showTime, pinned);
+			}
+			setActiveView(HOME);
+		};
 
-	return (
-		<>
-			<div className="app-overflow" data-v-d653fa6c data-v-0f8972b1>
-				<header
-					className="header app-header center-title"
-					data-v-53b21e9c
-					data-v-d653fa6c
-				>
-					<div
-						className="buttons header-left"
-						onClick={() => setActiveView(HOME)}
-						data-v-57e867a2
+		return (
+			<>
+				<div className="app-overflow" data-v-d653fa6c data-v-0f8972b1>
+					<header
+						className="header app-header center-title"
 						data-v-53b21e9c
+						data-v-d653fa6c
 					>
-						<div data-v-57e867a2>
-							<div className="icon-wrapper go-back" data-v-57e867a2>
-								{backIcon1}
-							</div>
-						</div>
-					</div>
-					<div className="header-center" data-v-53b21e9c>
-						<div className="title-wrapper" data-v-53b21e9c>
-							<div className="title" data-v-53b21e9c>
-								{edit ? "Edit" : "Add"} countdown
-							</div>
-						</div>
-					</div>
-					<div className="centering-placeholder" data-v-53b21e9c></div>
-				</header>
-				<div className="app-body" data-v-d653fa6c>
-					<div className="view" data-v-3db61620 data-v-d653fa6c>
-						<div className="edit-form" data-v-3db61620>
-							<div
-								className="form-row item-body"
-								data-v-25a5017e
-								data-v-3db61620
-							>
-								<label data-v-25a5017e>Name</label>
-								<div className="input-wrapper" data-v-25a5017e>
-									<input
-										name="name"
-										type="text"
-										autoCapitalize="on"
-										autoCorrect="on"
-										autoComplete="off"
-										value={name}
-										onChange={nameChangeHandler}
-										data-v-25a5017e
-									/>
+						<div
+							className="buttons header-left"
+							onClick={() => setActiveView(HOME)}
+							data-v-57e867a2
+							data-v-53b21e9c
+						>
+							<div data-v-57e867a2>
+								<div className="icon-wrapper go-back" data-v-57e867a2>
+									{backIcon1}
 								</div>
 							</div>
-							<div className="form-row" data-v-25a5017e data-v-3db61620>
-								<div data-v-59dbdd92 data-v-25a5017e>
-									<div className="date-row" data-v-59dbdd92>
-										<label data-v-59dbdd92>Date</label>
-										<Month {...{ month, monthNames, setMonth }} />
-										<Day {...{ day, daysInMonth, setDay }} />
-										{/* TODO: Add custom year */}
-										{/* other-active */}
-										<Year {...{ currentYear, year, setYear }} />
-										{/* <input
-											id="countdown-year-other"
-											className="countdown-year-other"
-											name="countdown-year-other"
-											type="text"
-											placeholder="yyyy"
-											maxlength="4"
-											data-v-59dbdd92
-										/> */}
-									</div>
-									<div data-v-a966943c data-v-59dbdd92>
-										<div
-											className="label-row"
-											data-v-a966943c
-											onClick={() => setShowTime((prevValue) => !prevValue)}
-										>
-											<label data-v-a966943c>Time</label>
-											<span
-												className={`x-caret ${showTime ? ACTIVE : ""}`}
-												data-v-a966943c
-											>
-												<svg
-													className="icon x-caret-left"
-													data-v-a966943c
-													viewBox="0 0 52.16 11.75"
-													xmlns="http://www.w3.org/2000/svg"
-												>
-													<path
-														xmlns="http://www.w3.org/2000/svg"
-														d="M52.16,26.08A5.87,5.87,0,0,1,46.29,32H5.88A5.88,5.88,0,0,1,0,26.08H0a5.87,5.87,0,0,1,5.88-5.87H46.29a5.87,5.87,0,0,1,5.87,5.87Z"
-														transform="translate(0 -20.21)"
-													></path>
-												</svg>
-												<svg
-													className="icon x-caret-right"
-													data-v-a966943c
-													viewBox="0 0 52.16 11.75"
-													xmlns="http://www.w3.org/2000/svg"
-												>
-													<path
-														xmlns="http://www.w3.org/2000/svg"
-														d="M52.16,26.08A5.87,5.87,0,0,1,46.29,32H5.88A5.88,5.88,0,0,1,0,26.08H0a5.87,5.87,0,0,1,5.88-5.87H46.29a5.87,5.87,0,0,1,5.87,5.87Z"
-														transform="translate(0 -20.21)"
-													></path>
-												</svg>
-											</span>
-										</div>
-										{showTime && (
-											<Time
-												{...{
-													hour,
-													hour12clock,
-													minute,
-													timePeriod,
-													setHour,
-													setMinute,
-													timePeriodChangeHandler,
-												}}
-											/>
-										)}
-									</div>
+						</div>
+						<div className="header-center" data-v-53b21e9c>
+							<div className="title-wrapper" data-v-53b21e9c>
+								<div className="title" data-v-53b21e9c>
+									{edit ? "Edit" : "Add"} countdown
 								</div>
 							</div>
-							<div className="form-row" data-v-25a5017e data-v-3db61620>
+						</div>
+						<div className="centering-placeholder" data-v-53b21e9c></div>
+					</header>
+					<div className="app-body" data-v-d653fa6c>
+						<div className="view" data-v-3db61620 data-v-d653fa6c>
+							<div className="edit-form" data-v-3db61620>
 								<div
-									className="switch-click in-form"
-									name="pinned"
-									data-v-c03af454
+									className="form-row item-body"
 									data-v-25a5017e
-									onClick={() => setPinned((prevValue) => !prevValue)}
-								>
-									<span className="switch-label" data-v-c03af454>
-										Pin to dashboard
-									</span>
-									<div
-										className={`switch ${pinned ? ON : ""}`}
-										data-v-c03af454
-									></div>
-								</div>
-							</div>
-							<div
-								className="save-button-container"
-								onClick={onClick}
-								data-v-3db61620
-							>
-								<button
-									className="button button-primary button-save"
 									data-v-3db61620
-									type="button"
 								>
-									{edit ? "Save" : "Add"}
-								</button>
+									<label data-v-25a5017e>Name</label>
+									<div className="input-wrapper" data-v-25a5017e>
+										<input
+											name="name"
+											type="text"
+											autoCapitalize="on"
+											autoCorrect="on"
+											autoComplete="off"
+											value={name}
+											onChange={nameChangeHandler}
+											data-v-25a5017e
+										/>
+									</div>
+								</div>
+								<div className="form-row" data-v-25a5017e data-v-3db61620>
+									<div data-v-59dbdd92 data-v-25a5017e>
+										<div className="date-row" data-v-59dbdd92>
+											<label data-v-59dbdd92>Date</label>
+											<Month {...{ month, monthNames, setMonth }} />
+											<Day {...{ day, daysInMonth, setDay }} />
+											{/* TODO: Add custom year */}
+											{/* other-active */}
+											<Year {...{ currentYear, year, setYear }} />
+											{/* <input
+										id="countdown-year-other"
+										className="countdown-year-other"
+										name="countdown-year-other"
+										type="text"
+										placeholder="yyyy"
+										maxlength="4"
+										data-v-59dbdd92
+									/> */}
+										</div>
+										<div data-v-a966943c data-v-59dbdd92>
+											<div
+												className="label-row"
+												data-v-a966943c
+												onClick={() => setShowTime((prevValue) => !prevValue)}
+											>
+												<label data-v-a966943c>Time</label>
+												<span
+													className={`x-caret ${showTime ? ACTIVE : ""}`}
+													data-v-a966943c
+												>
+													<svg
+														className="icon x-caret-left"
+														data-v-a966943c
+														viewBox="0 0 52.16 11.75"
+														xmlns="http://www.w3.org/2000/svg"
+													>
+														<path
+															xmlns="http://www.w3.org/2000/svg"
+															d="M52.16,26.08A5.87,5.87,0,0,1,46.29,32H5.88A5.88,5.88,0,0,1,0,26.08H0a5.87,5.87,0,0,1,5.88-5.87H46.29a5.87,5.87,0,0,1,5.87,5.87Z"
+															transform="translate(0 -20.21)"
+														></path>
+													</svg>
+													<svg
+														className="icon x-caret-right"
+														data-v-a966943c
+														viewBox="0 0 52.16 11.75"
+														xmlns="http://www.w3.org/2000/svg"
+													>
+														<path
+															xmlns="http://www.w3.org/2000/svg"
+															d="M52.16,26.08A5.87,5.87,0,0,1,46.29,32H5.88A5.88,5.88,0,0,1,0,26.08H0a5.87,5.87,0,0,1,5.88-5.87H46.29a5.87,5.87,0,0,1,5.87,5.87Z"
+															transform="translate(0 -20.21)"
+														></path>
+													</svg>
+												</span>
+											</div>
+											{showTime && (
+												<Time
+													{...{
+														hour,
+														hour12clock,
+														minute,
+														timePeriod,
+														setHour,
+														setMinute,
+														timePeriodChangeHandler,
+													}}
+												/>
+											)}
+										</div>
+									</div>
+								</div>
+								<div className="form-row" data-v-25a5017e data-v-3db61620>
+									<div
+										className="switch-click in-form"
+										name="pinned"
+										data-v-c03af454
+										data-v-25a5017e
+										onClick={() => setPinned((prevValue) => !prevValue)}
+									>
+										<span className="switch-label" data-v-c03af454>
+											Pin to dashboard
+										</span>
+										<div
+											className={`switch ${pinned ? ON : ""}`}
+											data-v-c03af454
+										></div>
+									</div>
+								</div>
+								<div
+									className="save-button-container"
+									onClick={onClick}
+									data-v-3db61620
+								>
+									<button
+										className="button button-primary button-save"
+										data-v-3db61620
+										type="button"
+									>
+										{edit ? "Save" : "Add"}
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</>
+			</>
+		);
+	},
+);
+
+const Add = ({ edit, setActiveView }) => {
+	const {
+		storageUserCustomization: { hour12clock, countdowns },
+		widgetManager,
+	} = useUserCustomization();
+	const { createNewCountdown, saveCountdown } = useUserActions();
+
+	const { currentCountdownId } = widgetManager.dashApp;
+
+	return (
+		<ContextMemo
+			{...{
+				currentCountdownId,
+				edit,
+				hour12clock,
+				countdowns,
+				createNewCountdown,
+				saveCountdown,
+				setActiveView,
+			}}
+		/>
 	);
 };
 

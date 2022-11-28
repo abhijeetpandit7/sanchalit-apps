@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
+import { useUserActions, useUserCustomization } from "../../../../../hooks";
 import {
 	ACTIVE,
 	ADD,
@@ -101,54 +102,75 @@ const CountdownItem = ({
 	);
 };
 
-const Home = ({ countdowns, setActiveView, setCurrentCountdownId }) => {
-	return (
-		<>
-			<header className="header app-header" data-v-53b21e9c data-v-d653fa6c>
-				<div className="header-center" data-v-53b21e9c>
-					<div className="title-wrapper" data-v-53b21e9c>
-						{countdownIcon1}
-						<div className="title" data-v-53b21e9c>
-							Countdowns
-						</div>
-					</div>
-				</div>
-				<div className="header-right" data-v-53b21e9c>
-					<div className="buttons" data-v-57e867a2 data-v-53b21e9c>
-						<div data-v-57e867a2 onClick={() => setActiveView(ADD)}>
-							<div className="icon-wrapper add" data-v-57e867a2>
-								{plusIcon}
+const ContextMemo = memo(
+	({ countdowns, setActiveView, setCurrentCountdownId }) => {
+		return (
+			<>
+				<header className="header app-header" data-v-53b21e9c data-v-d653fa6c>
+					<div className="header-center" data-v-53b21e9c>
+						<div className="title-wrapper" data-v-53b21e9c>
+							{countdownIcon1}
+							<div className="title" data-v-53b21e9c>
+								Countdowns
 							</div>
 						</div>
-						<div data-v-57e867a2>
-							<div className="dropdown-wrapper" data-v-407a49db data-v-57e867a2>
-								<div className="icon-wrapper more-toggle" data-v-407a49db>
-									{ellipsisIcon1}
+					</div>
+					<div className="header-right" data-v-53b21e9c>
+						<div className="buttons" data-v-57e867a2 data-v-53b21e9c>
+							<div data-v-57e867a2 onClick={() => setActiveView(ADD)}>
+								<div className="icon-wrapper add" data-v-57e867a2>
+									{plusIcon}
+								</div>
+							</div>
+							<div data-v-57e867a2>
+								<div
+									className="dropdown-wrapper"
+									data-v-407a49db
+									data-v-57e867a2
+								>
+									<div className="icon-wrapper more-toggle" data-v-407a49db>
+										{ellipsisIcon1}
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-			</header>
-			<div className="app-body" data-v-d653fa6c>
-				<div className="box-wrapper view" data-v-b9a9e05a data-v-d653fa6c>
-					<div className="items-filter" data-v-b9a9e05a>
-						{countdowns.length ? (
-							<ul className="list" data-v-b9a9e05a>
-								{countdowns.map((countdown) => (
-									<CountdownItem
-										{...{ ...countdown, setActiveView, setCurrentCountdownId }}
-										key={countdown.id}
-									/>
-								))}
-							</ul>
-						) : (
-							<NoCountdownsYet {...{ setActiveView }} />
-						)}
+				</header>
+				<div className="app-body" data-v-d653fa6c>
+					<div className="box-wrapper view" data-v-b9a9e05a data-v-d653fa6c>
+						<div className="items-filter" data-v-b9a9e05a>
+							{countdowns.length ? (
+								<ul className="list" data-v-b9a9e05a>
+									{countdowns.map((countdown) => (
+										<CountdownItem
+											{...{
+												...countdown,
+												setActiveView,
+												setCurrentCountdownId,
+											}}
+											key={countdown.id}
+										/>
+									))}
+								</ul>
+							) : (
+								<NoCountdownsYet {...{ setActiveView }} />
+							)}
+						</div>
 					</div>
 				</div>
-			</div>
-		</>
+			</>
+		);
+	},
+);
+
+const Home = ({ setActiveView }) => {
+	const {
+		storageUserCustomization: { countdowns },
+	} = useUserCustomization();
+	const { setCurrentCountdownId } = useUserActions();
+
+	return (
+		<ContextMemo {...{ countdowns, setActiveView, setCurrentCountdownId }} />
 	);
 };
 

@@ -4,43 +4,21 @@ import { ADD, EDIT, HOME } from "../../../../utils";
 const Home = lazy(() => import("./Home/Home"));
 const Add = lazy(() => import("./Add/Add"));
 
-const Countdowns = ({
-	currentCountdownId,
-	hour12clock,
-	countdowns,
-	createNewCountdown,
-	saveCountdown,
-	setCurrentCountdownId,
-}) => {
+const Countdowns = () => {
 	const [activeView, setActiveView] = useState(HOME);
 
 	const COMPONENT_VIEW_LIST = [
 		{
 			name: HOME,
-			component: (
-				<Home {...{ countdowns, setActiveView, setCurrentCountdownId }} />
-			),
+			component: <Home {...{ setActiveView }} />,
 		},
 		{
 			name: ADD,
-			component: (
-				<Add {...{ hour12clock, createNewCountdown, setActiveView }} />
-			),
+			component: <Add {...{ setActiveView }} />,
 		},
 		{
 			name: EDIT,
-			component: (
-				<Add
-					edit={true}
-					{...{
-						currentCountdownId,
-						hour12clock,
-						countdowns,
-						saveCountdown,
-						setActiveView,
-					}}
-				/>
-			),
+			component: <Add {...{ edit: true, setActiveView }} />,
 		},
 	];
 
