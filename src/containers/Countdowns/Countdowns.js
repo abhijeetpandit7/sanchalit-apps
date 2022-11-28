@@ -8,12 +8,7 @@ export const Countdowns = () => {
 		countdownsRef,
 		storageUserCustomization: { countdownVisible, countdowns },
 	} = useUserCustomization();
-	const {
-		setCurrentCountdownId,
-		setDashApp,
-		setDashAppStyles,
-		setWidgetReady,
-	} = useUserActions();
+	const { setDashApp, setDashAppStyles, setWidgetReady } = useUserActions();
 
 	return (
 		<div className="metric-type" ref={countdownsRef} data-v-f48f9f48>
@@ -22,7 +17,6 @@ export const Countdowns = () => {
 					<ContextMemo
 						{...{
 							countdowns,
-							setCurrentCountdownId,
 							setDashApp,
 							setDashAppStyles,
 							setWidgetReady,

@@ -11,11 +11,9 @@ import {
 // TODO: random item
 
 const MetricItem = ({
-	id,
 	name,
 	dueDate,
 	hasHours,
-	setCurrentCountdownId,
 	setDashApp,
 	setDashAppStyles,
 }) => {
@@ -32,7 +30,6 @@ const MetricItem = ({
 
 	// TODO: Close metric item popup on toggle
 	const handleClick = () => {
-		setCurrentCountdownId(id);
 		setDashApp(COUNTDOWNS);
 		setDashAppStyles(getDashAppStyles(metricItemRef));
 	};
@@ -59,13 +56,7 @@ const MetricItem = ({
 };
 
 const ContextMemo = memo(
-	({
-		countdowns,
-		setCurrentCountdownId,
-		setDashApp,
-		setDashAppStyles,
-		setWidgetReady,
-	}) => {
+	({ countdowns, setDashApp, setDashAppStyles, setWidgetReady }) => {
 		const filteredCountdowns = countdowns.filter(
 			(countdown) => countdown.pinned,
 		);
@@ -80,7 +71,6 @@ const ContextMemo = memo(
 					<MetricItem
 						{...{
 							...countdown,
-							setCurrentCountdownId,
 							setDashApp,
 							setDashAppStyles,
 						}}

@@ -137,28 +137,25 @@ export const useUserActions = () => {
 		}));
 	}, []);
 
-	const saveCountdown = useCallback(
-		(currentCountdownId, name, date, showTime, pinned) => {
-			setStorageUserCustomization((prevCustomization) => {
-				const targetCountdown = prevCustomization.countdowns.find(
-					(countdown) => countdown.id === currentCountdownId,
-				);
-				targetCountdown.dueDate = date;
-				targetCountdown.hasHours = showTime;
-				targetCountdown.name = name;
-				targetCountdown.pinned = pinned;
-				targetCountdown.updatedDate = new Date().getTime();
+	const saveCountdown = useCallback((id, name, date, showTime, pinned) => {
+		setStorageUserCustomization((prevCustomization) => {
+			const targetCountdown = prevCustomization.countdowns.find(
+				(countdown) => countdown.id === id,
+			);
+			targetCountdown.dueDate = date;
+			targetCountdown.hasHours = showTime;
+			targetCountdown.name = name;
+			targetCountdown.pinned = pinned;
+			targetCountdown.updatedDate = new Date().getTime();
 
-				return {
-					...prevCustomization,
-					countdowns: prevCustomization.countdowns.map((countdown) =>
-						countdown.id === currentCountdownId ? targetCountdown : countdown,
-					),
-				};
-			});
-		},
-		[],
-	);
+			return {
+				...prevCustomization,
+				countdowns: prevCustomization.countdowns.map((countdown) =>
+					countdown.id === id ? targetCountdown : countdown,
+				),
+			};
+		});
+	}, []);
 
 	const saveDisplayName = (isDisplayNameEmpty) => {
 		const element = displayNameRef.current;
