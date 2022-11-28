@@ -311,6 +311,25 @@ export const useUserActions = () => {
 		[storageUserCustomization.bookmarksSettings],
 	);
 
+	const toggleCountdownPin = useCallback(
+		(id, pinned) =>
+			setStorageUserCustomization((prevCustomization) => {
+				let targetCountdown = prevCustomization.countdowns.find(
+					(countdown) => countdown.id === id,
+				);
+				targetCountdown.pinned = !pinned;
+				targetCountdown.updatedDate = new Date().getTime();
+
+				return {
+					...prevCustomization,
+					countdowns: prevCustomization.countdowns.map((countdown) =>
+						countdown.id === id ? targetCountdown : countdown,
+					),
+				};
+			}),
+		[],
+	);
+
 	const toggleDisplayNameVisible = useCallback(
 		() =>
 			setStorageUserCustomization((prevCustomization) => ({
@@ -469,6 +488,7 @@ export const useUserActions = () => {
 		setSearchProvider,
 		setWidgetReady,
 		toggleBookmarksSetting,
+		toggleCountdownPin,
 		toggleDisplayNameVisible,
 		toggleHour12Clock,
 		toggleSearchInCenter,

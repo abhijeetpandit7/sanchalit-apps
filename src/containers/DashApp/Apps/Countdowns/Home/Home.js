@@ -48,6 +48,7 @@ const CountdownItem = ({
 	pinned,
 	setActiveView,
 	setCurrentCountdownId,
+	toggleCountdownPin,
 }) => {
 	const [timeDifference, setTimeDifference] = useState(0);
 
@@ -86,8 +87,9 @@ const CountdownItem = ({
 					</div>
 					<div
 						className={`icon-wrapper pin ${pinned ? ACTIVE : ""}`}
-						data-v-00432268
 						title={pinned ? "Unpin" : "Pin"}
+						onClick={() => toggleCountdownPin(id, pinned)}
+						data-v-00432268
 					>
 						{pinIcon}
 					</div>
@@ -103,7 +105,12 @@ const CountdownItem = ({
 };
 
 const ContextMemo = memo(
-	({ countdowns, setActiveView, setCurrentCountdownId }) => {
+	({
+		countdowns,
+		setActiveView,
+		setCurrentCountdownId,
+		toggleCountdownPin,
+	}) => {
 		return (
 			<>
 				<header className="header app-header" data-v-53b21e9c data-v-d653fa6c>
@@ -147,6 +154,7 @@ const ContextMemo = memo(
 												...countdown,
 												setActiveView,
 												setCurrentCountdownId,
+												toggleCountdownPin,
 											}}
 											key={countdown.id}
 										/>
@@ -167,10 +175,17 @@ const Home = ({ setActiveView }) => {
 	const {
 		storageUserCustomization: { countdowns },
 	} = useUserCustomization();
-	const { setCurrentCountdownId } = useUserActions();
+	const { setCurrentCountdownId, toggleCountdownPin } = useUserActions();
 
 	return (
-		<ContextMemo {...{ countdowns, setActiveView, setCurrentCountdownId }} />
+		<ContextMemo
+			{...{
+				countdowns,
+				setActiveView,
+				setCurrentCountdownId,
+				toggleCountdownPin,
+			}}
+		/>
 	);
 };
 
