@@ -589,12 +589,17 @@ export const toggleFullscreen = async (
 	return isFullscreen;
 };
 
-export const to24HourFormat = (hour, timePeriod, to24Hour) =>
-	timePeriod === AM || to24Hour === false
-		? +hour % 12
-		: +hour === 12
-		? 12
-		: +hour + 12;
+export const toHourFormat = (hour, timePeriod, hour12clock) => {
+	if (hour12clock) {
+		return +hour % 12 === 0 ? 12 : +hour % 12;
+	} else {
+		return +hour % 12 === 0
+			? hour / 1
+			: timePeriod === AM
+			? +hour % 12
+			: (+hour % 12) + 12;
+	}
+};
 
 export const toPlayerIcon = (icon) => {
 	const iconClassList = Array.from(icon.classList);

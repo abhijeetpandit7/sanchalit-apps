@@ -11,7 +11,7 @@ import {
 	getDateFromToday,
 	getMonthNames,
 	precedeZero,
-	to24HourFormat,
+	toHourFormat,
 } from "../../../../../utils";
 
 const Month = ({ month, monthNames, setMonth }) => (
@@ -186,7 +186,11 @@ const ContextMemo = memo(
 				if (currentCountdown.hasHours) {
 					setShowTime(true);
 					setHour(
-						to24HourFormat(defaultDate.getHours(), dueDateTimePeriod, false),
+						toHourFormat(
+							defaultDate.getHours(),
+							dueDateTimePeriod,
+							hour12clock,
+						),
 					);
 					setMinute(defaultDate.getMinutes());
 					if (hour12clock) {
@@ -206,11 +210,11 @@ const ContextMemo = memo(
 						year,
 						monthNames.indexOf(month),
 						day,
-						hour12clock ? to24HourFormat(hour, timePeriod) : hour,
+						toHourFormat(hour, timePeriod, false),
 						minute,
 					),
 				),
-			[day, month, year, hour, minute, timePeriod, hour12clock],
+			[day, month, year, hour, minute, timePeriod],
 		);
 
 		const nameChangeHandler = (event) => setName(event.target.value);
@@ -368,15 +372,11 @@ const ContextMemo = memo(
 										></div>
 									</div>
 								</div>
-								<div
-									className="save-button-container"
-									onClick={onClick}
-									data-v-3db61620
-								>
+								<div className="save-button-container" data-v-3db61620>
 									<button
 										className="button button-primary button-save"
+										onClick={onClick}
 										data-v-3db61620
-										type="button"
 									>
 										{edit ? "Save" : "Add"}
 									</button>
