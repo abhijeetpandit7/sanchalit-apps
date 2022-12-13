@@ -1,4 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
+import { MoreToggleWrapper2 } from "../../../../../components";
 import { useUserActions, useUserCustomization } from "../../../../../hooks";
 import {
 	ACTIVE,
@@ -6,7 +7,10 @@ import {
 	HOME,
 	ON,
 	PM,
+	archiveIcon,
 	backIcon1,
+	trashIcon1,
+	unarchiveIcon,
 	getDaysInMonth,
 	getDateFromToday,
 	getMonthNames,
@@ -154,8 +158,10 @@ const ContextMemo = memo(
 		hour12clock,
 		countdowns,
 		createNewCountdown,
+		deleteCountdown,
 		saveCountdown,
 		setActiveView,
+		toggleArchiveCountdown,
 	}) => {
 		const monthNames = getMonthNames();
 		let defaultDate = getDateFromToday(7);
@@ -170,6 +176,7 @@ const ContextMemo = memo(
 		const [minute, setMinute] = useState(0);
 		const [timePeriod, setTimePeriod] = useState(AM);
 		const [showTime, setShowTime] = useState(false);
+		const [archived, setArchived] = useState(false);
 		const [pinned, setPinned] = useState(false);
 
 		const daysInMonth = getDaysInMonth(monthNames.indexOf(month), year);
@@ -182,6 +189,7 @@ const ContextMemo = memo(
 				defaultDate = new Date(currentCountdown.dueDate);
 				const dueDateTimePeriod = defaultDate.getHours() > 12 ? PM : AM;
 				setName(currentCountdown.name);
+				setArchived(currentCountdown.archived);
 				setPinned(currentCountdown.pinned);
 				if (currentCountdown.hasHours) {
 					setShowTime(true);
@@ -259,7 +267,47 @@ const ContextMemo = memo(
 								</div>
 							</div>
 						</div>
-						<div className="centering-placeholder" data-v-53b21e9c></div>
+						{edit ? (
+							<div className="header-right" data-v-53b21e9c>
+								<div className="buttons" data-v-57e867a2 data-v-53b21e9c>
+									<div data-v-57e867a2>
+										<MoreToggleWrapper2>
+											<ul className="dropdown dropdown-list" data-v-407a49db>
+												<li
+													onClick={() => {
+														toggleArchiveCountdown(currentCountdownId);
+														setActiveView(HOME);
+													}}
+													data-v-407a49db
+												>
+													<div className="dropdown-list-item" data-v-407a49db>
+														{archived ? unarchiveIcon : archiveIcon}
+														<span data-v-407a49db>
+															{archived ? "Unarchive" : "Archive"}
+														</span>
+													</div>
+												</li>
+
+												<li
+													onClick={() => {
+														deleteCountdown(currentCountdownId);
+														setActiveView(HOME);
+													}}
+													data-v-407a49db
+												>
+													<div className="dropdown-list-item" data-v-407a49db>
+														{trashIcon1}
+														<span data-v-407a49db>Delete</span>
+													</div>
+												</li>
+											</ul>
+										</MoreToggleWrapper2>
+									</div>
+								</div>
+							</div>
+						) : (
+							<div className="centering-placeholder" data-v-53b21e9c></div>
+						)}
 					</header>
 					<div className="app-body" data-v-d653fa6c>
 						<div className="view" data-v-3db61620 data-v-d653fa6c>
@@ -293,14 +341,14 @@ const ContextMemo = memo(
 											{/* other-active */}
 											<Year {...{ currentYear, year, setYear }} />
 											{/* <input
-										id="countdown-year-other"
-										className="countdown-year-other"
-										name="countdown-year-other"
-										type="text"
-										placeholder="yyyy"
-										maxlength="4"
-										data-v-59dbdd92
-									/> */}
+												id="countdown-year-other"
+												className="countdown-year-other"
+												name="countdown-year-other"
+												type="text"
+												placeholder="yyyy"
+												maxlength="4"
+												data-v-59dbdd92
+											/> */}
 										</div>
 										<div data-v-a966943c data-v-59dbdd92>
 											<div
@@ -395,7 +443,12 @@ const Add = ({ edit, setActiveView }) => {
 		storageUserCustomization: { hour12clock, countdowns },
 		widgetManager,
 	} = useUserCustomization();
-	const { createNewCountdown, saveCountdown } = useUserActions();
+	const {
+		createNewCountdown,
+		deleteCountdown,
+		saveCountdown,
+		toggleArchiveCountdown,
+	} = useUserActions();
 
 	const { currentCountdownId } = widgetManager.dashApp;
 
@@ -407,8 +460,10 @@ const Add = ({ edit, setActiveView }) => {
 				hour12clock,
 				countdowns,
 				createNewCountdown,
+				deleteCountdown,
 				saveCountdown,
 				setActiveView,
+				toggleArchiveCountdown,
 			}}
 		/>
 	);

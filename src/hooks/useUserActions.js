@@ -79,16 +79,29 @@ export const useUserActions = () => {
 		focusNotesInput(notesInputRef);
 	}, []);
 
-	const deleteNote = useCallback((targetNote) => {
-		setStorageUserCustomization((prevCustomization) => ({
-			...prevCustomization,
-			notes: prevCustomization.notes.map((note) =>
-				note.id === targetNote.id
-					? { ...note, deleted: true, updatedDate: new Date().getTime() }
-					: note,
-			),
-		}));
-	}, []);
+	const deleteCountdown = useCallback(
+		(targetCountdownId) =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				countdowns: prevCustomization.countdowns.filter(
+					(countdown) => countdown.id !== targetCountdownId,
+				),
+			})),
+		[],
+	);
+
+	const deleteNote = useCallback(
+		(targetNote) =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				notes: prevCustomization.notes.map((note) =>
+					note.id === targetNote.id
+						? { ...note, deleted: true, updatedDate: new Date().getTime() }
+						: note,
+				),
+			})),
+		[],
+	);
 
 	const editDisplayName = useCallback(async () => {
 		const { displayName, displayNameVisible } = storageUserCustomization;
@@ -479,10 +492,28 @@ export const useUserActions = () => {
 		],
 	);
 
+	const toggleArchiveCountdown = useCallback(
+		(targetCountdownId) =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				countdowns: prevCustomization.countdowns.map((countdown) =>
+					countdown.id === targetCountdownId
+						? {
+								...countdown,
+								archived: !countdown.archived,
+								updatedDate: new Date().getTime(),
+						  }
+						: countdown,
+				),
+			})),
+		[],
+	);
+
 	return {
 		cleanupNotes,
 		createNewCountdown,
 		createNoteFromEmptyState,
+		deleteCountdown,
 		deleteNote,
 		editDisplayName,
 		restoreNote,
@@ -496,6 +527,7 @@ export const useUserActions = () => {
 		setDashAppStyles,
 		setSearchProvider,
 		setWidgetReady,
+		toggleArchiveCountdown,
 		toggleBookmarksSetting,
 		toggleCountdownPin,
 		toggleDisplayNameVisible,
