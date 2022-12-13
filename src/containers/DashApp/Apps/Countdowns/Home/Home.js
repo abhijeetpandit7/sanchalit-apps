@@ -11,6 +11,7 @@ import {
 	pinIcon,
 	plusIcon,
 	getDateFullFormat,
+	getSortedCountdowns,
 	getTimeDifferenceFormat,
 	toMilliseconds,
 } from "../../../../../utils";
@@ -148,7 +149,7 @@ const ContextMemo = memo(
 						<div className="items-filter" data-v-b9a9e05a>
 							{countdowns.length ? (
 								<ul className="list" data-v-b9a9e05a>
-									{countdowns.map((countdown) => (
+									{getSortedCountdowns(countdowns).map((countdown) => (
 										<CountdownItem
 											{...{
 												...countdown,

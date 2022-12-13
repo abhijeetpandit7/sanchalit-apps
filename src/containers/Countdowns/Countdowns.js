@@ -6,7 +6,11 @@ const ContextMemo = lazy(() => import("./ContextMemo"));
 export const Countdowns = () => {
 	const {
 		countdownsRef,
-		storageUserCustomization: { countdownVisible, countdowns },
+		storageUserCustomization: {
+			countdownVisible,
+			countdowns,
+			showRandomMetricCountdown,
+		},
 	} = useUserCustomization();
 	const { setDashApp, setDashAppStyles, setWidgetReady } = useUserActions();
 
@@ -17,6 +21,7 @@ export const Countdowns = () => {
 					<ContextMemo
 						{...{
 							countdowns,
+							showRandomMetricCountdown,
 							setDashApp,
 							setDashAppStyles,
 							setWidgetReady,

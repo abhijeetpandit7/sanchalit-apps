@@ -4,6 +4,7 @@ import {
 	ONE_SECOND,
 	getDashAppStyles,
 	getDateFullFormat,
+	getSortedCountdowns,
 	getTimeDifferenceFormat,
 	toMilliseconds,
 } from "../../utils";
@@ -14,6 +15,7 @@ const MetricItem = ({
 	name,
 	dueDate,
 	hasHours,
+	random,
 	setDashApp,
 	setDashAppStyles,
 }) => {
@@ -37,7 +39,7 @@ const MetricItem = ({
 	return (
 		<div
 			className="app-dash metric-item add-shadow"
-			title={getDateFullFormat(dueDate)}
+			title={`${getDateFullFormat(dueDate)}${random ? " (Random item)" : ""}`}
 			onClick={handleClick}
 			ref={metricItemRef}
 			data-v-6544f510
@@ -56,9 +58,17 @@ const MetricItem = ({
 };
 
 const ContextMemo = memo(
-	({ countdowns, setDashApp, setDashAppStyles, setWidgetReady }) => {
-		const filteredCountdowns = countdowns.filter(
-			(countdown) => countdown.pinned,
+	({
+		countdowns,
+		showRandomMetricCountdown,
+		setDashApp,
+		setDashAppStyles,
+		setWidgetReady,
+	}) => {
+		const sortedCountdowns = getSortedCountdowns(
+			countdowns,
+			showRandomMetricCountdown,
+			true,
 		);
 
 		useEffect(() => {
@@ -67,7 +77,7 @@ const ContextMemo = memo(
 
 		return (
 			<>
-				{filteredCountdowns.map((countdown) => (
+				{sortedCountdowns.map((countdown) => (
 					<MetricItem
 						{...{
 							...countdown,
