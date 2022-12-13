@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useState } from "react";
-import { ADD, EDIT, HOME } from "../../../../utils";
+import { ARCHIVE, ADD, EDIT, HOME } from "../../../../utils";
 
 const Home = lazy(() => import("./Home/Home"));
 const Add = lazy(() => import("./Add/Add"));
@@ -11,6 +11,10 @@ const Countdowns = () => {
 		{
 			name: HOME,
 			component: <Home {...{ setActiveView }} />,
+		},
+		{
+			name: ARCHIVE,
+			component: <Home {...{ archive: true, setActiveView }} />,
 		},
 		{
 			name: ADD,

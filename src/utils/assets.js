@@ -86,6 +86,27 @@ export const archiveIcon = (
 	</svg>
 );
 
+export const archiveIcon1 = (
+	<svg
+		className="icon icon-archive"
+		data-v-407a49db
+		viewBox="0 0 26 20"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<g
+			xmlns="http://www.w3.org/2000/svg"
+			strokeWidth="2"
+			fill="none"
+			fillRule="evenodd"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		>
+			<path d="M22.75 6.75l-1.204 9c0 1.657-1.93 3-3.588 3H7.99c-1.657 0-3.406-1.343-3.406-3l-1.334-9M22.75 1.25H3.25a1.5 1.5 0 0 0-1.5 1.5v3h22.5v-3a1.5 1.5 0 0 0-1.5-1.5z"></path>
+			<path d="M16 10.85c0 1.16-.672 2.1-1.5 2.1h-3c-.828 0-1.5-.94-1.5-2.1 0-1.16.672-2.1 1.5-2.1h3c.828 0 1.5.94 1.5 2.1z"></path>
+		</g>
+	</svg>
+);
+
 export const backIcon = (
 	<svg
 		viewBox="0 0 24 24"
@@ -104,6 +125,20 @@ export const backIcon1 = (
 	<svg
 		className="icon icon-back"
 		data-v-1d87a849
+		viewBox="0 0 55.753 55.753"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M12.745 23.915c.283-.282.59-.52.913-.727L35.266 1.581a5.4 5.4 0 1 1 7.637 7.638L24.294 27.828l18.705 18.706a5.4 5.4 0 0 1-7.636 7.637L13.658 32.464a5.367 5.367 0 0 1-.913-.727 5.367 5.367 0 0 1-1.572-3.911 5.369 5.369 0 0 1 1.572-3.911z"
+		></path>
+	</svg>
+);
+
+export const backIcon2 = (
+	<svg
+		className="icon icon-back"
+		data-v-57e867a2
 		viewBox="0 0 55.753 55.753"
 		xmlns="http://www.w3.org/2000/svg"
 	>
@@ -1304,6 +1339,7 @@ export const pauseIcon = (
 export const pinIcon = (
 	<svg
 		className="icon icon-pin"
+		data-v-00432268
 		xmlns="http://www.w3.org/2000/svg"
 		viewBox="0 0 481.71 481.72"
 	>
@@ -1665,6 +1701,20 @@ export const unarchiveIcon = (
 	<svg
 		className="icon dropdown-list-icon icon-unarchive"
 		data-v-407a49db
+		viewBox="0 0 438.53 438.53"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path
+			xmlns="http://www.w3.org/2000/svg"
+			d="M421.12,134.19q-17.4-40.54-46.81-69.95t-70-46.82a216.26,216.26,0,0,0-166.3-1.57A221.7,221.7,0,0,0,68.24,60.53L31.12,23.7q-8.57-8.86-19.7-4Q0,24.56,0,36.55v127.9A17.56,17.56,0,0,0,5.43,177.3a17.56,17.56,0,0,0,12.85,5.43h127.9q12,0,16.85-11.42,4.84-11.15-4-19.71l-39.12-39.39a141.7,141.7,0,0,1,45.69-29,144.9,144.9,0,0,1,53.67-10.14A142.56,142.56,0,0,1,276,84.65a144.79,144.79,0,0,1,77.94,77.95,144.69,144.69,0,0,1,0,113.34A144.79,144.79,0,0,1,276,353.89a145,145,0,0,1-172-45.26q-2-2.85-6.57-3.43a10.28,10.28,0,0,0-7.14,2.57l-39.11,39.4A8.49,8.49,0,0,0,48.68,353a10.24,10.24,0,0,0,1.86,6.43,214.2,214.2,0,0,0,75.37,58.38,217.74,217.74,0,0,0,93.36,20.7,213.31,213.31,0,0,0,85.08-17.41q40.54-17.42,69.95-46.82t46.82-69.95a216.59,216.59,0,0,0,0-170.16Z"
+			transform="translate(0 0)"
+		></path>
+	</svg>
+);
+
+export const unarchiveIcon1 = (
+	<svg
+		className="icon icon-unarchive"
 		viewBox="0 0 438.53 438.53"
 		xmlns="http://www.w3.org/2000/svg"
 	>

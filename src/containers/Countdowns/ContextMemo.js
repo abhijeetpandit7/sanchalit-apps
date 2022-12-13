@@ -39,7 +39,9 @@ const MetricItem = ({
 	return (
 		<div
 			className="app-dash metric-item add-shadow"
-			title={`${getDateFullFormat(dueDate)}${random ? " (Random Countdown)" : ""}`}
+			title={`${getDateFullFormat(dueDate)}${
+				random ? " (Random Countdown)" : ""
+			}`}
 			onClick={handleClick}
 			ref={metricItemRef}
 			data-v-6544f510
@@ -66,6 +68,7 @@ const ContextMemo = memo(
 		setWidgetReady,
 	}) => {
 		const sortedCountdowns = getSortedCountdowns(
+			false,
 			countdowns,
 			showRandomMetricCountdown,
 			true,

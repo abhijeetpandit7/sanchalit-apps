@@ -288,7 +288,15 @@ export const getRandomDelighter = () => randomElement(NOTE_DELIGHTER_LIST);
 export const getRandomIntBetween = (min, max) =>
 	Math.floor(Math.random() * (max - min + 1)) + min;
 
-export const getSortedCountdowns = (countdowns, showRandom, isDashApp) => {
+export const getSortedCountdowns = (
+	archived,
+	countdowns,
+	showRandom,
+	isDashApp,
+) => {
+	const archivedCountdowns = countdowns.filter(
+		(countdown) => countdown.archived === true,
+	);
 	const unarchivedCountdowns = countdowns.filter(
 		(countdown) => countdown.archived === false,
 	);
@@ -320,13 +328,19 @@ export const getSortedCountdowns = (countdowns, showRandom, isDashApp) => {
 		}
 		visibleCountdowns.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 		return visibleCountdowns;
+	} else if (archived) {
+		archivedCountdowns.sort(
+			(a, b) => new Date(a.dueDate) - new Date(b.dueDate),
+		);
+		archivedCountdowns.sort((a, b) => b.pinned - a.pinned);
+		return archivedCountdowns;
+	} else {
+		unarchivedCountdowns.sort(
+			(a, b) => new Date(a.dueDate) - new Date(b.dueDate),
+		);
+		unarchivedCountdowns.sort((a, b) => b.pinned - a.pinned);
+		return unarchivedCountdowns;
 	}
-
-	unarchivedCountdowns.sort(
-		(a, b) => new Date(a.dueDate) - new Date(b.dueDate),
-	);
-	unarchivedCountdowns.sort((a, b) => b.pinned - a.pinned);
-	return unarchivedCountdowns;
 };
 
 export const getTimeDifferenceFormat = (timestamp, hasHours) => {

@@ -48,6 +48,7 @@ export const API = "api";
 const APPS = "Apps";
 const APPS_URL = "chrome://apps";
 const APPS_LOCATION = "appsLocation";
+export const ARCHIVE = "Archive";
 export const AUTH = "auth";
 export const BALANCE = "Balance";
 export const BACKGROUND = "Background";
