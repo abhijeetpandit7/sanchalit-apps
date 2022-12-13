@@ -8523,7 +8523,8 @@ input[type="number"].hide-controls {
 	display: block;
 }
 .bookmark.folder.active > .dropdown[data-v-5504764e],
-.more.active > .dropdown[data-v-5504764f] {
+.more.active > .dropdown[data-v-5504764f],
+.dropdown-wrapper[data-v-407a49db].active > .dropdown[data-v-407a49db] {
 	visibility: visible;
 }
 .dropdown-wrapper[data-v-5504764e] {

@@ -1,12 +1,14 @@
 import React, { memo, useEffect, useState } from "react";
+import { MoreToggleWrapper2 } from "../../../../../components";
 import { useUserActions, useUserCustomization } from "../../../../../hooks";
 import {
 	ACTIVE,
 	ADD,
 	EDIT,
+	ON,
 	ONE_SECOND,
+	archiveIcon,
 	countdownIcon1,
-	ellipsisIcon1,
 	gearIcon,
 	pinIcon,
 	plusIcon,
@@ -108,9 +110,11 @@ const CountdownItem = ({
 const ContextMemo = memo(
 	({
 		countdowns,
+		showRandomMetricCountdown,
 		setActiveView,
 		setCurrentCountdownId,
 		toggleCountdownPin,
+		toggleRandomMetricCountdown,
 	}) => {
 		return (
 			<>
@@ -125,21 +129,40 @@ const ContextMemo = memo(
 					</div>
 					<div className="header-right" data-v-53b21e9c>
 						<div className="buttons" data-v-57e867a2 data-v-53b21e9c>
-							<div data-v-57e867a2 onClick={() => setActiveView(ADD)}>
+							<div onClick={() => setActiveView(ADD)} data-v-57e867a2>
 								<div className="icon-wrapper add" data-v-57e867a2>
 									{plusIcon}
 								</div>
 							</div>
 							<div data-v-57e867a2>
-								<div
-									className="dropdown-wrapper"
-									data-v-407a49db
-									data-v-57e867a2
-								>
-									<div className="icon-wrapper more-toggle" data-v-407a49db>
-										{ellipsisIcon1}
-									</div>
-								</div>
+								<MoreToggleWrapper2>
+									<ul className="dropdown dropdown-list" data-v-407a49db>
+										<li data-v-407a49db>
+											<div className="dropdown-list-item" data-v-407a49db>
+												{archiveIcon}
+												<span data-v-407a49db>Show Archived</span>
+											</div>
+										</li>
+										<li data-v-407a49db>
+											<div
+												className="switch-click dropdown-list-item"
+												onClick={toggleRandomMetricCountdown}
+												data-v-c03af454
+												data-v-407a49db
+											>
+												<span className="switch-label" data-v-c03af454>
+													Show Random
+												</span>
+												<div
+													className={`switch ${
+														showRandomMetricCountdown ? ON : ""
+													}`}
+													data-v-c03af454
+												></div>
+											</div>
+										</li>
+									</ul>
+								</MoreToggleWrapper2>
 							</div>
 						</div>
 					</div>
@@ -174,17 +197,23 @@ const ContextMemo = memo(
 
 const Home = ({ setActiveView }) => {
 	const {
-		storageUserCustomization: { countdowns },
+		storageUserCustomization: { countdowns, showRandomMetricCountdown },
 	} = useUserCustomization();
-	const { setCurrentCountdownId, toggleCountdownPin } = useUserActions();
+	const {
+		setCurrentCountdownId,
+		toggleCountdownPin,
+		toggleRandomMetricCountdown,
+	} = useUserActions();
 
 	return (
 		<ContextMemo
 			{...{
 				countdowns,
+				showRandomMetricCountdown,
 				setActiveView,
 				setCurrentCountdownId,
 				toggleCountdownPin,
+				toggleRandomMetricCountdown,
 			}}
 		/>
 	);

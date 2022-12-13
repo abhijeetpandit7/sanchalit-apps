@@ -65,6 +65,27 @@ export const appsIcon = (
 	</svg>
 );
 
+export const archiveIcon = (
+	<svg
+		className="icon dropdown-list-icon icon-archive"
+		data-v-407a49db
+		viewBox="0 0 26 20"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<g
+			xmlns="http://www.w3.org/2000/svg"
+			strokeWidth="2"
+			fill="none"
+			fillRule="evenodd"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		>
+			<path d="M22.75 6.75l-1.204 9c0 1.657-1.93 3-3.588 3H7.99c-1.657 0-3.406-1.343-3.406-3l-1.334-9M22.75 1.25H3.25a1.5 1.5 0 0 0-1.5 1.5v3h22.5v-3a1.5 1.5 0 0 0-1.5-1.5z"></path>
+			<path d="M16 10.85c0 1.16-.672 2.1-1.5 2.1h-3c-.828 0-1.5-.94-1.5-2.1 0-1.16.672-2.1 1.5-2.1h3c.828 0 1.5.94 1.5 2.1z"></path>
+		</g>
+	</svg>
+);
+
 export const backIcon = (
 	<svg
 		viewBox="0 0 24 24"

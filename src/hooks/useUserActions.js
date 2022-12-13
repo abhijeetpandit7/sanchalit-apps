@@ -348,6 +348,15 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const toggleRandomMetricCountdown = useCallback(
+		() =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				showRandomMetricCountdown: !prevCustomization.showRandomMetricCountdown,
+			})),
+		[],
+	);
+
 	const toggleSearchInCenter = useCallback(() => {
 		const {
 			searchSettings: { inCenter },
@@ -491,6 +500,7 @@ export const useUserActions = () => {
 		toggleCountdownPin,
 		toggleDisplayNameVisible,
 		toggleHour12Clock,
+		toggleRandomMetricCountdown,
 		toggleSearchInCenter,
 		toggleShowApp,
 	};
