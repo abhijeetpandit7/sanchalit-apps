@@ -39,7 +39,7 @@ const MetricItem = ({
 	return (
 		<div
 			className="app-dash metric-item add-shadow"
-			title={`${getDateFullFormat(dueDate)}${random ? " (Random item)" : ""}`}
+			title={`${getDateFullFormat(dueDate)}${random ? " (Random Countdown)" : ""}`}
 			onClick={handleClick}
 			ref={metricItemRef}
 			data-v-6544f510

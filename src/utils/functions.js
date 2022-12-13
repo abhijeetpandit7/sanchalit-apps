@@ -298,13 +298,14 @@ export const getSortedCountdowns = (countdowns, showRandom, isDashApp) => {
 			(countdown) => countdown.pinned === true,
 		);
 		if (visibleCountdowns.length === 0 && unarchivedCountdowns.length) {
-			visibleCountdowns.push(
-				randomElement(
-					unarchivedCountdowns.filter(
-						(countdown) => countdown.pinned === false,
-					),
-				),
+			const availableUnpinnedCountdowns = unarchivedCountdowns.filter(
+				(countdown) => countdown.pinned === false,
 			);
+			const randomCountdown = {
+				...randomElement(availableUnpinnedCountdowns),
+				random: true,
+			};
+			visibleCountdowns.push(randomCountdown);
 		} else if (showRandom) {
 			const availableUnarchivedCountdowns = unarchivedCountdowns.filter(
 				(countdown) => !visibleCountdowns.includes(countdown),

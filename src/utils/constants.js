@@ -779,7 +779,7 @@ export const DEFAULT_CUSTOMIZATION = {
 		inCenter: true,
 		provider: SEARCH_PROVIDER_LIST[0].name,
 	},
-	showRandomMetricCountdown: true,
+	showRandomMetricCountdown: false,
 	[SOUNDSCAPES_VISIBLE]: true,
 	[TODO_VISIBLE]: true,
 	topSites: [],
