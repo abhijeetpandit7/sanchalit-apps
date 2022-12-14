@@ -1,6 +1,9 @@
+export { AddMetric } from "./AddMetric/AddMetric";
 export { Backgrounds } from "./Backgrounds/Backgrounds";
 export { Bookmarks } from "./Bookmarks/Bookmarks";
+export { Countdowns } from "./Countdowns/Countdowns";
 export { Clock } from "./Clock/Clock";
+export { DashApp } from "./DashApp/DashApp";
 export { DashLinks } from "./DashLinks/DashLinks";
 export { Focus } from "./Focus/Focus";
 export { GreetingMantra } from "./GreetingMantra/GreetingMantra";

@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { MoreToggleWrapper1 } from "../../../components";
-import { clearIcon, ellipsisIcon2, trashIcon } from "../../../utils";
+import { clearIcon, trashIcon } from "../../../utils";
 
 export const UserActions = memo((props) => (
 	<header className="header notes-list-header">

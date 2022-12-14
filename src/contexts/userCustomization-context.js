@@ -4,6 +4,7 @@ import {
 	API,
 	BACKGROUND,
 	PHOTO_INFO,
+	DASH_APP_STYLES,
 	GENERAL_SETTING_APP_LIST,
 } from "../utils";
 
@@ -13,6 +14,8 @@ export const UserCustomizationProvider = ({ children }) => {
 	const [storageUserCustomization, setStorageUserCustomization] = useState({});
 
 	const appsRef = useRef(null);
+	const countdownsRef = useRef(null);
+	const dashAppRef = useRef(null);
 	const displayNameRef = useRef(null);
 	const mainViewRef = useRef(null);
 	const notesInputRef = useRef(null);
@@ -39,12 +42,21 @@ export const UserCustomizationProvider = ({ children }) => {
 				ready: false,
 			},
 		},
+		dashApp: {
+			app: null,
+			currentCountdownId: null,
+			styles: {
+				...DASH_APP_STYLES
+			},
+		},
 	});
 
 	return (
 		<UserCustomizationContext.Provider
 			value={{
 				appsRef,
+				countdownsRef,
+				dashAppRef,
 				displayNameRef,
 				mainViewRef,
 				notesInputRef,

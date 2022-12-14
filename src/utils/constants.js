@@ -34,13 +34,21 @@ import {
 	windIcon,
 } from "./assets";
 
+export const _LEFT = "--left";
+export const _NIPPLE_DISPLACEMENT = "--nipple-displacement";
+export const _RIGHT = "--right";
+export const _TOP = "--top";
+export const _WIDTH = "--width";
 export const ABOUT = "About";
 export const ACTIVE = "active";
+export const AM = "AM";
+export const ADD = "Add";
 export const ADD_SHADOW = "add-shadow";
 export const API = "api";
 const APPS = "Apps";
 const APPS_URL = "chrome://apps";
 const APPS_LOCATION = "appsLocation";
+export const ARCHIVE = "Archive";
 export const AUTH = "auth";
 export const BALANCE = "Balance";
 export const BACKGROUND = "Background";
@@ -61,6 +69,9 @@ const CHROMIUM_TAB_URL = "chrome-search://local-ntp/local-ntp.html";
 const CLASSIC = "classic";
 export const CLOCK = "Clock";
 const CLOCK_VISIBLE = "clockVisible";
+export const COUNTDOWNS = "Countdowns";
+const COUNTDOWN_DESCRIPTION = "Count down to important dates and deadlines";
+const COUNTDOWN_VISIBLE = "countdownVisible";
 export const CUSTOMIZATION = "customization";
 export const DASH = "Dash";
 export const DARK = "dark";
@@ -68,8 +79,11 @@ export const DEFAULT = "default";
 const DEFAULT_MOST_VISITED = "defaultMostVisited";
 export const DELETE_CONF_ACTIVE = "delete-conf-active";
 export const DISABLED = "disabled";
+export const DISPLAY_LEFT = "display-left";
+export const DISPLAY_RIGHT = "display-right";
 export const DUCK_DUCK_GO = "DuckDuckGo";
 export const EDGE = "Edge";
+export const EDIT = "Edit";
 export const ECOSIA = "Ecosia";
 export const EDITING = "editing";
 export const EMPTY_NAME = "empty-name";
@@ -87,6 +101,7 @@ export const HELP = "Help";
 export const HIDE_BACKGROUND_OVERLAY = "hide-background-overlay";
 export const HIDE_VISIBILITY = "m-hide-visibility";
 export const HIDE_CONTENT = "hide-content";
+export const HOME = "Home";
 const HOME_TAB_LOCATION = "homeTabLocation";
 export const HOTKEY_HOVER = "hotkey-hover";
 const ICONS_ONLY = "iconsOnly";
@@ -102,6 +117,8 @@ const MODERN = "modern";
 export const NAV_ACTIVE = "nav-active";
 export const NIPPLE = "nipple";
 export const NIPPLE_BOTTOM_RIGHT = "nipple-bottom-right";
+export const NIPPLE_TOP_LEFT = "nipple-top-left";
+export const NIPPLE_TOP_RIGHT = "nipple-top-right";
 const NONE = "None";
 export const NOTES = "Notes";
 const NOTES_VISIBLE = "notesVisible";
@@ -112,14 +129,16 @@ const OPEN_IN_NEW_TAB = "openInNewTab";
 export const OVERFLOW = "overflow";
 export const PHOTOS = "Photos";
 export const PHOTO_INFO = "Photo Info";
+export const PM = "PM";
+export const POPUP = "popup";
 export const PRODUCTION = "production";
 export const PULSE = "pulse";
 export const QUERY_PARAM = "q";
 const QUIRKY = "quirky";
 export const QUOTES = "Quotes";
 const QUOTES_VISIBLE = "quotesVisible";
-export const RANDOM = "Random"
-export const CUSTOM = "Custom"
+export const RANDOM = "Random";
+export const CUSTOM = "Custom";
 const RETRO = "retro";
 export const SAFARI = "Safari";
 export const SEARCH = "Search";
@@ -267,6 +286,12 @@ const SOUNDS = {
 		url: "https://az814671.vo.msecnd.net/blogimages/f295aec4-9d59-47b2-b31a-ba88f23d4628",
 	},
 };
+export const DASH_APP_STYLES = {
+	[_NIPPLE_DISPLACEMENT]: null,
+	[_WIDTH]: null,
+	[_TOP]: null,
+	[_RIGHT]: null,
+};
 const APP_LOCATION_OPTIONS = [
 	{ name: BOOKMARKS, key: BOOKMARKS },
 	{ name: DASH, key: DASH },
@@ -335,6 +360,14 @@ export const BROWSER_LIST = [
 	{ name: FIREFOX, key: FIREFOX },
 	{ name: SAFARI, key: SAFARI },
 ];
+export const DASH_APP_LIST = [
+	{
+		name: COUNTDOWNS,
+		key: COUNTDOWN_VISIBLE,
+		plus: true,
+		description: COUNTDOWN_DESCRIPTION,
+	},
+];
 export const GENERAL_SETTING_APP_LIST = [
 	{
 		name: BOOKMARKS,
@@ -355,6 +388,7 @@ export const GENERAL_SETTING_APP_LIST = [
 	{ name: GREETING, key: GREETING_VISIBLE },
 	{ name: TODO, key: TODO_VISIBLE },
 	{ name: QUOTES, key: QUOTES_VISIBLE },
+	...DASH_APP_LIST,
 	{
 		name: NOTES,
 		key: NOTES_VISIBLE,
@@ -644,6 +678,16 @@ export const TOP_SITES_FOLDER_OBJ = {
 	title: TOP_SITES,
 	children: [],
 };
+export const DEFAULT_COUNTDOWN_OBJ = {
+	id: "",
+	archived: false,
+	createdDate: new Date(),
+	dueDate: null,
+	hasHours: false,
+	name: "",
+	pinned: false,
+	updatedDate: new Date().getTime(),
+};
 export const DEFAULT_NOTE_OBJ = {
 	id: "",
 	body: "",
@@ -708,6 +752,8 @@ export const DEFAULT_CUSTOMIZATION = {
 	},
 	[BOOKMARKS_VISIBLE]: false,
 	[CLOCK_VISIBLE]: true,
+	countdowns: [],
+	[COUNTDOWN_VISIBLE]: true,
 	displayName: null,
 	displayNameVisible: true,
 	[GREETING_VISIBLE]: true,
@@ -734,6 +780,7 @@ export const DEFAULT_CUSTOMIZATION = {
 		inCenter: true,
 		provider: SEARCH_PROVIDER_LIST[0].name,
 	},
+	showRandomMetricCountdown: false,
 	[SOUNDSCAPES_VISIBLE]: true,
 	[TODO_VISIBLE]: true,
 	topSites: [],

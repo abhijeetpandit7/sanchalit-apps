@@ -15,6 +15,7 @@ import {
 	TOP_SITES,
 	TOP_SITES_PERMISSION,
 	isBuildTargetWeb,
+	createCountdown,
 	createNote,
 	focusDisplayName,
 	focusNotesInput,
@@ -52,6 +53,22 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const createNewCountdown = useCallback((name, date, showTime, pinned) => {
+		let newCountdown = createCountdown();
+		newCountdown = {
+			...newCountdown,
+			dueDate: date,
+			hasHours: showTime,
+			name,
+			pinned,
+		};
+
+		setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			countdowns: [...prevCustomization.countdowns, newCountdown],
+		}));
+	}, []);
+
 	const createNoteFromEmptyState = useCallback(async () => {
 		const newNote = createNote();
 		await setStorageUserCustomization((prevCustomization) => ({
@@ -62,16 +79,29 @@ export const useUserActions = () => {
 		focusNotesInput(notesInputRef);
 	}, []);
 
-	const deleteNote = useCallback((targetNote) => {
-		setStorageUserCustomization((prevCustomization) => ({
-			...prevCustomization,
-			notes: prevCustomization.notes.map((note) =>
-				note.id === targetNote.id
-					? { ...note, deleted: true, updatedDate: new Date().getTime() }
-					: note,
-			),
-		}));
-	}, []);
+	const deleteCountdown = useCallback(
+		(targetCountdownId) =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				countdowns: prevCustomization.countdowns.filter(
+					(countdown) => countdown.id !== targetCountdownId,
+				),
+			})),
+		[],
+	);
+
+	const deleteNote = useCallback(
+		(targetNote) =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				notes: prevCustomization.notes.map((note) =>
+					note.id === targetNote.id
+						? { ...note, deleted: true, updatedDate: new Date().getTime() }
+						: note,
+				),
+			})),
+		[],
+	);
 
 	const editDisplayName = useCallback(async () => {
 		const { displayName, displayNameVisible } = storageUserCustomization;
@@ -118,6 +148,26 @@ export const useUserActions = () => {
 					: note,
 			),
 		}));
+	}, []);
+
+	const saveCountdown = useCallback((id, name, date, showTime, pinned) => {
+		setStorageUserCustomization((prevCustomization) => {
+			const targetCountdown = prevCustomization.countdowns.find(
+				(countdown) => countdown.id === id,
+			);
+			targetCountdown.dueDate = date;
+			targetCountdown.hasHours = showTime;
+			targetCountdown.name = name;
+			targetCountdown.pinned = pinned;
+			targetCountdown.updatedDate = new Date().getTime();
+
+			return {
+				...prevCustomization,
+				countdowns: prevCustomization.countdowns.map((countdown) =>
+					countdown.id === id ? targetCountdown : countdown,
+				),
+			};
+		});
 	}, []);
 
 	const saveDisplayName = (isDisplayNameEmpty) => {
@@ -191,6 +241,33 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const setCurrentCountdownId = useCallback(
+		(id) =>
+			widgetDispatch({
+				type: "SET_CURRENT_COUNTDOWN_ID",
+				payload: { id },
+			}),
+		[],
+	);
+
+	const setDashApp = useCallback(
+		(app) =>
+			widgetDispatch({
+				type: "SET_DASH_APP",
+				payload: { app },
+			}),
+		[],
+	);
+
+	const setDashAppStyles = useCallback(
+		(styles) =>
+			widgetDispatch({
+				type: "SET_DASH_APP_STYLES",
+				payload: { styles },
+			}),
+		[],
+	);
+
 	const setSearchProvider = useCallback(
 		(searchProvider) => {
 			setStorageUserCustomization((prevCustomization) => ({
@@ -247,6 +324,25 @@ export const useUserActions = () => {
 		[storageUserCustomization.bookmarksSettings],
 	);
 
+	const toggleCountdownPin = useCallback(
+		(id, pinned) =>
+			setStorageUserCustomization((prevCustomization) => {
+				let targetCountdown = prevCustomization.countdowns.find(
+					(countdown) => countdown.id === id,
+				);
+				targetCountdown.pinned = !pinned;
+				targetCountdown.updatedDate = new Date().getTime();
+
+				return {
+					...prevCustomization,
+					countdowns: prevCustomization.countdowns.map((countdown) =>
+						countdown.id === id ? targetCountdown : countdown,
+					),
+				};
+			}),
+		[],
+	);
+
 	const toggleDisplayNameVisible = useCallback(
 		() =>
 			setStorageUserCustomization((prevCustomization) => ({
@@ -261,6 +357,15 @@ export const useUserActions = () => {
 			setStorageUserCustomization((prevCustomization) => ({
 				...prevCustomization,
 				hour12clock: !prevCustomization.hour12clock,
+			})),
+		[],
+	);
+
+	const toggleRandomMetricCountdown = useCallback(
+		() =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				showRandomMetricCountdown: !prevCustomization.showRandomMetricCountdown,
 			})),
 		[],
 	);
@@ -387,21 +492,47 @@ export const useUserActions = () => {
 		],
 	);
 
+	const toggleArchiveCountdown = useCallback(
+		(targetCountdownId) =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				countdowns: prevCustomization.countdowns.map((countdown) =>
+					countdown.id === targetCountdownId
+						? {
+								...countdown,
+								archived: !countdown.archived,
+								updatedDate: new Date().getTime(),
+						  }
+						: countdown,
+				),
+			})),
+		[],
+	);
+
 	return {
 		cleanupNotes,
+		createNewCountdown,
 		createNoteFromEmptyState,
+		deleteCountdown,
 		deleteNote,
 		editDisplayName,
 		restoreNote,
+		saveCountdown,
 		saveNote,
 		selectBookmarksSetting,
 		selectGeneralSetting,
 		setCurrentNoteId,
+		setCurrentCountdownId,
+		setDashApp,
+		setDashAppStyles,
 		setSearchProvider,
 		setWidgetReady,
+		toggleArchiveCountdown,
 		toggleBookmarksSetting,
+		toggleCountdownPin,
 		toggleDisplayNameVisible,
 		toggleHour12Clock,
+		toggleRandomMetricCountdown,
 		toggleSearchInCenter,
 		toggleShowApp,
 	};

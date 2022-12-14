@@ -3,12 +3,20 @@ import moment from "moment";
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 import {
+	_LEFT,
+	_NIPPLE_DISPLACEMENT,
+	_RIGHT,
+	_TOP,
+	_WIDTH,
 	ACTIVE,
+	AM,
 	BOOKMARKS,
 	BOOKMARK_ACTION_WIDTH,
 	BOOKMARKS_BAR_ID,
 	BOOKMARKS_BAR_FIREFOX_ID,
 	CHROME,
+	DISPLAY_LEFT,
+	DISPLAY_RIGHT,
 	EDGE,
 	EMPTY_NAME,
 	FIREFOX,
@@ -18,10 +26,13 @@ import {
 	HIDE_CONTENT,
 	NIPPLE,
 	NIPPLE_BOTTOM_RIGHT,
+	NIPPLE_TOP_LEFT,
+	NIPPLE_TOP_RIGHT,
 	ONE_DAY,
 	ONE_WEEK,
 	OPEN,
 	OVERFLOW,
+	POPUP,
 	SHOW_ANYWAY,
 	SAFARI,
 	SHIFT_TO_LEFT,
@@ -33,6 +44,8 @@ import {
 	THEME_FONT_OPTIONS,
 	APPS_OBJ,
 	BOOKMARKS_MANAGER_OBJ,
+	DASH_APP_STYLES,
+	DEFAULT_COUNTDOWN_OBJ,
 	DEFAULT_NOTE_OBJ,
 	HOME_TAB_OBJ,
 	OVERFLOW_FOLDER_OBJ,
@@ -53,6 +66,12 @@ export const checkForMultiLineNote = (body) => {
 			-1 != (i = body.indexOf("\n")) ? body.slice(i, body.length - 1) : null) &&
 		-1 !== e.search(/[^\s]+/)
 	);
+};
+
+export const createCountdown = () => {
+	const newCountdown = _.cloneDeep(DEFAULT_COUNTDOWN_OBJ);
+	newCountdown.id = uuidv4();
+	return newCountdown;
 };
 
 export const createNote = () => {
@@ -126,6 +145,37 @@ export const formatTime = ({ timestamp, hour12clock }) => {
 	return hour12clock ? `${time} ${currentHour >= 12 ? "PM" : "AM"}` : time;
 };
 
+export const getDashAppStyles = (metricRef, topRight) => {
+	const BOOKMARKS_BAR_HEIGHT = 36;
+	let dashAppStyles = {
+		...DASH_APP_STYLES,
+	};
+	dashAppStyles[_WIDTH] = "230px";
+
+	const metricOffsetTop =
+		metricRef.current.offsetTop +
+		metricRef.current.offsetParent.offsetParent.offsetParent.offsetTop;
+	const metricHeight = metricRef.current.offsetHeight;
+	const metricOffsetLeft =
+		metricRef.current.offsetLeft +
+		metricRef.current.offsetParent.offsetParent.offsetLeft;
+	const metricWidth = metricRef.current.offsetWidth;
+	const metricOffsetRight =
+		window.innerWidth - (metricOffsetLeft + metricWidth);
+
+	dashAppStyles[_NIPPLE_DISPLACEMENT] = `${topRight ? 9 : 33}px`;
+	dashAppStyles[_TOP] = `${
+		metricOffsetTop === 0
+			? metricHeight
+			: metricOffsetTop > BOOKMARKS_BAR_HEIGHT
+			? metricHeight + metricOffsetTop
+			: metricHeight
+	}px`;
+	dashAppStyles[_RIGHT] = `${metricOffsetRight}px`;
+
+	return dashAppStyles;
+};
+
 export const getBodyPreview = (body) => {
 	const bodyPreviewMaxLength = 150;
 	const bodyTitle = getBodyTitle(body);
@@ -145,6 +195,23 @@ export const getBodyTitle = (body) => {
 		t
 	);
 };
+
+export const getDaysInMonth = (month, year) => {
+	const date = moment([year, month]);
+	const daysInMonth = date.daysInMonth();
+	return daysInMonth || 0;
+};
+
+export const getDateFromToday = (numberOfDays) => {
+	const date = moment();
+	date.add(numberOfDays, "days");
+	return new Date(date);
+};
+
+export const getDateFullFormat = (timestamp) =>
+	moment(timestamp).format("ddd MMM D, YYYY");
+
+export const getMonthNames = () => moment.monthsShort();
 
 const getDayPeriod = () => {
 	const currentHour = moment().get("hour");
@@ -221,6 +288,97 @@ export const getRandomDelighter = () => randomElement(NOTE_DELIGHTER_LIST);
 export const getRandomIntBetween = (min, max) =>
 	Math.floor(Math.random() * (max - min + 1)) + min;
 
+export const getSortedCountdowns = (
+	archived,
+	countdowns,
+	showRandom,
+	isDashApp,
+) => {
+	const archivedCountdowns = countdowns.filter(
+		(countdown) => countdown.archived === true,
+	);
+	const unarchivedCountdowns = countdowns.filter(
+		(countdown) => countdown.archived === false,
+	);
+
+	if (isDashApp) {
+		const visibleCountdowns = unarchivedCountdowns.filter(
+			(countdown) => countdown.pinned === true,
+		);
+		if (visibleCountdowns.length === 0 && unarchivedCountdowns.length) {
+			const availableUnpinnedCountdowns = unarchivedCountdowns.filter(
+				(countdown) => countdown.pinned === false,
+			);
+			const randomCountdown = {
+				...randomElement(availableUnpinnedCountdowns),
+				random: true,
+			};
+			visibleCountdowns.push(randomCountdown);
+		} else if (showRandom) {
+			const availableUnarchivedCountdowns = unarchivedCountdowns.filter(
+				(countdown) => !visibleCountdowns.includes(countdown),
+			);
+			if (availableUnarchivedCountdowns.length) {
+				const randomCountdown = {
+					...randomElement(availableUnarchivedCountdowns),
+					random: true,
+				};
+				visibleCountdowns.push(randomCountdown);
+			}
+		}
+		visibleCountdowns.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+		return visibleCountdowns;
+	} else if (archived) {
+		archivedCountdowns.sort(
+			(a, b) => new Date(a.dueDate) - new Date(b.dueDate),
+		);
+		archivedCountdowns.sort((a, b) => b.pinned - a.pinned);
+		return archivedCountdowns;
+	} else {
+		unarchivedCountdowns.sort(
+			(a, b) => new Date(a.dueDate) - new Date(b.dueDate),
+		);
+		unarchivedCountdowns.sort((a, b) => b.pinned - a.pinned);
+		return unarchivedCountdowns;
+	}
+};
+
+export const getTimeDifferenceFormat = (timestamp, hasHours) => {
+	const date = moment(timestamp);
+	if (hasHours) {
+		const secondsDifference = date.diff(moment(), "seconds");
+		const minuteDifference = date.diff(moment(), "minutes");
+		const hourDifference = date.diff(moment(), "hours");
+		const daysDifference = getDaysDifference(timestamp);
+		if (minuteDifference === 0 && secondsDifference <= 0) return "Now";
+		else if (minuteDifference < 0 && minuteDifference > -60)
+			return `${-minuteDifference}m ago`;
+		else if (
+			minuteDifference === 0 ||
+			(minuteDifference > 0 && minuteDifference < 59)
+		)
+			return `${minuteDifference + 1}m`;
+		else if (hourDifference == 0) return `${hourDifference + 1}h`;
+		else if (hourDifference < 0 && hourDifference > -24)
+			return `${-hourDifference}h ago`;
+		else if (hourDifference > 0 && hourDifference < 24)
+			return `${hourDifference}h`;
+		else
+			return `${
+				daysDifference < 0 ? `${-daysDifference}d ago` : `${daysDifference}d`
+			}`;
+	} else {
+		const daysDifference = date
+			.startOf("day")
+			.diff(moment().startOf("day"), "days");
+		if (daysDifference == 0) return "Today";
+		else
+			return `${
+				daysDifference < 0 ? `${-daysDifference}d ago` : `${daysDifference}d`
+			}`;
+	}
+};
+
 export const getTopSites = () =>
 	new Promise((resolve, reject) =>
 		chrome.topSites.get((topSitesArray) =>
@@ -248,7 +406,7 @@ export const hideRefClassName = (appRef, classNames) => {
 export const hideUserNav = (ref) =>
 	ref.current.classList.contains(OPEN) && toggleRefClassName(ref, OPEN);
 
-export const isBookmarkDropdownOverflowing = (bookmarksListRef) => {
+const isBookmarkDropdownOverflowing = (bookmarksListRef) => {
 	const folderDropdown = bookmarksListRef.current.querySelector(
 		`.${FOLDER_DROPDOWN}`,
 	);
@@ -261,9 +419,32 @@ export const isBookmarkDropdownOverflowing = (bookmarksListRef) => {
 	return isOverflowing;
 };
 
+const isAppPopupOverflowing = (metricRef) => {
+	const metricOffsetLeft =
+		metricRef.current.offsetLeft +
+		metricRef.current.offsetParent.offsetParent.offsetLeft;
+	const metricWidth = metricRef.current.offsetWidth;
+	const appPopup = metricRef.current.querySelector(`.${POPUP}`);
+	const appPopupWidth = appPopup.offsetWidth;
+	const isOverflowing = metricOffsetLeft + metricWidth < appPopupWidth;
+	return isOverflowing;
+};
+
 export const isBoolean = (value) => typeof value === "boolean";
 
 export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
+
+export const parseAppPopupOverflow = (metricRef, topRight) => {
+	const isOverflowing = isAppPopupOverflowing(metricRef);
+	const appPopup = metricRef.current.querySelector(`.${POPUP}`);
+	appPopup.classList.add(isOverflowing ? DISPLAY_RIGHT : DISPLAY_LEFT);
+	appPopup.classList.add(isOverflowing ? NIPPLE_TOP_LEFT : NIPPLE_TOP_RIGHT);
+	appPopup.style.setProperty(
+		isOverflowing ? _LEFT : _RIGHT,
+		`calc(50% - ${topRight ? 16 : 40}px)`,
+	);
+	appPopup.style.setProperty(_NIPPLE_DISPLACEMENT, `${topRight ? 9 : 33}px`);
+};
 
 export const parseBookmarksList = (
 	allBookmarksList,
@@ -368,6 +549,14 @@ export const parseBookmarksOverflow = (
 	} else return bookmarksList;
 };
 
+export const precedeZero = (number, size) => {
+	let numString = number.toString();
+	while (numString.length < (size || 2)) {
+		numString = "0" + numString;
+	}
+	return numString;
+};
+
 export const processNotes = (notes, searchText, trashSubView) => {
 	const processedValue = searchText.trim().toLowerCase();
 	return notes
@@ -453,6 +642,18 @@ export const toggleFullscreen = async (
 		? "all 200ms ease 0s"
 		: "";
 	return isFullscreen;
+};
+
+export const toHourFormat = (hour, timePeriod, hour12clock) => {
+	if (hour12clock) {
+		return +hour % 12 === 0 ? 12 : +hour % 12;
+	} else {
+		return +hour % 12 === 0
+			? hour / 1
+			: timePeriod === AM
+			? +hour % 12
+			: (+hour % 12) + 12;
+	}
 };
 
 export const toPlayerIcon = (icon) => {
