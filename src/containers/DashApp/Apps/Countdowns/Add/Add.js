@@ -193,13 +193,7 @@ const ContextMemo = memo(
 				setPinned(currentCountdown.pinned);
 				if (currentCountdown.hasHours) {
 					setShowTime(true);
-					setHour(
-						toHourFormat(
-							defaultDate.getHours(),
-							dueDateTimePeriod,
-							hour12clock,
-						),
-					);
+					setHour(toHourFormat(defaultDate.getHours(), hour12clock));
 					setMinute(defaultDate.getMinutes());
 					if (hour12clock) {
 						setTimePeriod(dueDateTimePeriod);
@@ -218,7 +212,7 @@ const ContextMemo = memo(
 						year,
 						monthNames.indexOf(month),
 						day,
-						toHourFormat(hour, timePeriod, false),
+						toHourFormat(hour, false, hour12clock ? timePeriod : null),
 						minute,
 					),
 				),

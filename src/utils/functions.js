@@ -32,6 +32,7 @@ import {
 	ONE_WEEK,
 	OPEN,
 	OVERFLOW,
+	PM,
 	POPUP,
 	SHOW_ANYWAY,
 	SAFARI,
@@ -644,15 +645,21 @@ export const toggleFullscreen = async (
 	return isFullscreen;
 };
 
-export const toHourFormat = (hour, timePeriod, hour12clock) => {
-	if (hour12clock) {
+export const toHourFormat = (hour, getInHour12clock, timePeriod) => {
+	if (getInHour12clock) {
 		return +hour % 12 === 0 ? 12 : +hour % 12;
 	} else {
-		return +hour % 12 === 0
-			? hour / 1
+		return +hour % 12 === 0 && timePeriod === AM
+			? 0
+			: +hour % 12 === 0 && timePeriod === PM
+			? 12
+			: +hour % 12 === 0
+			? +hour / 1
 			: timePeriod === AM
 			? +hour % 12
-			: (+hour % 12) + 12;
+			: timePeriod === PM
+			? +hour + 12
+			: +hour;
 	}
 };
 
