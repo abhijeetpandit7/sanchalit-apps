@@ -139,6 +139,8 @@ export const QUOTES = "Quotes";
 const QUOTES_VISIBLE = "quotesVisible";
 export const RANDOM = "Random";
 export const CUSTOM = "Custom";
+const DONE = "Done";
+const INBOX = "Inbox";
 const RETRO = "retro";
 export const SAFARI = "Safari";
 export const SEARCH = "Search";
@@ -158,7 +160,12 @@ export const STATIC_RESOURCES = "static-resources";
 export const SYSTEM = "system";
 const THEME_COLOUR = "themeColour";
 const THEME_FONT = "themeFont";
+const TODAY = "Today";
 export const TODO = "Todo";
+const TODO_LIST = "todo_list";
+const TODO_LIST_DONE_ID = "done";
+const TODO_LIST_INBOX_ID = "inbox";
+const TODO_LIST_TODAY_ID = "today";
 const TODO_VISIBLE = "todoVisible";
 export const TOP_SITES = "Top Sites";
 const TOP_SITES_DESCRIPTION =
@@ -697,6 +704,48 @@ export const DEFAULT_NOTE_OBJ = {
 	updatedDate: new Date().getTime(),
 };
 
+const DEFAULT_TODO_LIST_OBJ = {
+	id: "",
+	title: "",
+	color: "rgba(0,0,0,0)",
+	order: null,
+	itemType: TODO_LIST,
+	reorder: true,
+	_ts: new Date().getTime(),
+};
+
+const DEFAULT_TODO_ITEM_OBJ = {
+	id: "",
+	title: "",
+	createdDate: new Date(),
+	completedDate: null,
+	homeListId: "",
+	listId: "",
+	order: null,
+	today: false,
+	done: false,
+	_ts: new Date().getTime(),
+};
+
+const TODO_LIST_INBOX = {
+	...DEFAULT_TODO_LIST_OBJ,
+	id: TODO_LIST_INBOX_ID,
+	title: INBOX,
+	order: 0,
+};
+const TODO_LIST_TODAY = {
+	...DEFAULT_TODO_LIST_OBJ,
+	id: TODO_LIST_TODAY_ID,
+	title: TODAY,
+	order: 1,
+};
+const TODO_LIST_DONE = {
+	...DEFAULT_TODO_LIST_OBJ,
+	id: TODO_LIST_DONE_ID,
+	title: DONE,
+	order: 2,
+};
+
 export const DEFAULT_AUTHENTICATION = {
 	activeSubscription: false,
 	birthDate: null,
@@ -782,6 +831,13 @@ export const DEFAULT_CUSTOMIZATION = {
 	},
 	showRandomMetricCountdown: false,
 	[SOUNDSCAPES_VISIBLE]: true,
+	todoLists: [TODO_LIST_INBOX, TODO_LIST_TODAY, TODO_LIST_DONE],
+	todos: [],
+	todoSettings: {
+		activeTodoListId: null,
+		keepTodoState: false,
+		ts: null,
+	},
 	[TODO_VISIBLE]: true,
 	topSites: [],
 	[THEME_COLOUR]: SYSTEM,
