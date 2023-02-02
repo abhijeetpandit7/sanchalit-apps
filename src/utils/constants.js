@@ -110,6 +110,7 @@ const INCLUDE_BOOKMARKS_MANAGER = "includeBookmarksManager";
 const INCLUDE_MOST_VISITED = "includeMostVisited";
 const INCLUDE_OTHER_BOOKMARKS = "includeOtherBookmarks";
 export const INPUT_WRAPPER = "input-wrapper";
+const KEEP_TODO_STATE = "keepTodoState";
 export const LIGHT = "light";
 export const LINKS_AND_BOOKMARKS = "Links & Bookmarks";
 export const MANTRAS = "Mantras";
@@ -453,9 +454,17 @@ export const SEARCH_PROVIDER_LIST = [
 ];
 export const SETTINGS_NAV_LIST = [
 	{ value: GENERAL },
+	{ value: TODO },
 	{ value: BOOKMARKS },
 	{ value: HELP, secondary: true },
 	{ value: ABOUT, secondary: true },
+];
+export const TODO_FEED_SETTING_LIST = [
+	{
+		name: "Stay open",
+		description: "Stay open on new tab and other usage",
+		key: KEEP_TODO_STATE,
+	},
 ];
 export const SOUNDSCAPES_SCENE_LIST = [
 	{
@@ -835,8 +844,8 @@ export const DEFAULT_CUSTOMIZATION = {
 	todos: [],
 	todoSettings: {
 		activeTodoListId: null,
-		keepTodoState: false,
-		ts: null,
+		[KEEP_TODO_STATE]: false,
+		todosUpdated: null,
 	},
 	[TODO_VISIBLE]: true,
 	topSites: [],

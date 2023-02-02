@@ -461,6 +461,18 @@ export const useUserActions = () => {
 		[storageUserCustomization.bookmarks],
 	);
 
+	const toggleTodoSetting = useCallback(
+		(setting) =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				todoSettings: {
+					...prevCustomization.todoSettings,
+					[setting.key]: !prevCustomization.todoSettings[setting.key],
+				},
+			})),
+		[storageUserCustomization.todoSettings],
+	);
+
 	const toggleTopSitesSetting = useCallback(
 		async (setting) => {
 			const isPermissionAllowed = await getPermissionAllowed(
@@ -535,5 +547,6 @@ export const useUserActions = () => {
 		toggleRandomMetricCountdown,
 		toggleSearchInCenter,
 		toggleShowApp,
+		toggleTodoSetting,
 	};
 };
