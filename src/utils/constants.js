@@ -711,7 +711,7 @@ const DEFAULT_TODO_LIST_OBJ = {
 	order: null,
 	itemType: TODO_LIST,
 	reorder: true,
-	_ts: new Date().getTime(),
+	ts: new Date().getTime(),
 };
 
 const DEFAULT_TODO_ITEM_OBJ = {
@@ -724,7 +724,7 @@ const DEFAULT_TODO_ITEM_OBJ = {
 	order: null,
 	today: false,
 	done: false,
-	_ts: new Date().getTime(),
+	ts: new Date().getTime(),
 };
 
 const TODO_LIST_INBOX = {
