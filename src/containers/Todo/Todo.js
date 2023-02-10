@@ -11,45 +11,72 @@ import {
 	useUserActions,
 	useUserCustomization,
 } from "../../hooks";
-import { NIPPLE, NIPPLE_BOTTOM_RIGHT, TODO, toggleAppPopup } from "../../utils";
+import {
+	NIPPLE,
+	NIPPLE_BOTTOM_RIGHT,
+	TODO,
+	TODO_SHOW_SETTING,
+	toggleAppPopup,
+} from "../../utils";
 
 const App = lazy(() => import("./App"));
 
-const ContextMemo = memo(({ setWidgetReady }) => {
-	const todoRef = useRef(null);
-	const [componentDidMount, setComponentDidMount] = useState(false);
+const ContextMemo = memo(
+	({ keepTodoState, showTodoList, setWidgetReady, toggleTodoSetting }) => {
+		const todoRef = useRef(null);
+		const [componentDidMount, setComponentDidMount] = useState(false);
 
-	useEffect(() => setWidgetReady({ widget: TODO }), []);
+		useEffect(async () => {
+			if (showTodoList) {
+				await toggleAppPopup(todoRef);
+				await setComponentDidMount(true);
+			}
+			setWidgetReady({ widget: TODO });
+		}, []);
 
-	// TODO: Conditional variable: Stay open
-	FocusOutHandler({ ref: todoRef });
+		FocusOutHandler({ ref: todoRef, keepState: keepTodoState });
 
-	const toggleTodoApp = () => {
-		toggleAppPopup(todoRef);
-		setComponentDidMount(true);
-	};
+		const toggleTodoApp = () => {
+			toggleAppPopup(todoRef);
+			setComponentDidMount(true);
+			keepTodoState && toggleTodoSetting(TODO_SHOW_SETTING);
+		};
 
-	return (
-		<div id="todo" className="app-container todo" ref={todoRef}>
-			<div className={`app-wrapper ${NIPPLE} ${NIPPLE_BOTTOM_RIGHT}`}>
-				{componentDidMount && (
-					<Suspense fallback={null}>
-						<App />
-					</Suspense>
-				)}
+		return (
+			<div id="todo" className="app-container todo" ref={todoRef}>
+				<div className={`app-wrapper ${NIPPLE} ${NIPPLE_BOTTOM_RIGHT}`}>
+					{componentDidMount && (
+						<Suspense fallback={null}>
+							<App />
+						</Suspense>
+					)}
+				</div>
+				<span className="app-dash toggle Todo-toggle" onClick={toggleTodoApp}>
+					Todo
+				</span>
 			</div>
-			<span className="app-dash toggle Todo-toggle" onClick={toggleTodoApp}>
-				Todo
-			</span>
-		</div>
-	);
-});
+		);
+	},
+);
 
 export const Todo = () => {
 	const {
-		storageUserCustomization: { todoVisible },
+		storageUserCustomization: { todoVisible, todoSettings },
 	} = useUserCustomization();
-	const { setWidgetReady } = useUserActions();
+	const { setWidgetReady, toggleTodoSetting } = useUserActions();
 
-	return <>{todoVisible && <ContextMemo {...{ setWidgetReady }} />}</>;
+	return (
+		<>
+			{todoVisible && (
+				<ContextMemo
+					{...{
+						keepTodoState: todoSettings.keepTodoState,
+						showTodoList: todoSettings.showTodoList,
+						setWidgetReady,
+						toggleTodoSetting,
+					}}
+				/>
+			)}
+		</>
+	);
 };

@@ -11,11 +11,24 @@ import {
 	TODO,
 	TODO_FEED_SETTING_LIST,
 	GENERAL_SETTING_APP_LIST,
+	TODO_SHOW_SETTING,
 } from "../../../../../utils";
 
 const ContextMemo = memo((props) => {
 	const todoApp = GENERAL_SETTING_APP_LIST.find((app) => app.name === TODO);
 	const toggleShowTodo = () => props.toggleShowApp(todoApp);
+	const stayOpenSetting = TODO_FEED_SETTING_LIST[0];
+
+	const toggleTodoFeedSetting = (setting) => {
+		props.toggleTodoSetting(setting);
+		// Toggle off showTodoList if stayOpen is toggled off
+		if (
+			setting.key === stayOpenSetting.key &&
+			props.showTodoList &&
+			props.keepTodoState
+		)
+			props.toggleTodoSetting(TODO_SHOW_SETTING);
+	};
 
 	const CollapsibleContent = () => (
 		<>
@@ -48,7 +61,7 @@ const ContextMemo = memo((props) => {
 							<ToggleSlider
 								key={setting.key}
 								value={props[setting.key]}
-								toggle={() => props.toggleTodoSetting(setting)}
+								toggle={() => toggleTodoFeedSetting(setting)}
 								{...setting}
 							/>
 						))}
@@ -223,7 +236,7 @@ const Todo = () => {
 	const {
 		storageUserCustomization: {
 			todoVisible,
-			todoSettings: { keepTodoState },
+			todoSettings: { keepTodoState, showTodoList },
 		},
 	} = useUserCustomization();
 	const { toggleTodoSetting, toggleShowApp } = useUserActions();
@@ -232,6 +245,7 @@ const Todo = () => {
 		<ContextMemo
 			{...{
 				keepTodoState,
+				showTodoList,
 				todoVisible,
 				toggleTodoSetting,
 				toggleShowApp,

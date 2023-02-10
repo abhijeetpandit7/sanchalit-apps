@@ -151,6 +151,7 @@ export const SHIFT_TO_LEFT = "shift-to-left";
 export const SHOW = "show";
 export const SHOW_ANYWAY = "show-anyway";
 export const SHOW_FADE_IN = "show-fade-in";
+const SHOW_TODO_LIST = "showTodoList";
 export const SHOW_TOP_SITES = "Show Top Sites";
 export const SOUNDSCAPES = "Soundscapes";
 const SOUNDSCAPES_DESCRIPTION = "Sounds to help you focus and relax";
@@ -755,6 +756,11 @@ const TODO_LIST_DONE = {
 	order: 2,
 };
 
+export const TODO_SHOW_SETTING = {
+	name: "Show todo list",
+	key: SHOW_TODO_LIST,
+};
+
 export const DEFAULT_AUTHENTICATION = {
 	activeSubscription: false,
 	birthDate: null,
@@ -845,7 +851,8 @@ export const DEFAULT_CUSTOMIZATION = {
 	todoSettings: {
 		activeTodoListId: null,
 		[KEEP_TODO_STATE]: false,
-		todosUpdated: null,
+		[SHOW_TODO_LIST]: false,
+		todosUpdatedDate: null,
 	},
 	[TODO_VISIBLE]: true,
 	topSites: [],
