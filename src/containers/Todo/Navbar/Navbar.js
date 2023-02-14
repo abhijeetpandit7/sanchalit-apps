@@ -1,4 +1,5 @@
 import React from "react";
+import { DropdownToggleWrapper1 } from "../../../components";
 import { angleDownIcon1 } from "../../../utils";
 
 export const Navbar = (props) => {
@@ -9,15 +10,17 @@ export const Navbar = (props) => {
 					className="list-color"
 					style={{ backgroundColor: "rgba(0,0,0,0)" }}
 				></div>
-				<div className="active-list-container has-icon">
-					<img className="provider-icon" src="" />
+				<DropdownToggleWrapper1>
 					<span className="list-name active-list-name " title="Inbox">
 						Inbox
 					</span>
 					<div className="list-chooser-toggle icon-wrapper">
 						{angleDownIcon1}
 					</div>
-					<div className="dropdown nipple nipple-top-left">
+					<div
+						className="dropdown nipple nipple-top-left"
+						onClick={(event) => event.stopPropagation()}
+					>
 						<div className="list-chooser dropdown-list">
 							<ul data-list-id="1-inbox">
 								<li className="todo-list-choice-active " data-list-id="1-inbox">
@@ -54,11 +57,7 @@ export const Navbar = (props) => {
 							</ul>
 							<ul className="todo-list-add-row">
 								<li>
-									<span
-										id="add-icon"
-										className="todo-list-add-icon"
-										style={{ display: "block" }}
-									>
+									<span id="add-icon" className="todo-list-add-icon">
 										<i className="icon icon-plus"></i>
 									</span>
 									<input
@@ -68,17 +67,11 @@ export const Navbar = (props) => {
 										placeholder="    New List"
 										autoComplete="off"
 									/>
-									<span
-										className="loading todo-list-add-loading"
-										style={{ display: "none" }}
-									>
-										<i className="loading-icon"></i> <span>Loading...</span>
-									</span>
 								</li>
 							</ul>
 						</div>
 					</div>
-				</div>
+				</DropdownToggleWrapper1>
 				{props.children}
 			</div>
 		</header>

@@ -8834,7 +8834,8 @@ input[type="number"].hide-controls {
 .bookmark.folder.active > .dropdown[data-v-5504764e],
 .more.active > .dropdown[data-v-5504764f],
 .dropdown-wrapper[data-v-407a49db].active > .dropdown[data-v-407a49db],
-.todo-header-control.active > .todo-actions-dropdown {
+.todo-header-control.active > .todo-actions-dropdown,
+.todo-header-row > .active-list-container.active > .dropdown {
 	visibility: visible;
 }
 .dropdown-wrapper[data-v-5504764e] {
