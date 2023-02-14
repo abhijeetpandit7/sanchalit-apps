@@ -211,6 +211,18 @@ export const useUserActions = () => {
 		});
 	}, []);
 
+	const setActiveTodoListId = useCallback(
+		(id) =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				todoSettings: {
+					...prevCustomization.todoSettings,
+					activeTodoListId: id,
+				},
+			})),
+		[],
+	);
+
 	const setCurrentNoteId = useCallback(
 		(id) =>
 			setStorageUserCustomization((prevCustomization) => ({
@@ -533,6 +545,7 @@ export const useUserActions = () => {
 		saveNote,
 		selectBookmarksSetting,
 		selectGeneralSetting,
+		setActiveTodoListId,
 		setCurrentNoteId,
 		setCurrentCountdownId,
 		setDashApp,

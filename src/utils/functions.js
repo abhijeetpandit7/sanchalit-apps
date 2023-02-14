@@ -570,6 +570,14 @@ export const processNotes = (notes, searchText, trashSubView) => {
 		.sort((a, b) => new Date(b.updatedDate) - new Date(a.updatedDate));
 };
 
+export const processTodoLists = (todoLists) =>
+	todoLists.sort((a, b) => a.order - b.order);
+
+export const processTodos = (todos, activeTodoListId) =>
+	todos
+		.filter((todo) => todo.id === activeTodoListId)
+		.sort((a, b) => a.order - b.order);
+
 export const randomElement = (array) =>
 	array[Math.floor(Math.random() * array.length)];
 
