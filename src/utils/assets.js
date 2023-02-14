@@ -369,6 +369,38 @@ export const clearIcon = (
 	</svg>
 );
 
+export const clearTasksIcon = (
+	<svg
+		className="dropdown-list-icon icon icon-clear"
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 39 39"
+	>
+		<g transform="translate(-1)" fill="none" fillRule="evenodd">
+			<rect
+				strokeWidth="3"
+				transform="rotate(45 17.5 23)"
+				x="14.5"
+				y="5.5"
+				width="6"
+				height="35"
+				rx="2"
+			></rect>
+			<path d="M7 34l14.5-14.5" strokeWidth="3.8" strokeLinecap="square"></path>
+			<path
+				d="M31.5.7V6M33.886 4.812l-4.772-2.625M29.114 4.812l4.772-2.625M37.2 15.2v5.3M39.548 19.117l-4.773-2.625M34.775 19.117l4.773-2.625"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			></path>
+			<path
+				d="M19.5 4.42V7.6M20.932 6.887l-2.864-1.575M18.068 6.887l2.864-1.575"
+				strokeWidth=".8"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			></path>
+		</g>
+	</svg>
+);
+
 export const coffeeMakerIcon = (
 	<svg
 		className="tile-icon feed-icon icon-coffee-maker"
@@ -1270,6 +1302,29 @@ export const menuIcon = (
 		viewBox="0 0 124 124"
 	>
 		<path d="M112 6H12C5.4 6 0 11.4 0 18s5.4 12 12 12h100c6.6 0 12-5.4 12-12s-5.4-12-12-12zM112 50H12C5.4 50 0 55.4 0 62s5.4 12 12 12h100c6.6 0 12-5.4 12-12s-5.4-12-12-12zM112 94H12c-6.6 0-12 5.4-12 12s5.4 12 12 12h100c6.6 0 12-5.4 12-12s-5.4-12-12-12z"></path>
+	</svg>
+);
+
+export const moveToTodayIcon = (
+	<svg
+		className="dropdown-list-icon icon icon-move-to-today"
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 25 25"
+	>
+		<g fill="none" fillRule="evenodd">
+			<path
+				id="icon-path-one"
+				d="M8 10.773V7.5a.5.5 0 0 1 .5-.5H22a.5.5 0 0 1 .5.5c.006 4.712.006 7.739 0 9.08 0 .08-8.694-.078-8.694 0 .229.523.337 1.409.125 1.92H23.5a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H21a.25.25 0 0 1-.25-.25v-1a.75.75 0 0 0-1.5 0V4.5a.75.75 0 0 1-1.5 0v-2a.5.5 0 0 0-.5-.5H13a.25.25 0 0 1-.25-.25v-1a.75.75 0 0 0-1.5 0V4.5a.75.75 0 0 1-1.5 0v-2a.5.5 0 0 0-.5-.5H7a1 1 0 0 0-1 1v7.773c.665-.183 1.372-.152 2 0zm-1.5.727A6.5 6.5 0 1 0 13 18a6.508 6.508 0 0 0-6.5-6.5zm.161 9.3v-1.4c0-.193-.14-.35-.31-.35H2.931C2.418 19.05 2 18.58 2 18c0-.579.418-1.05.932-1.05H6.35c.172 0 .311-.156.311-.35v-1.399c-.001-.386.277-.7.62-.701.142 0 .28.055.39.154l3.108 2.8a.792.792 0 0 1 0 1.094l-3.107 2.799a.566.566 0 0 1-.66.083.712.712 0 0 1-.35-.63z"
+				fillRule="nonzero"
+			></path>
+			<path
+				id="icon-path-two"
+				d="M13 11l1.98 1.98M15 13l3.07-3.947"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			></path>
+		</g>
 	</svg>
 );
 

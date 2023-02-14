@@ -1,19 +1,45 @@
-import React from "react";
-import { ellipsisIcon2, hideIcon } from "../../../utils";
+import React, { lazy, memo, Suspense, useRef, useState } from "react";
+import { FocusOutHandler } from "../../../hooks";
+import {
+	ACTIVE,
+	ellipsisIcon1,
+	hideRefClassName,
+	toggleRefClassNames,
+} from "../../../utils";
 
-export const HeaderControls = () => {
+const Dropdown = lazy(() => import("./Dropdown/Dropdown"));
+
+export const HeaderControls = memo(() => {
+	const headerControlRef = useRef(null);
+	const [componentDidMount, setComponentDidMount] = useState(false);
+
+	FocusOutHandler({
+		ref: headerControlRef,
+		classNames: [ACTIVE],
+		callback: hideRefClassName,
+	});
+
+	const toggleHeaderControl = () => {
+		toggleRefClassNames(headerControlRef, [ACTIVE]);
+		setComponentDidMount(true);
+	};
+
 	return (
 		<div className="todo-header-controls">
-			<div id="todo-top-menu" className="todo-header-control more">
-				<div className="icon-wrapper more-toggle">{ellipsisIcon2}</div>
-				<div className="dropdown todo-actions-dropdown">
-					<ul className="dropdown-list"></ul>
-					<ul className="dropdown-list dropdown-detail"></ul>
+			<div
+				id="todo-top-menu"
+				className="todo-header-control more"
+				ref={headerControlRef}
+			>
+				<div className="icon-wrapper more-toggle" onClick={toggleHeaderControl}>
+					{ellipsisIcon1}
 				</div>
-			</div>
-			<div className="todo-header-control mobile-close">
-				<span className="icon-wrapper u--mobile-show-bg hide">{hideIcon}</span>
+				{componentDidMount && (
+					<Suspense fallback={null}>
+						<Dropdown />
+					</Suspense>
+				)}
 			</div>
 		</div>
 	);
-};
+});
