@@ -698,26 +698,27 @@ export const TOP_SITES_FOLDER_OBJ = {
 export const DEFAULT_COUNTDOWN_OBJ = {
 	id: "",
 	archived: false,
-	createdDate: new Date(),
+	createdDate: null,
 	dueDate: null,
 	hasHours: false,
 	name: "",
 	pinned: false,
-	updatedDate: new Date().getTime(),
+	updatedDate: null,
 };
 export const DEFAULT_NOTE_OBJ = {
 	id: "",
 	body: "",
-	createdDate: new Date(),
+	createdDate: null,
 	deleted: false,
 	empty: true,
-	updatedDate: new Date().getTime(),
+	updatedDate: null,
 };
 
 const DEFAULT_TODO_LIST_OBJ = {
 	id: "",
 	title: "",
 	color: "rgba(0,0,0,0)",
+	createdDate: new Date(),
 	order: null,
 	itemType: TODO_LIST,
 	reorder: true,
@@ -727,14 +728,14 @@ const DEFAULT_TODO_LIST_OBJ = {
 const DEFAULT_TODO_ITEM_OBJ = {
 	id: "",
 	title: "",
-	createdDate: new Date(),
+	createdDate: null,
 	completedDate: null,
 	homeListId: "",
 	listId: "",
 	order: null,
 	today: false,
 	done: false,
-	ts: new Date().getTime(),
+	ts: null,
 };
 
 const TODO_LIST_INBOX = {

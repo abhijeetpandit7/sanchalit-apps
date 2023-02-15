@@ -72,12 +72,18 @@ export const checkForMultiLineNote = (body) => {
 export const createCountdown = () => {
 	const newCountdown = _.cloneDeep(DEFAULT_COUNTDOWN_OBJ);
 	newCountdown.id = uuidv4();
+	const instantDate = new Date();
+	newCountdown.createdDate = instantDate;
+	newCountdown.updatedDate = instantDate.getTime();
 	return newCountdown;
 };
 
 export const createNote = () => {
 	const newNote = _.cloneDeep(DEFAULT_NOTE_OBJ);
 	newNote.id = uuidv4();
+	const instantDate = new Date();
+	newNote.createdDate = instantDate;
+	newNote.updatedDate = instantDate.getTime();
 	return newNote;
 };
 
