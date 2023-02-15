@@ -46,7 +46,7 @@ export const Navbar = (props) => {
 										<span className="list-name">{title}</span>
 										<span className="todo-count">
 											{
-												props.processedTodos
+												props.todos
 													.filter((todo) => todo.listId === id)
 													.filter((todo) => !todo.done).length
 											}

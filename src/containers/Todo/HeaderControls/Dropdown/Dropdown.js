@@ -14,7 +14,7 @@ const Dropdown = ({
 }) => {
 	const { id: activeTodoListId } = activeTodoList;
 	const isAnyTodo = processedTodos.length > 0;
-	const isAnyCompletedTodo = processedTodos.some((todo) => todo.isCompleted);
+	const isAnyCompletedTodo = processedTodos.some((todo) => todo.done);
 
 	const isNeitherTodayNorDoneListAndIsAnyTodo =
 		[TODO_LIST_TODAY_ID, TODO_LIST_DONE_ID].includes(activeTodoListId) ===
@@ -29,6 +29,7 @@ const Dropdown = ({
 	return (
 		<div className="dropdown todo-actions-dropdown">
 			<ul className="dropdown-list">
+				{/* TODO: Show these options only for plus user */}
 				{isNeitherTodayNorDoneListAndIsAnyTodo && (
 					<li
 						className="dropdown-list-item"

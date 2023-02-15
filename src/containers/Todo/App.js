@@ -41,6 +41,7 @@ const ContextMemo = memo((props) => {
 				{...{
 					processedTodoLists,
 					processedTodos,
+					todos,
 					activeTodoList,
 					setActiveTodoListId,
 				}}
@@ -58,8 +59,8 @@ const App = () => {
 	const {
 		storageUserCustomization: {
 			todoLists,
-			todoSettings: { activeTodoListId },
 			todos,
+			todoSettings: { activeTodoListId },
 		},
 	} = useUserCustomization();
 	const {
