@@ -1,7 +1,12 @@
 import React, { memo } from "react";
 import { HeaderControls, Navbar, ViewContainer } from "../Todo";
 import { useUserActions, useUserCustomization } from "../../hooks";
-import { SETTINGS_NAV_LIST, processTodoLists, processTodos } from "../../utils";
+import {
+	TODO_LIST_TODAY_ID,
+	SETTINGS_NAV_LIST,
+	processTodoLists,
+	processTodos,
+} from "../../utils";
 
 const ContextMemo = memo((props) => {
 	const {
@@ -16,7 +21,7 @@ const ContextMemo = memo((props) => {
 
 	const activeTodoList =
 		processedTodoLists.find(({ id }) => id === activeTodoListId) ||
-		processedTodoLists[0];
+		processedTodoLists.find(({ id }) => id === TODO_LIST_TODAY_ID);
 
 	const processedTodos = processTodos(todos, activeTodoList.id);
 
