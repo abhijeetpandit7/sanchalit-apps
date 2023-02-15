@@ -55,7 +55,9 @@ const ContextMemo = memo((props) => {
 					{...{ processedTodos, activeTodoList, toggleSettingsTodo }}
 				/>
 			</Navbar>
-			<ViewContainer />
+			<ViewContainer
+				{...{ activeTodoList, processedTodos, todos, setActiveTodoListId }}
+			/>
 		</div>
 	);
 });

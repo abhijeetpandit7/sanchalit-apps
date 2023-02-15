@@ -1,7 +1,9 @@
 import React from "react";
 import {
-	TODO_LIST_TODAY_ID,
+	INBOX,
+	TODAY,
 	TODO_LIST_DONE_ID,
+	TODO_LIST_TODAY_ID,
 	clearTasksIcon,
 	moveToTodayIcon,
 } from "../../../../utils";
@@ -33,18 +35,18 @@ const Dropdown = ({
 				{isNeitherTodayNorDoneListAndIsAnyTodo && (
 					<li
 						className="dropdown-list-item"
-						title="Move all tasks from this list to Today"
+						title={`Move all tasks from this list to ${TODAY}`}
 					>
 						<span className="dropdown-list-icon-wrapper">
 							{moveToTodayIcon}
 						</span>
-						<span className="dropdown-list-label">Send tasks to Today</span>
+						<span className="dropdown-list-label">Send tasks to {TODAY}</span>
 					</li>
 				)}
 				{isTodayListAndIsAnyTodo && (
 					<li
 						className="dropdown-list-item"
-						title="Send tasks to Inbox/original lists"
+						title={`Send tasks to ${INBOX}/original lists`}
 					>
 						<span className="dropdown-list-icon-wrapper">{clearTasksIcon}</span>
 						<span className="dropdown-list-label">Clear the day</span>

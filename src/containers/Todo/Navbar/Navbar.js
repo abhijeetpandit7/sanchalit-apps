@@ -48,7 +48,7 @@ export const Navbar = (props) => {
 											{
 												props.todos
 													.filter((todo) => todo.listId === id)
-													.filter((todo) => !todo.done).length
+													.filter((todo) => todo.done === false).length
 											}
 										</span>
 									</li>
