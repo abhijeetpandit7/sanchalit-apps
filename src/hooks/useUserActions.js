@@ -14,9 +14,12 @@ import {
 	START_IN_TOP_SITES,
 	TOP_SITES,
 	TOP_SITES_PERMISSION,
+	TODO_LIST_DONE_ID,
+	TODO_LIST_TODAY_ID,
 	isBuildTargetWeb,
 	createCountdown,
 	createNote,
+	createTodo,
 	focusDisplayName,
 	focusNotesInput,
 	getBookmarks,
@@ -78,6 +81,45 @@ export const useUserActions = () => {
 		await setCurrentNoteId(newNote.id);
 		focusNotesInput(notesInputRef);
 	}, []);
+
+	const createTodoItem = useCallback(
+		(title, activeTodoListId) => {
+			let newTodo = createTodo();
+			const instantDate = new Date();
+			const isActiveTodoListDoneList = activeTodoListId === TODO_LIST_DONE_ID;
+
+			const { todos } = storageUserCustomization;
+			let lastOrderTodoInList;
+			try {
+				lastOrderTodoInList = todos
+					.filter((todo) => todo.listId === activeTodoListId)
+					.reduce((prev, current) =>
+						prev.order > current.order ? prev : current,
+					);
+			} catch (error) {}
+
+			newTodo = {
+				...newTodo,
+				title,
+				completedDate: isActiveTodoListDoneList ? instantDate : null,
+				homeListId: activeTodoListId,
+				listId: activeTodoListId,
+				order: lastOrderTodoInList?.order + 1 || 0,
+				done: isActiveTodoListDoneList,
+				today: activeTodoListId === TODO_LIST_TODAY_ID,
+			};
+
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				todos: [...prevCustomization.todos, newTodo],
+				todoSettings: {
+					...prevCustomization.todoSettings,
+					todosUpdatedDate: instantDate,
+				},
+			}));
+		},
+		[storageUserCustomization.todos],
+	);
 
 	const deleteCountdown = useCallback(
 		(targetCountdownId) =>
@@ -546,6 +588,7 @@ export const useUserActions = () => {
 		cleanupNotes,
 		createNewCountdown,
 		createNoteFromEmptyState,
+		createTodoItem,
 		deleteCountdown,
 		deleteNote,
 		editDisplayName,

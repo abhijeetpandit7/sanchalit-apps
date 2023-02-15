@@ -21,6 +21,7 @@ export const UserCustomizationProvider = ({ children }) => {
 	const notesInputRef = useRef(null);
 	const searchInputRef = useRef(null);
 	const settingsRef = useRef(null);
+	const todoInputRef = useRef(null);	
 
 	const [widgetManager, widgetDispatch] = useReducer(widgetReducer, {
 		app: GENERAL_SETTING_APP_LIST.reduce(
@@ -63,6 +64,7 @@ export const UserCustomizationProvider = ({ children }) => {
 				notesInputRef,
 				searchInputRef,
 				settingsRef,
+				todoInputRef,
 				storageUserCustomization,
 				setStorageUserCustomization,
 				widgetManager,

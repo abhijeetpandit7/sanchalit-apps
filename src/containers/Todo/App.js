@@ -10,9 +10,11 @@ import {
 
 const ContextMemo = memo((props) => {
 	const {
+		todoInputRef,
 		activeTodoListId,
 		todoLists,
 		todos,
+		createTodoItem,
 		setActiveTodoListId,
 		setSettingsActiveNav,
 	} = props;
@@ -56,7 +58,14 @@ const ContextMemo = memo((props) => {
 				/>
 			</Navbar>
 			<ViewContainer
-				{...{ activeTodoList, processedTodos, todos, setActiveTodoListId }}
+				{...{
+					todoInputRef,
+					activeTodoList,
+					processedTodos,
+					todos,
+					createTodoItem,
+					setActiveTodoListId,
+				}}
 			/>
 		</div>
 	);
@@ -64,6 +73,7 @@ const ContextMemo = memo((props) => {
 
 const App = () => {
 	const {
+		todoInputRef,
 		storageUserCustomization: {
 			todoLists,
 			todos,
@@ -71,6 +81,7 @@ const App = () => {
 		},
 	} = useUserCustomization();
 	const {
+		createTodoItem,
 		setActiveTodoListId,
 		setSettingsActiveNav,
 	} = useUserActions();
@@ -79,8 +90,10 @@ const App = () => {
 		<ContextMemo
 			{...{
 				activeTodoListId,
+				todoInputRef,
 				todoLists,
 				todos,
+				createTodoItem,
 				setActiveTodoListId,
 				setSettingsActiveNav,
 			}}

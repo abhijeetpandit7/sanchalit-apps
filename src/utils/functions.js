@@ -48,6 +48,7 @@ import {
 	DASH_APP_STYLES,
 	DEFAULT_COUNTDOWN_OBJ,
 	DEFAULT_NOTE_OBJ,
+	DEFAULT_TODO_ITEM_OBJ,
 	HOME_TAB_OBJ,
 	OVERFLOW_FOLDER_OBJ,
 	TOP_SITES_FOLDER_OBJ,
@@ -85,6 +86,15 @@ export const createNote = () => {
 	newNote.createdDate = instantDate;
 	newNote.updatedDate = instantDate.getTime();
 	return newNote;
+};
+
+export const createTodo = () => {
+	const newTodo = _.cloneDeep(DEFAULT_TODO_ITEM_OBJ);
+	newTodo.id = uuidv4();
+	const instantDate = new Date();
+	newTodo.createdDate = instantDate;
+	newTodo.ts = instantDate.getTime();
+	return newTodo;
 };
 
 export const focusDisplayName = (displayNameRef) => {
@@ -581,7 +591,7 @@ export const processTodoLists = (todoLists) =>
 
 export const processTodos = (todos, activeTodoListId) =>
 	todos
-		.filter((todo) => todo.id === activeTodoListId)
+		.filter((todo) => todo.listId === activeTodoListId)
 		.sort((a, b) => a.order - b.order);
 
 export const randomElement = (array) =>

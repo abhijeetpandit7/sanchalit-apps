@@ -725,7 +725,7 @@ const DEFAULT_TODO_LIST_OBJ = {
 	ts: new Date().getTime(),
 };
 
-const DEFAULT_TODO_ITEM_OBJ = {
+export const DEFAULT_TODO_ITEM_OBJ = {
 	id: "",
 	title: "",
 	createdDate: null,
@@ -733,8 +733,8 @@ const DEFAULT_TODO_ITEM_OBJ = {
 	homeListId: "",
 	listId: "",
 	order: null,
-	today: false,
 	done: false,
+	today: false,
 	ts: null,
 };
 
