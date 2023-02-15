@@ -294,6 +294,15 @@ export const useUserActions = () => {
 		[storageUserCustomization.searchSettings],
 	);
 
+	const setSettingsActiveNav = useCallback(
+		(value) =>
+			widgetDispatch({
+				type: "SET_SETTINGS_ACTIVE_NAV",
+				payload: { value },
+			}),
+		[],
+	);
+
 	const setWidgetReady = useCallback(
 		({ widget, type = "app" } = {}) =>
 			widgetDispatch({
@@ -551,6 +560,7 @@ export const useUserActions = () => {
 		setDashApp,
 		setDashAppStyles,
 		setSearchProvider,
+		setSettingsActiveNav,
 		setWidgetReady,
 		toggleArchiveCountdown,
 		toggleBookmarksSetting,

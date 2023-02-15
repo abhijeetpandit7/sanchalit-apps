@@ -1,14 +1,15 @@
 import React, { memo } from "react";
 import { HeaderControls, Navbar, ViewContainer } from "../Todo";
 import { useUserActions, useUserCustomization } from "../../hooks";
-import { processTodoLists, processTodos } from "../../utils";
+import { SETTINGS_NAV_LIST, processTodoLists, processTodos } from "../../utils";
 
 const ContextMemo = memo((props) => {
 	const {
 		activeTodoListId,
-		setActiveTodoListId,
 		todoLists,
 		todos,
+		setActiveTodoListId,
+		setSettingsActiveNav,
 	} = props;
 
 	const processedTodoLists = processTodoLists(todoLists);
@@ -18,6 +19,11 @@ const ContextMemo = memo((props) => {
 		processedTodoLists[0];
 
 	const processedTodos = processTodos(todos, activeTodoList.id);
+
+	const toggleSettingsTodo = async () => {
+		await setSettingsActiveNav(SETTINGS_NAV_LIST[1].value);
+		await setSettingsActiveNav(null);
+	};
 
 	return (
 		<div className="app todo-app calculates-own-max-height">
@@ -39,7 +45,9 @@ const ContextMemo = memo((props) => {
 					setActiveTodoListId,
 				}}
 			>
-				<HeaderControls {...{ processedTodos, activeTodoList }} />
+				<HeaderControls
+					{...{ processedTodos, activeTodoList, toggleSettingsTodo }}
+				/>
 			</Navbar>
 			<ViewContainer />
 		</div>
@@ -56,6 +64,7 @@ const App = () => {
 	} = useUserCustomization();
 	const {
 		setActiveTodoListId,
+		setSettingsActiveNav,
 	} = useUserActions();
 
 	return (
@@ -65,6 +74,7 @@ const App = () => {
 				todoLists,
 				todos,
 				setActiveTodoListId,
+				setSettingsActiveNav,
 			}}
 		/>
 	);

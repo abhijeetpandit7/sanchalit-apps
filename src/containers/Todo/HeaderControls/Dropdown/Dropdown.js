@@ -6,7 +6,12 @@ import {
 	moveToTodayIcon,
 } from "../../../../utils";
 
-const Dropdown = ({ processedTodos, activeTodoList }) => {
+const Dropdown = ({
+	processedTodos,
+	activeTodoList,
+	toggleHeaderControl,
+	toggleSettingsTodo,
+}) => {
 	const { id: activeTodoListId } = activeTodoList;
 	const isAnyTodo = processedTodos.length > 0;
 	const isAnyCompletedTodo = processedTodos.some((todo) => todo.isCompleted);
@@ -57,7 +62,13 @@ const Dropdown = ({ processedTodos, activeTodoList }) => {
 						<span className="dropdown-list-label"></span>
 					</li>
 				)}
-				<li className="dropdown-list-item no-icon">
+				<li
+					className="dropdown-list-item no-icon"
+					onClick={() => {
+						toggleSettingsTodo();
+						toggleHeaderControl();
+					}}
+				>
 					<span className="dropdown-list-label">Settings</span>
 				</li>
 			</ul>

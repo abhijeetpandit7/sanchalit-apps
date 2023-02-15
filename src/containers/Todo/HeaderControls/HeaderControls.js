@@ -9,7 +9,7 @@ import {
 
 const Dropdown = lazy(() => import("./Dropdown/Dropdown"));
 
-export const HeaderControls = memo(({ processedTodos, activeTodoList }) => {
+export const HeaderControls = memo((props) => {
 	const headerControlRef = useRef(null);
 	const [componentDidMount, setComponentDidMount] = useState(false);
 
@@ -36,7 +36,7 @@ export const HeaderControls = memo(({ processedTodos, activeTodoList }) => {
 				</div>
 				{componentDidMount && (
 					<Suspense fallback={null}>
-						<Dropdown {...{ processedTodos, activeTodoList }} />
+						<Dropdown {...props} {...{ toggleHeaderControl }} />
 					</Suspense>
 				)}
 			</div>
