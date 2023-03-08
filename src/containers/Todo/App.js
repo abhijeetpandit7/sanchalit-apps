@@ -18,6 +18,7 @@ const ContextMemo = memo((props) => {
 		createTodoItem,
 		setActiveTodoListId,
 		setSettingsActiveNav,
+		toggleTodoItemDone,
 	} = props;
 
 	const todoAppRef = useRef(null);
@@ -77,6 +78,7 @@ const ContextMemo = memo((props) => {
 					todos,
 					createTodoItem,
 					setActiveTodoListId,
+					toggleTodoItemDone,
 				}}
 			/>
 		</div>
@@ -96,6 +98,7 @@ const App = () => {
 		createTodoItem,
 		setActiveTodoListId,
 		setSettingsActiveNav,
+		toggleTodoItemDone,
 	} = useUserActions();
 
 	return (
@@ -108,6 +111,7 @@ const App = () => {
 				createTodoItem,
 				setActiveTodoListId,
 				setSettingsActiveNav,
+				toggleTodoItemDone,
 			}}
 		/>
 	);

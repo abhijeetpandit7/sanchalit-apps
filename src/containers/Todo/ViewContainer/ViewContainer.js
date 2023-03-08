@@ -19,6 +19,7 @@ export const ViewContainer = ({
 	todos,
 	createTodoItem,
 	setActiveTodoListId,
+	toggleTodoItemDone,
 }) => {
 	const [isCreatingTodo, setIsCreatingTodo] = useState(false);
 
@@ -104,11 +105,19 @@ export const ViewContainer = ({
 		</li>
 	);
 
-	const TodoItem = ({ id, title }) => (
-		<li className="todo-item visible" data-todo-id={id} draggable="true">
+	const TodoItem = ({ id, done, title }) => (
+		<li
+			className={`todo-item ${done ? "done" : ""} visible`}
+			data-todo-id={id}
+			draggable="true"
+		>
 			<span className="todo-item-wrapper has-more">
-				<label>
-					<input className="todo-item-checkbox" type="checkbox" />
+				<label onClick={() => toggleTodoItemDone(id, done)}>
+					<input
+						className="todo-item-checkbox"
+						type="checkbox"
+						defaultChecked={done}
+					/>
 				</label>
 				<span className="todo-item-title">{title}</span>
 				<div className="more">

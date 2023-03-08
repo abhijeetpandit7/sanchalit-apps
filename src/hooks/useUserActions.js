@@ -524,6 +524,32 @@ export const useUserActions = () => {
 		[storageUserCustomization.bookmarks],
 	);
 
+	const toggleTodoItemDone = useCallback(
+		(id, done) =>
+			setStorageUserCustomization((prevCustomization) => {
+				const instantDate = new Date();
+				const targetTodoItem = prevCustomization.todos.find(
+					(todo) => todo.id === id,
+				);
+
+				targetTodoItem.done = !done;
+				targetTodoItem.completedDate = targetTodoItem.done ? instantDate : null;
+				targetTodoItem.ts = instantDate.getTime();
+
+				return {
+					...prevCustomization,
+					todos: prevCustomization.todos.map((todo) =>
+						todo.id === id ? targetTodoItem : todo,
+					),
+					todoSettings: {
+						...prevCustomization.todoSettings,
+						todosUpdatedDate: instantDate,
+					},
+				};
+			}),
+		[],
+	);
+
 	const toggleTodoSetting = useCallback(
 		(setting) =>
 			setStorageUserCustomization((prevCustomization) => ({
@@ -613,6 +639,7 @@ export const useUserActions = () => {
 		toggleRandomMetricCountdown,
 		toggleSearchInCenter,
 		toggleShowApp,
+		toggleTodoItemDone,
 		toggleTodoSetting,
 	};
 };
