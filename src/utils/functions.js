@@ -451,6 +451,10 @@ export const isBoolean = (value) => typeof value === "boolean";
 
 export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
 
+const isTouchDevice = () =>
+	/iPhone|iPod|iPad|Android/.test(navigator.userAgent) ||
+	(navigator.userAgent.includes("Mac") && "ontouchend" in document);
+
 export const parseAppPopupOverflow = (metricRef, topRight) => {
 	const isOverflowing = isAppPopupOverflowing(metricRef);
 	const appPopup = metricRef.current.querySelector(`.${POPUP}`);
@@ -564,6 +568,91 @@ export const parseBookmarksOverflow = (
 		reducedBookmarksList.push(reducedBookmarksList.shift());
 		return reducedBookmarksList;
 	} else return bookmarksList;
+};
+
+export const updateTodoAppHeight = (todoAppRef, appHeight) => {
+	let flag,
+		visibleHeight = 0,
+		offset = 30;
+	const todoList = todoAppRef.current.querySelector(".todo-list");
+	const heightLimit = getHeightLimit(todoAppRef);
+
+	if (heightLimit) {
+		if (appHeight === void 0) {
+			const isFirefox = getBrowserType().name === FIREFOX;
+			appHeight = 2;
+			if (todoList.children.length === 0) return;
+			for (let todo of todoList.children) {
+				todo.style.display !== "none" &&
+					(appHeight += isFirefox ? todo.scrollHeight + 1 : todo.scrollHeight);
+			}
+
+			const todoActiveListContainer = todoAppRef.current.querySelector(
+				".active-list-container",
+			);
+			const isTodoActiveListContainerExpanded =
+				todoActiveListContainer.classList.contains(ACTIVE);
+			isTodoActiveListContainerExpanded &&
+				(appHeight = Math.max(
+					todoActiveListContainer.querySelector(".dropdown").scrollHeight,
+					appHeight,
+				));
+
+			const todoHeaderControl = todoAppRef.current.querySelector(
+				".todo-header-control",
+			);
+			const isTodoHeaderControlExpanded =
+				todoHeaderControl.classList.contains(ACTIVE);
+			isTodoHeaderControlExpanded &&
+				(appHeight = Math.max(
+					todoHeaderControl.querySelector(".dropdown").scrollHeight,
+					appHeight,
+				));
+
+			flag = true;
+			visibleHeight = Math.min(appHeight, heightLimit);
+		}
+
+		appHeight >= todoList.scrollHeight
+			? ((appHeight = Math.min(appHeight, heightLimit)),
+			  (offset = appHeight + "px"),
+			  (todoList.parentElement.style.minHeight = offset))
+			: ((todoList.parentElement.style.minHeight =
+					Math.max(visibleHeight, appHeight, 30) + "px"),
+			  (offset = Math.max(visibleHeight, appHeight, 30) + "px")),
+			(todoList.style.minHeight = offset),
+			(todoList.parentElement.style.maxHeight =
+				(flag ? appHeight : heightLimit) + "px"),
+			(todoList.style.maxHeight = (flag ? appHeight : heightLimit) + "px");
+	}
+};
+
+const getHeightLimit = (todoAppRef) => {
+	const todoApp = todoAppRef.current.closest(".app");
+	const todoHeaderHeight = todoApp.querySelector(".todo-header").offsetHeight;
+	if (!todoHeaderHeight) return null;
+
+	const todoInputHeight = todoApp.querySelector(".todo-new").offsetHeight || 0;
+	const topOrBottomClearance =
+		document.querySelector(".top-left").offsetHeight +
+		document.querySelector(".bottom").offsetHeight;
+	const mobileMaxWidth = 450;
+	const mobileTopOrBottomClearance = 60;
+	const clearance =
+		window.innerWidth >= mobileMaxWidth
+			? topOrBottomClearance
+			: mobileTopOrBottomClearance;
+
+	const heightLimit =
+		document.body.getBoundingClientRect().height -
+		(clearance + todoHeaderHeight + todoInputHeight + 4);
+	if (isTouchDevice()) {
+		return Math.min(
+			window.visualViewport.height - todoHeaderHeight - todoInputHeight - 10,
+			heightLimit,
+		);
+	}
+	return heightLimit;
 };
 
 export const precedeZero = (number, size) => {

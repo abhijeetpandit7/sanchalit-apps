@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import { HeaderControls, Navbar, ViewContainer } from "../Todo";
 import { useUserActions, useUserCustomization } from "../../hooks";
 import {
@@ -6,6 +6,7 @@ import {
 	SETTINGS_NAV_LIST,
 	processTodoLists,
 	processTodos,
+	updateTodoAppHeight,
 } from "../../utils";
 
 const ContextMemo = memo((props) => {
@@ -19,6 +20,8 @@ const ContextMemo = memo((props) => {
 		setSettingsActiveNav,
 	} = props;
 
+	const todoAppRef = useRef(null);
+
 	const processedTodoLists = processTodoLists(todoLists);
 
 	const activeTodoList =
@@ -26,6 +29,9 @@ const ContextMemo = memo((props) => {
 		processedTodoLists.find(({ id }) => id === TODO_LIST_TODAY_ID);
 
 	const processedTodos = processTodos(todos, activeTodoList.id);
+	const updateAppHeight = () => updateTodoAppHeight(todoAppRef);
+
+	useEffect(() => updateAppHeight(), [todos]);
 
 	const toggleSettingsTodo = async () => {
 		await setSettingsActiveNav(SETTINGS_NAV_LIST[1].value);
@@ -33,7 +39,7 @@ const ContextMemo = memo((props) => {
 	};
 
 	return (
-		<div className="app todo-app calculates-own-max-height">
+		<div className="app todo-app calculates-own-max-height" ref={todoAppRef}>
 			<div className="drop-zone drop-left-zone">
 				<span className="bar left-bar">
 					<span className="bar-name"></span>
@@ -51,10 +57,16 @@ const ContextMemo = memo((props) => {
 					todos,
 					activeTodoList,
 					setActiveTodoListId,
+					updateAppHeight,
 				}}
 			>
 				<HeaderControls
-					{...{ processedTodos, activeTodoList, toggleSettingsTodo }}
+					{...{
+						processedTodos,
+						activeTodoList,
+						toggleSettingsTodo,
+						updateAppHeight,
+					}}
 				/>
 			</Navbar>
 			<ViewContainer

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
 	INBOX,
 	TODAY,
@@ -9,11 +9,15 @@ import {
 } from "../../../../utils";
 
 const Dropdown = ({
+	isFocus,
 	processedTodos,
 	activeTodoList,
 	toggleHeaderControl,
 	toggleSettingsTodo,
+	updateAppHeight,
 }) => {
+	useEffect(() => updateAppHeight(), [isFocus]);
+
 	const { id: activeTodoListId } = activeTodoList;
 	const isAnyTodo = processedTodos.length > 0;
 	const isAnyCompletedTodo = processedTodos.some((todo) => todo.done);

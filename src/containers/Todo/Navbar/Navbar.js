@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { DropdownToggleWrapper1 } from "../../../components";
 import { angleDownIcon1 } from "../../../utils";
 
@@ -9,6 +9,10 @@ export const Navbar = (props) => {
 		title: activeTodoListTitle,
 	} = props.activeTodoList;
 
+	const [isFocus, setIsFocus] = useState(false);
+
+	useEffect(() => props.updateAppHeight(), [isFocus]);
+
 	return (
 		<header className="header todo-header has-assignee sanchalit-todo">
 			<div className="todo-header-row">
@@ -16,7 +20,7 @@ export const Navbar = (props) => {
 					className="list-color"
 					style={{ backgroundColor: activeTodoListColor }}
 				></div>
-				<DropdownToggleWrapper1>
+				<DropdownToggleWrapper1 {...{ setIsFocus }}>
 					<span
 						className="list-name active-list-name "
 						title={activeTodoListTitle}
