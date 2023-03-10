@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
 	INBOX,
 	TODAY,
@@ -25,6 +25,8 @@ export const ViewContainer = ({
 	const [isCreatingTodo, setIsCreatingTodo] = useState(false);
 
 	useEffect(() => isCreatingTodo && setIsCreatingTodo(false), [activeTodoList]);
+
+	const todoListRef = useRef(null);
 
 	const isDoneList = activeTodoList.id === TODO_LIST_DONE_ID;
 	const isTodayList = activeTodoList.id === TODO_LIST_TODAY_ID;
@@ -81,6 +83,7 @@ export const ViewContainer = ({
 		}
 		todoInput.disabled = true;
 		await createTodoItem(todoInput.value, activeTodoList.id);
+		todoListRef.current.scrollTop = todoListRef.current.scrollHeight;
 		todoInput.disabled = false;
 		todoInput.value = "";
 		todoInput.focus();
@@ -149,7 +152,10 @@ export const ViewContainer = ({
 	return (
 		<>
 			<div className="todo-list-wrapper">
-				<ol className={`todo-list ${isAnyTodo ? "" : "is-empty"}`}>
+				<ol
+					className={`todo-list ${isAnyTodo ? "" : "is-empty"}`}
+					ref={todoListRef}
+				>
 					{isAnyTodo ? (
 						processedTodos.map((todo) => <TodoItem {...todo} key={todo.id} />)
 					) : (
