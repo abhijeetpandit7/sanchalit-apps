@@ -18,6 +18,7 @@ export const ViewContainer = ({
 	processedTodos,
 	todos,
 	createTodoItem,
+	editTodoItemTitle,
 	setActiveTodoListId,
 	toggleTodoItemDone,
 }) => {
@@ -85,6 +86,15 @@ export const ViewContainer = ({
 		todoInput.focus();
 	};
 
+	const todoItemTitleClickHandler = (event, id) => {
+		switch (event.detail) {
+			case 2:
+				editTodoItemTitle(event, id);
+			default:
+				return;
+		}
+	};
+
 	const EmptyView = () => (
 		<li className="empty">
 			<p className="title empty-title">{title}</p>
@@ -119,7 +129,12 @@ export const ViewContainer = ({
 						defaultChecked={done}
 					/>
 				</label>
-				<span className="todo-item-title">{title}</span>
+				<span
+					className="todo-item-title"
+					onClick={(event) => todoItemTitleClickHandler(event, id)}
+				>
+					{title}
+				</span>
 				<div className="more">
 					<div className="icon-wrapper more-toggle">{ellipsisIcon1}</div>
 					<div className="dropdown todo-item-dropdown">

@@ -20,6 +20,7 @@ import {
 	createCountdown,
 	createNote,
 	createTodo,
+	focusCursorAtEnd,
 	focusDisplayName,
 	focusNotesInput,
 	getBookmarks,
@@ -181,6 +182,21 @@ export const useUserActions = () => {
 		storageUserCustomization.displayNameVisible,
 	]);
 
+	const editTodoItemTitle = useCallback((event, id) => {
+		const element = event.target;
+		if (element.getAttribute("contenteditable") === "true") return;
+		element.setAttribute("contenteditable", true);
+		focusCursorAtEnd(element);
+
+		element.addEventListener(
+			"keypress",
+			(event) => event.keyCode === 13 && saveTodoItemTitle(event, id),
+		);
+		element.addEventListener("blur", () => saveTodoItemTitle(event, id), {
+			once: true,
+		});
+	}, []);
+
 	const restoreNote = useCallback((targetNote) => {
 		setStorageUserCustomization((prevCustomization) => ({
 			...prevCustomization,
@@ -221,7 +237,7 @@ export const useUserActions = () => {
 		setTimeout(() => removeRefClassName(displayNameRef, PULSE), 500);
 
 		const newName = element.innerText;
-		if (newName)
+		if (newName.trim().length)
 			setStorageUserCustomization((prevCustomization) => ({
 				...prevCustomization,
 				displayName: newName,
@@ -232,6 +248,37 @@ export const useUserActions = () => {
 				displayName: null,
 			}));
 		else element.innerText = storageUserCustomization.displayName;
+	};
+
+	const saveTodoItemTitle = (event, id) => {
+		const element = event.target;
+		element.setAttribute("contenteditable", false);
+		const newTitle = element.innerText;
+		if (newTitle.trim().length)
+			setStorageUserCustomization((prevCustomization) => {
+				const instantDate = new Date();
+				const targetTodoItem = prevCustomization.todos.find(
+					(todo) => todo.id === id,
+				);
+
+				targetTodoItem.title = newTitle;
+				targetTodoItem.ts = instantDate.getTime();
+
+				return {
+					...prevCustomization,
+					todos: prevCustomization.todos.map((todo) =>
+						todo.id === id ? targetTodoItem : todo,
+					),
+					todoSettings: {
+						...prevCustomization.todoSettings,
+						todosUpdatedDate: instantDate,
+					},
+				};
+			});
+		else
+			element.innerText = storageUserCustomization.todos.find(
+				(todo) => todo.id === id,
+			).title;
 	};
 
 	const saveNote = useCallback((event, activeNote) => {
@@ -618,6 +665,7 @@ export const useUserActions = () => {
 		deleteCountdown,
 		deleteNote,
 		editDisplayName,
+		editTodoItemTitle,
 		restoreNote,
 		saveCountdown,
 		saveNote,

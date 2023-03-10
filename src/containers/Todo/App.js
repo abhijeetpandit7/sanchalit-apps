@@ -16,6 +16,7 @@ const ContextMemo = memo((props) => {
 		todoLists,
 		todos,
 		createTodoItem,
+		editTodoItemTitle,
 		setActiveTodoListId,
 		setSettingsActiveNav,
 		toggleTodoItemDone,
@@ -77,6 +78,7 @@ const ContextMemo = memo((props) => {
 					processedTodos,
 					todos,
 					createTodoItem,
+					editTodoItemTitle,
 					setActiveTodoListId,
 					toggleTodoItemDone,
 				}}
@@ -96,6 +98,7 @@ const App = () => {
 	} = useUserCustomization();
 	const {
 		createTodoItem,
+		editTodoItemTitle,
 		setActiveTodoListId,
 		setSettingsActiveNav,
 		toggleTodoItemDone,
@@ -109,6 +112,7 @@ const App = () => {
 				todoLists,
 				todos,
 				createTodoItem,
+				editTodoItemTitle,
 				setActiveTodoListId,
 				setSettingsActiveNav,
 				toggleTodoItemDone,

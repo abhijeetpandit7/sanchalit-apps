@@ -97,9 +97,7 @@ export const createTodo = () => {
 	return newTodo;
 };
 
-export const focusDisplayName = (displayNameRef) => {
-	const element = displayNameRef.current;
-	if (element.innerText === EMPTY_NAME) element.innerText = "";
+export const focusCursorAtEnd = (element) => {
 	const setpos = document.createRange();
 	const set = window.getSelection();
 	if (element.childNodes[0])
@@ -108,6 +106,12 @@ export const focusDisplayName = (displayNameRef) => {
 	set.removeAllRanges();
 	set.addRange(setpos);
 	element.focus();
+};
+
+export const focusDisplayName = (displayNameRef) => {
+	const element = displayNameRef.current;
+	if (element.innerText === EMPTY_NAME) element.innerText = "";
+	focusCursorAtEnd(element);
 };
 
 export const focusNotesInput = (notesInputRef) => {
