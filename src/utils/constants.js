@@ -173,6 +173,7 @@ export const TOP_SITES = "Top Sites";
 const TOP_SITES_DESCRIPTION =
 	"Show most visited websites by default in Bookmarks Bar";
 export const TOP_SITES_PERMISSION = "topSites";
+export const TRANSPARENT_COLOUR = "rgba(0, 0, 0, 0)";
 const WAREHOUSE = "warehouse";
 const WEB = "web";
 
@@ -368,6 +369,24 @@ export const BROWSER_LIST = [
 	{ name: EDGE, key: CHROMIUM },
 	{ name: FIREFOX, key: FIREFOX },
 	{ name: SAFARI, key: SAFARI },
+];
+export const COLOUR_PALETTE_LIST = [
+	"rgb(212, 32, 34)",
+	"rgb(240, 90, 15)",
+	"rgb(255, 170, 0)",
+	"rgb(234, 230, 11)",
+	"rgb(159, 234, 10)",
+	"rgb(64, 220, 25)",
+	"rgb(5, 235, 166)",
+	"rgb(23, 204, 222)",
+	"rgb(20, 167, 235)",
+	"rgb(51, 107, 232)",
+	"rgb(93, 86, 218)",
+	"rgb(153, 0, 153)",
+	"rgb(195, 15, 98)",
+	"rgb(227, 119, 194)",
+	"rgb(230, 230, 230)",
+	TRANSPARENT_COLOUR,
 ];
 export const DASH_APP_LIST = [
 	{
@@ -717,7 +736,7 @@ export const DEFAULT_NOTE_OBJ = {
 const DEFAULT_TODO_LIST_OBJ = {
 	id: "",
 	title: "",
-	color: "rgba(0,0,0,0)",
+	colour: TRANSPARENT_COLOUR,
 	createdDate: new Date(),
 	order: null,
 	itemType: TODO_LIST,

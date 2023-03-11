@@ -810,3 +810,5 @@ export const toDays = (seconds) => seconds / ONE_DAY;
 export const toMilliseconds = (seconds) => seconds * 1000;
 
 export const toWeeks = (seconds) => seconds / ONE_WEEK;
+
+export const trimSpacesWithin = (string) => string.replace(/\s+/g, "");

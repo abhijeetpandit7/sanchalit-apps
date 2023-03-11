@@ -4,7 +4,7 @@ import { TODO_LIST_DONE_ID, angleDownIcon1 } from "../../../utils";
 
 export const Navbar = (props) => {
 	const {
-		color: activeTodoListColor,
+		colour: activeTodoListColor,
 		id: activeTodoListId,
 		title: activeTodoListTitle,
 	} = props.activeTodoList;
@@ -32,7 +32,7 @@ export const Navbar = (props) => {
 					</div>
 					<div className="dropdown nipple nipple-top-left">
 						<div className="list-chooser dropdown-list">
-							{props.processedTodoLists.map(({ id, title, color }) => (
+							{props.processedTodoLists.map(({ id, title, colour }) => (
 								<ul onClick={() => props.setActiveTodoListId(id)} key={id}>
 									<li
 										className={`${
@@ -43,7 +43,7 @@ export const Navbar = (props) => {
 									>
 										<div
 											className="list-color"
-											style={{ backgroundColor: color }}
+											style={{ backgroundColor: colour }}
 										>
 											&nbsp;
 										</div>

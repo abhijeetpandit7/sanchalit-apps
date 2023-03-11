@@ -1,18 +1,28 @@
 import React, { memo } from "react";
 import {
 	CollapsibleHeaderWrapper,
+	ColourPaletteWrapper,
 	ToggleSlider,
 } from "../../../../../components";
 import { useUserActions, useUserCustomization } from "../../../../../hooks";
 import {
 	cancelIcon,
-	checkIcon,
 	trashIcon,
 	TODO,
+	TODO_LIST_DONE_ID,
+	TODO_LIST_INBOX_ID,
+	TODO_LIST_TODAY_ID,
 	TODO_FEED_SETTING_LIST,
 	GENERAL_SETTING_APP_LIST,
 	TODO_SHOW_SETTING,
+	processTodoLists,
 } from "../../../../../utils";
+
+const defaultTodoListIds = [
+	TODO_LIST_DONE_ID,
+	TODO_LIST_INBOX_ID,
+	TODO_LIST_TODAY_ID,
+];
 
 const ContextMemo = memo((props) => {
 	const todoApp = GENERAL_SETTING_APP_LIST.find((app) => app.name === TODO);
@@ -44,6 +54,9 @@ const ContextMemo = memo((props) => {
 			</ul>
 		</>
 	);
+
+	const processedTodoLists = processTodoLists(props.todoLists);
+	console.log(processedTodoLists);
 
 	return (
 		<div id="settings-todo" className="settings-view settings-todo">
@@ -80,133 +93,56 @@ const ContextMemo = memo((props) => {
 					<div id="custom-lists" className="settings-todo-lists-container">
 						{/* TODO: Make it draggable */}
 						<ul className="settings-list options-list settings-todo-lists">
-							<li
-								data-id="inbox"
-								className="settings-todo-list draggable-todo-list"
-								draggable="true"
-							>
-								<span className="settings-todo-list-color">
-									<ul className="color-palette-wrapper">
-										<div className="swatch-container">
-											<div
-												className="swatch null-color"
-												style={{ background: "rgba(0, 0, 0, 0)" }}
-											></div>
-										</div>
-									</ul>
-								</span>
-								<span className="settings-todo-list-name">Inbox</span>
-								<span className="settings-list-right">
-									<span className="action-group">
-										<span className="default">Default</span>
+							{processedTodoLists.map(({ id, title, colour }) => (
+								<li
+									data-id={id}
+									className="settings-todo-list draggable-todo-list"
+									draggable="true"
+								>
+									<span className="settings-todo-list-color">
+										<ColourPaletteWrapper todoListColour={colour} />
 									</span>
-								</span>
-							</li>
-							<li
-								data-id="today"
-								className="settings-todo-list draggable-todo-list"
-								draggable="true"
-							>
-								<span className="settings-todo-list-color">
-									<ul className="color-palette-wrapper active">
-										<div className="swatch-container">
-											<div
-												className="swatch"
-												style={{ background: "rgb(240, 90, 15)" }}
-											></div>
-										</div>
-										<ul className="nipple nipple-bottom-left swatch-color-picker todo-color-picker">
-											<li style={{ background: "#d42022" }}>{checkIcon}</li>
-											<li style={{ background: "#f05a0f" }}>{checkIcon}</li>
-											<li style={{ background: "#ffaa00" }}>{checkIcon}</li>
-											<li style={{ background: "#eae60b" }}>{checkIcon}</li>
-											<li style={{ background: "#9fea0a" }}>{checkIcon}</li>
-											<li style={{ background: "#40dc19" }}>{checkIcon}</li>
-											<li style={{ background: "#05eba6" }}>{checkIcon}</li>
-											<li style={{ background: "#17ccde" }}>{checkIcon}</li>
-											<li style={{ background: "#14a7eb" }}>{checkIcon}</li>
-											<li style={{ background: "#336be8" }}>{checkIcon}</li>
-											<li style={{ background: "#5d56da" }}>{checkIcon}</li>
-											<li style={{ background: "#990099" }}>{checkIcon}</li>
-											<li style={{ background: "#c30f62" }}>{checkIcon}</li>
-											<li style={{ background: "#e377c2" }}>{checkIcon}</li>
-											<li style={{ background: "#e6e6e6" }}>{checkIcon}</li>
-											<li className="no-color active">{checkIcon}</li>
-										</ul>
-									</ul>
-								</span>
-								<span className="settings-todo-list-name">Today</span>
-								<span className="settings-list-right">
-									<span className="action-group">
-										<span className="default">Default</span>
-									</span>
-								</span>
-							</li>
-							<li
-								data-id="done"
-								className="settings-todo-list draggable-todo-list"
-								draggable="true"
-							>
-								<span className="settings-todo-list-color">
-									<ul className="color-palette-wrapper">
-										<div className="swatch-container">
-											<div
-												className="swatch null-color"
-												style={{ background: "rgba(0, 0, 0, 0)" }}
-											></div>
-										</div>
-									</ul>
-								</span>
-								<span className="settings-todo-list-name">Done</span>
-								<span className="settings-list-right">
-									<span className="action-group">
-										<span className="default">Default</span>
-									</span>
-								</span>
-							</li>
-							<li
-								data-id=""
-								className="settings-todo-list draggable-todo-list"
-								draggable="true"
-							>
-								<span className="settings-todo-list-color">
-									<ul className="color-palette-wrapper">
-										<div className="swatch-container">
-											<div
-												className="swatch null-color"
-												style={{ background: "rgba(0, 0, 0, 0)" }}
-											></div>
-										</div>
-									</ul>
-								</span>
-								<span className="settings-todo-list-name">NewList4</span>
-								<span className="settings-list-right">
-									<span className="action-group">
-										<span className="todo-rename-list action">Rename</span>
-										<span className="todo-delete-list action" title="Delete">
-											{trashIcon}
+									<span className="settings-todo-list-name">{title}</span>
+									<span className="settings-list-right">
+										<span className="action-group">
+											{defaultTodoListIds.includes(id) ? (
+												<span className="default">Default</span>
+											) : (
+												<>
+													<span className="todo-rename-list action">
+														Rename
+													</span>
+													<span
+														className="todo-delete-list action"
+														title="Delete"
+													>
+														{trashIcon}
+													</span>
+												</>
+											)}
 										</span>
+										{/* <span className="delete-group">
+											<span className="delete-1">
+												<span className="delete delete-msg">Delete list?</span>
+												<span className="delete delete-yes clickable">Yes</span>
+												<span className="delete delete-no clickable">No</span>
+											</span>
+											<span className="delete-2">
+												<span className="delete delete-msg-2">
+													List has 1 todo.
+												</span>
+												<span className="delete move-todos clickable">
+													Move to Inbox
+												</span>
+												<span className="delete delete-cancel clickable">
+													Cancel
+												</span>
+											</span>
+										</span> */}
 									</span>
-									<span className="delete-group" title="">
-										<span className="delete-1">
-											<span className="delete delete-msg">Delete list?</span>
-											<span className="delete delete-yes clickable">Yes</span>
-											<span className="delete delete-no clickable">No</span>
-										</span>
-										<span className="delete-2">
-											<span className="delete delete-msg-2">
-												List has 1 todo.
-											</span>
-											<span className="delete move-todos clickable">
-												Move to Inbox
-											</span>
-											<span className="delete delete-cancel clickable">
-												Cancel
-											</span>
-										</span>
-									</span>
-								</span>
-							</li>
+								</li>
+							))}
+
 							<li className="settings-todo-add-list">
 								<input
 									type="text"
@@ -235,6 +171,7 @@ const ContextMemo = memo((props) => {
 const Todo = () => {
 	const {
 		storageUserCustomization: {
+			todoLists,
 			todoVisible,
 			todoSettings: { keepTodoState, showTodoList },
 		},
@@ -246,6 +183,7 @@ const Todo = () => {
 			{...{
 				keepTodoState,
 				showTodoList,
+				todoLists,
 				todoVisible,
 				toggleTodoSetting,
 				toggleShowApp,

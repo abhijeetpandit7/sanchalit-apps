@@ -1,4 +1,5 @@
 export { CollapsibleHeaderWrapper } from "./CollapsibleHeaderWrapper/CollapsibleHeaderWrapper";
+export { ColourPaletteWrapper } from "./ColourPaletteWrapper/ColourPaletteWrapper";
 export { DropdownToggleWrapper } from "./DropdownToggleWrapper/DropdownToggleWrapper";
 export { DropdownToggleWrapper1 } from "./DropdownToggleWrapper1/DropdownToggleWrapper1";
 export { HeightResizeWrapper } from "./HeightResizeWrapper/HeightResizeWrapper";
