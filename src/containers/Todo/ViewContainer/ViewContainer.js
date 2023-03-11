@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import _ from "lodash";
 import {
 	INBOX,
 	TODAY,
@@ -6,6 +7,7 @@ import {
 	TODO_LIST_INBOX_ID,
 	TODO_LIST_TODAY_ID,
 	ellipsisIcon1,
+	formatDate,
 } from "../../../utils";
 
 const ADD_A_TODO_TO_GET_STARTED = "Add a todo to get started";
@@ -122,7 +124,7 @@ export const ViewContainer = ({
 		<li
 			className={`todo-item ${done ? "done" : ""} visible`}
 			data-todo-id={id}
-			draggable="true"
+			draggable={isDoneList ? "false" : "true"}
 		>
 			<span className="todo-item-wrapper has-more">
 				<label onClick={() => toggleTodoItemDone(id, done)}>
@@ -149,6 +151,67 @@ export const ViewContainer = ({
 		</li>
 	);
 
+	const DoneListTodoItems = () => {
+		const todoItemObjects = _.map(processedTodos, (todo) => {
+			const date = new Date(todo.completedDate);
+			return {
+				sortDate: date.getTime(),
+				year: date.getFullYear(),
+				month: date.getMonth(),
+				day: date.getDate(),
+				item: todo,
+			};
+		});
+		const sortedTodoItemObjects = _(todoItemObjects)
+			.sortBy("sortDate")
+			.reverse()
+			.value();
+
+		let year = null,
+			month = null,
+			day = null;
+		return _.map(sortedTodoItemObjects, (todoObj) => {
+			let todoSection;
+			if (
+				year != todoObj.year ||
+				month != todoObj.month ||
+				day != todoObj.day
+			) {
+				year = todoObj.year;
+				month = todoObj.month;
+				day = todoObj.day;
+				const calendarDate = formatDate({
+					timestamp: todoObj.sortDate,
+					calendarDate: true,
+				});
+				const friendlyDate = formatDate({
+					timestamp: todoObj.sortDate,
+					friendlyDate: true,
+				});
+				const todoSectionTitle =
+					calendarDate !== friendlyDate ? calendarDate : "";
+				todoSection = (
+					<li
+						className="todo-section"
+						title={todoSectionTitle}
+						data-view-section-parent-id={todoSectionTitle}
+						draggable="false"
+					>
+						{friendlyDate}
+					</li>
+				);
+				todoObj.item["viewSectionId"] = calendarDate;
+			}
+
+			return (
+				<Fragment key={todoObj.item.id}>
+					{todoSection}
+					<TodoItem {...todoObj.item} />
+				</Fragment>
+			);
+		});
+	};
+
 	return (
 		<>
 			<div className="todo-list-wrapper">
@@ -157,7 +220,11 @@ export const ViewContainer = ({
 					ref={todoListRef}
 				>
 					{isAnyTodo ? (
-						processedTodos.map((todo) => <TodoItem {...todo} key={todo.id} />)
+						isDoneList ? (
+							<DoneListTodoItems />
+						) : (
+							processedTodos.map((todo) => <TodoItem {...todo} key={todo.id} />)
+						)
 					) : (
 						<EmptyView />
 					)}

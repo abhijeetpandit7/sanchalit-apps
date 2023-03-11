@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { DropdownToggleWrapper1 } from "../../../components";
-import { angleDownIcon1 } from "../../../utils";
+import { TODO_LIST_DONE_ID, angleDownIcon1 } from "../../../utils";
 
 export const Navbar = (props) => {
 	const {
@@ -49,11 +49,11 @@ export const Navbar = (props) => {
 										</div>
 										<span className="list-name">{title}</span>
 										<span className="todo-count">
-											{
-												props.todos
-													.filter((todo) => todo.listId === id)
-													.filter((todo) => todo.done === false).length
-											}
+											{id === TODO_LIST_DONE_ID
+												? props.todos.filter((todo) => todo.done).length
+												: props.todos
+														.filter((todo) => todo.listId === id)
+														.filter((todo) => todo.done === false).length}
 										</span>
 									</li>
 								</ul>

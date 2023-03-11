@@ -39,6 +39,7 @@ import {
 	SHIFT_TO_LEFT,
 	SHOW,
 	SHOW_FADE_IN,
+	TODO_LIST_DONE_ID,
 	BROWSER_LIST,
 	NOTE_DELIGHTER_LIST,
 	THEME_COLOUR_OPTIONS,
@@ -124,13 +125,15 @@ export const formatDate = ({
 	timestamp,
 	hour12clock,
 	relativeDay = false,
+	calendarDate = false,
+	friendlyDate = false,
 } = {}) => {
 	const date = moment(timestamp);
 	const dateIsInThisYear = date.isSame(moment(), "year");
 	const dateDifference = date
 		.startOf("day")
 		.diff(moment().startOf("day"), "days");
-	if (relativeDay) {
+	if (relativeDay || friendlyDate) {
 		switch (dateDifference) {
 			case 0:
 				return "Today";
@@ -139,21 +142,25 @@ export const formatDate = ({
 			case -1:
 				return "Yesterday";
 			default:
+				if (friendlyDate) break;
 				const monthlyDayFormat = date.format("MMMM D");
 				return dateIsInThisYear
 					? monthlyDayFormat
 					: formatYearRelative(monthlyDayFormat, timestamp);
 		}
-	} else {
-		const dateIsToday = date.isSame(moment(), "day");
-		const dateIsInLast7d = dateDifference > -7 && dateDifference < 0;
-		const monthlyDayFormat = date.format("MMM D");
-
-		if (dateIsToday) return formatTime({ timestamp, hour12clock });
-		else if (dateIsInLast7d) return date.format("ddd");
-		else if (dateIsInThisYear) return monthlyDayFormat;
-		else return formatYearRelative(monthlyDayFormat, timestamp);
 	}
+	const dateIsToday = date.isSame(moment(), "day");
+	const dateIsInLast7d = dateDifference > -7 && dateDifference < 0;
+	const monthlyDayFormat = date.format(
+		`${calendarDate || friendlyDate ? "MMMM" : "MMM"} D`,
+	);
+
+	if (dateIsToday && calendarDate === false)
+		return formatTime({ timestamp, hour12clock });
+	else if (dateIsInLast7d && calendarDate === false)
+		return date.format(`${friendlyDate ? "dddd" : "ddd"}`);
+	else if (dateIsInThisYear) return monthlyDayFormat;
+	else return formatYearRelative(monthlyDayFormat, timestamp);
 };
 
 const formatYearRelative = (dateFormat, timestamp) =>
@@ -683,9 +690,13 @@ export const processTodoLists = (todoLists) =>
 	todoLists.sort((a, b) => a.order - b.order);
 
 export const processTodos = (todos, activeTodoListId) =>
-	todos
-		.filter((todo) => todo.listId === activeTodoListId)
-		.sort((a, b) => a.order - b.order);
+	activeTodoListId === TODO_LIST_DONE_ID
+		? todos
+				.filter((todo) => todo.done)
+				.sort((a, b) => b.completedDate - a.completedDate)
+		: todos
+				.filter((todo) => todo.listId === activeTodoListId)
+				.sort((a, b) => a.order - b.order);
 
 export const randomElement = (array) =>
 	array[Math.floor(Math.random() * array.length)];
