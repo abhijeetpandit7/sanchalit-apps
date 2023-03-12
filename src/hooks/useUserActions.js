@@ -392,6 +392,31 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const setTodoListColour = useCallback(
+		(id, colour) =>
+			setStorageUserCustomization((prevCustomization) => {
+				const instantDate = new Date();
+				const targetTodoList = prevCustomization.todoLists.find(
+					(todoList) => todoList.id === id,
+				);
+
+				targetTodoList.colour = colour;
+				targetTodoList.ts = instantDate.getTime();
+
+				return {
+					...prevCustomization,
+					todoLists: prevCustomization.todoLists.map((todoList) =>
+						todoList.id === id ? targetTodoList : todoList,
+					),
+					todoSettings: {
+						...prevCustomization.todoSettings,
+						todosUpdatedDate: instantDate,
+					},
+				};
+			}),
+		[],
+	);
+
 	const setWidgetReady = useCallback(
 		({ widget, type = "app" } = {}) =>
 			widgetDispatch({
@@ -678,6 +703,7 @@ export const useUserActions = () => {
 		setDashAppStyles,
 		setSearchProvider,
 		setSettingsActiveNav,
+		setTodoListColour,
 		setWidgetReady,
 		toggleArchiveCountdown,
 		toggleBookmarksSetting,

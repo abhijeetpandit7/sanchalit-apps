@@ -56,7 +56,6 @@ const ContextMemo = memo((props) => {
 	);
 
 	const processedTodoLists = processTodoLists(props.todoLists);
-	console.log(processedTodoLists);
 
 	return (
 		<div id="settings-todo" className="settings-view settings-todo">
@@ -98,9 +97,14 @@ const ContextMemo = memo((props) => {
 									data-id={id}
 									className="settings-todo-list draggable-todo-list"
 									draggable="true"
+									key={id}
 								>
 									<span className="settings-todo-list-color">
-										<ColourPaletteWrapper todoListColour={colour} />
+										<ColourPaletteWrapper
+											todoListColour={colour}
+											todoListId={id}
+											setTodoListColour={props.setTodoListColour}
+										/>
 									</span>
 									<span className="settings-todo-list-name">{title}</span>
 									<span className="settings-list-right">
@@ -176,7 +180,8 @@ const Todo = () => {
 			todoSettings: { keepTodoState, showTodoList },
 		},
 	} = useUserCustomization();
-	const { toggleTodoSetting, toggleShowApp } = useUserActions();
+	const { setTodoListColour, toggleTodoSetting, toggleShowApp } =
+		useUserActions();
 
 	return (
 		<ContextMemo
@@ -185,6 +190,7 @@ const Todo = () => {
 				showTodoList,
 				todoLists,
 				todoVisible,
+				setTodoListColour,
 				toggleTodoSetting,
 				toggleShowApp,
 			}}

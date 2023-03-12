@@ -13,7 +13,11 @@ import {
 const isTransparentColour = (colour) =>
 	trimSpacesWithin(colour) === trimSpacesWithin(TRANSPARENT_COLOUR);
 
-export const ColourPaletteWrapper = ({ todoListColour }) => {
+export const ColourPaletteWrapper = ({
+	todoListColour,
+	todoListId,
+	setTodoListColour,
+}) => {
 	const swatchRef = useRef(null);
 	const [isFocus, setIsFocus] = useState(false);
 
@@ -31,14 +35,18 @@ export const ColourPaletteWrapper = ({ todoListColour }) => {
 
 	const ColourPicker = () => (
 		<ul className="nipple nipple-bottom-left swatch-color-picker todo-color-picker">
-			{COLOUR_PALETTE_LIST.map((colour, index) => (
+			{COLOUR_PALETTE_LIST.map((paletteColour, index) => (
 				<li
-					style={{ backgroundColor: colour }}
-					className={`${isTransparentColour(colour) ? "no-color" : ""} ${
-						trimSpacesWithin(colour) === trimSpacesWithin(todoListColour)
+					style={{ backgroundColor: paletteColour }}
+					className={`${isTransparentColour(paletteColour) ? "no-color" : ""} ${
+						trimSpacesWithin(paletteColour) === trimSpacesWithin(todoListColour)
 							? "active"
 							: ""
 					}`}
+					onClick={() => {
+						setTodoListColour(todoListId, paletteColour);
+						toggleSwatch();
+					}}
 					key={index}
 				>
 					{checkIcon}
@@ -54,10 +62,10 @@ export const ColourPaletteWrapper = ({ todoListColour }) => {
 					className={`swatch ${
 						isTransparentColour(todoListColour) ? "null-color" : ""
 					}`}
-					style={{ backgroundColor: todoListColour }}
+					style={{ background: todoListColour }}
 				></div>
 			</div>
-			{isFocus && <ColourPicker />}
+			{isFocus && <ColourPicker {...{ setTodoListColour }} />}
 		</ul>
 	);
 };
