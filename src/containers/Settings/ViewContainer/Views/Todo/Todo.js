@@ -18,11 +18,84 @@ import {
 	processTodoLists,
 } from "../../../../../utils";
 
-const defaultTodoListIds = [
-	TODO_LIST_DONE_ID,
-	TODO_LIST_INBOX_ID,
-	TODO_LIST_TODAY_ID,
-];
+const TodoList = ({
+	id,
+	title,
+	colour,
+	editTodoListTitle,
+	setTodoListColour,
+}) => {
+	const defaultTodoListIds = [
+		TODO_LIST_DONE_ID,
+		TODO_LIST_INBOX_ID,
+		TODO_LIST_TODAY_ID,
+	];
+	const isDefaultTodoList = defaultTodoListIds.includes(id);
+
+	const todoListTitleClickHandler = (event) => {
+		if (isDefaultTodoList) return;
+		switch (event.detail) {
+			case 2:
+				editTodoListTitle(event, id);
+			default:
+				return;
+		}
+	};
+
+	return (
+		<li
+			data-id={id}
+			className="settings-todo-list draggable-todo-list"
+			onClick={todoListTitleClickHandler}
+			draggable="true"
+			key={id}
+		>
+			<span className="settings-todo-list-color">
+				<ColourPaletteWrapper
+					{...{ todoListColour: colour, todoListId: id, setTodoListColour }}
+				/>
+			</span>
+			<span className="settings-todo-list-name">{title}</span>
+			<span className="settings-list-right">
+				<span className="action-group">
+					{isDefaultTodoList ? (
+						<span className="default">Default</span>
+					) : (
+						<>
+							<span
+								className="todo-rename-list action"
+								onClick={(event) => editTodoListTitle(event, id)}
+							>
+								Rename
+							</span>
+							<span className="todo-delete-list action" title="Delete">
+								{trashIcon}
+							</span>
+						</>
+					)}
+				</span>
+				{/* <span className="delete-group">
+				<span className="delete-1">
+					<span className="delete delete-msg">Delete list?</span>
+					<span className="delete delete-yes clickable">Yes</span>
+					<span className="delete delete-no clickable">No</span>
+				</span>
+				<span className="delete-2">
+					<span className="delete delete-msg-2">
+						List has 1 todo.
+					</span>
+					<span className="delete move-todos clickable">
+						Move to Inbox
+					</span>
+					<span className="delete delete-cancel clickable">
+						Cancel
+					</span>
+				</span>
+			</span> */}
+			</span>
+		</li>
+	);
+};
 
 const AddList = ({ createTodoList }) => {
 	const [isCreatingTodo, setIsCreatingTodo] = useState(false);
@@ -109,56 +182,6 @@ const ContextMemo = memo((props) => {
 		</>
 	);
 
-	const TodoList = ({ id, title, colour }) => (
-		<li
-			data-id={id}
-			className="settings-todo-list draggable-todo-list"
-			draggable="true"
-			key={id}
-		>
-			<span className="settings-todo-list-color">
-				<ColourPaletteWrapper
-					todoListColour={colour}
-					todoListId={id}
-					setTodoListColour={props.setTodoListColour}
-				/>
-			</span>
-			<span className="settings-todo-list-name">{title}</span>
-			<span className="settings-list-right">
-				<span className="action-group">
-					{defaultTodoListIds.includes(id) ? (
-						<span className="default">Default</span>
-					) : (
-						<>
-							<span className="todo-rename-list action">Rename</span>
-							<span className="todo-delete-list action" title="Delete">
-								{trashIcon}
-							</span>
-						</>
-					)}
-				</span>
-				{/* <span className="delete-group">
-					<span className="delete-1">
-						<span className="delete delete-msg">Delete list?</span>
-						<span className="delete delete-yes clickable">Yes</span>
-						<span className="delete delete-no clickable">No</span>
-					</span>
-					<span className="delete-2">
-						<span className="delete delete-msg-2">
-							List has 1 todo.
-						</span>
-						<span className="delete move-todos clickable">
-							Move to Inbox
-						</span>
-						<span className="delete delete-cancel clickable">
-							Cancel
-						</span>
-					</span>
-				</span> */}
-			</span>
-		</li>
-	);
-
 	const processedTodoLists = processTodoLists(props.todoLists);
 
 	return (
@@ -197,7 +220,12 @@ const ContextMemo = memo((props) => {
 						{/* TODO: Make it draggable */}
 						<ul className="settings-list options-list settings-todo-lists">
 							{processedTodoLists.map((todoList) => (
-								<TodoList {...todoList} key={todoList.id} />
+								<TodoList
+									{...todoList}
+									editTodoListTitle={props.editTodoListTitle}
+									setTodoListColour={props.setTodoListColour}
+									key={todoList.id}
+								/>
 							))}
 
 							<AddList createTodoList={props.createTodoList} />
@@ -219,6 +247,7 @@ const Todo = () => {
 	} = useUserCustomization();
 	const {
 		createTodoList,
+		editTodoListTitle,
 		setTodoListColour,
 		toggleTodoSetting,
 		toggleShowApp,
@@ -232,6 +261,7 @@ const Todo = () => {
 				todoLists,
 				todoVisible,
 				createTodoList,
+				editTodoListTitle,
 				setTodoListColour,
 				toggleTodoSetting,
 				toggleShowApp,

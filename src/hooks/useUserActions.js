@@ -234,6 +234,28 @@ export const useUserActions = () => {
 		[storageUserCustomization.todos],
 	);
 
+	const editTodoListTitle = useCallback(
+		(event, id) => {
+			event.stopPropagation();
+			const element = event.target
+				.closest(".settings-todo-list")
+				.querySelector(".settings-todo-list-name");
+			if (element.getAttribute("contenteditable") === "true") return;
+			element.setAttribute("contenteditable", true);
+			element.classList.add(EDITING);
+			focusCursorAtEnd(element);
+
+			element.addEventListener(
+				"keypress",
+				(event) => event.keyCode === 13 && saveTodoListTitle(element, id),
+			);
+			element.addEventListener("blur", () => saveTodoListTitle(element, id), {
+				once: true,
+			});
+		},
+		[storageUserCustomization.todoLists],
+	);
+
 	const restoreNote = useCallback((targetNote) => {
 		setStorageUserCustomization((prevCustomization) => ({
 			...prevCustomization,
@@ -319,6 +341,39 @@ export const useUserActions = () => {
 				};
 			});
 		else element.innerText = oldTitle;
+	};
+
+	const saveTodoListTitle = (element, id) => {
+		element.setAttribute("contenteditable", false);
+		element.classList.remove(EDITING);
+		const newTitle = element.innerText;
+		const oldTilte = storageUserCustomization.todoLists.find(
+			(todoList) => todoList.id === id,
+		).title;
+
+		if (newTitle === oldTilte) return;
+		else if (newTitle.trim().length)
+			setStorageUserCustomization((prevCustomization) => {
+				const instantDate = new Date();
+				const targetTodoList = prevCustomization.todoLists.find(
+					(todoList) => todoList.id === id,
+				);
+
+				targetTodoList.title = newTitle;
+				targetTodoList.ts = instantDate.getTime();
+
+				return {
+					...prevCustomization,
+					todoLists: prevCustomization.todoLists.map((todoList) =>
+						todoList.id === id ? targetTodoList : todoList,
+					),
+					todoSettings: {
+						...prevCustomization.todoSettings,
+						todosUpdatedDate: instantDate,
+					},
+				};
+			});
+		else element.innerText = oldTilte;
 	};
 
 	const saveNote = useCallback((event, activeNote) => {
@@ -732,6 +787,7 @@ export const useUserActions = () => {
 		deleteNote,
 		editDisplayName,
 		editTodoItemTitle,
+		editTodoListTitle,
 		restoreNote,
 		saveCountdown,
 		saveNote,

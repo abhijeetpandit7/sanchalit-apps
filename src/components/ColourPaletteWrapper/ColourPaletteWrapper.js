@@ -28,7 +28,8 @@ export const ColourPaletteWrapper = ({
 		setIsFocus,
 	});
 
-	const toggleSwatch = () => {
+	const toggleSwatch = (event) => {
+		event.stopPropagation();
 		toggleRefClassNames(swatchRef, [ACTIVE]);
 		setIsFocus(swatchRef.current.classList.contains(ACTIVE));
 	};
@@ -43,9 +44,9 @@ export const ColourPaletteWrapper = ({
 							? "active"
 							: ""
 					}`}
-					onClick={() => {
+					onClick={(event) => {
 						setTodoListColour(todoListId, paletteColour);
-						toggleSwatch();
+						toggleSwatch(event);
 					}}
 					key={index}
 				>
