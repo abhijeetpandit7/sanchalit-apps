@@ -50,6 +50,7 @@ import {
 	DEFAULT_COUNTDOWN_OBJ,
 	DEFAULT_NOTE_OBJ,
 	DEFAULT_TODO_ITEM_OBJ,
+	DEFAULT_TODO_LIST_OBJ,
 	HOME_TAB_OBJ,
 	OVERFLOW_FOLDER_OBJ,
 	TOP_SITES_FOLDER_OBJ,
@@ -96,6 +97,15 @@ export const createTodo = () => {
 	newTodo.createdDate = instantDate;
 	newTodo.ts = instantDate.getTime();
 	return newTodo;
+};
+
+export const createNewTodoList = () => {
+	const newTodoList = _.cloneDeep(DEFAULT_TODO_LIST_OBJ);
+	newTodoList.id = uuidv4();
+	const instantDate = new Date();
+	newTodoList.createdDate = instantDate;
+	newTodoList.ts = instantDate.getTime();
+	return newTodoList;
 };
 
 export const focusCursorAtEnd = (element) => {

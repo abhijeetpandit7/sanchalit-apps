@@ -733,7 +733,7 @@ export const DEFAULT_NOTE_OBJ = {
 	updatedDate: null,
 };
 
-const DEFAULT_TODO_LIST_OBJ = {
+export const DEFAULT_TODO_LIST_OBJ = {
 	id: "",
 	title: "",
 	colour: TRANSPARENT_COLOUR,

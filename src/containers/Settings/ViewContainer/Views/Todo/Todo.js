@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useRef, useState } from "react";
 import {
 	CollapsibleHeaderWrapper,
 	ColourPaletteWrapper,
@@ -23,6 +23,60 @@ const defaultTodoListIds = [
 	TODO_LIST_INBOX_ID,
 	TODO_LIST_TODAY_ID,
 ];
+
+const AddList = ({ createTodoList }) => {
+	const [isCreatingTodo, setIsCreatingTodo] = useState(false);
+	const listInputRef = useRef(null);
+
+	const newListEnterHandler = async (event) => {
+		if (event.key !== "Enter") {
+			return;
+		}
+		event.preventDefault();
+		const listInput = listInputRef.current;
+		if (listInput.value.trim() === "") {
+			return;
+		}
+		listInput.disabled = true;
+		await createTodoList(listInput.value);
+		listInput.disabled = false;
+		listInput.value = "";
+		setIsCreatingTodo(false);
+	};
+
+	return (
+		<li className="settings-todo-add-list">
+			<input
+				className="settings-todo-add-list-input"
+				style={{ display: isCreatingTodo ? "inline-block" : "" }}
+				ref={listInputRef}
+				onKeyDown={newListEnterHandler}
+				type="text"
+				placeholder="+ Add a list"
+				autoComplete="off"
+			/>
+			<span
+				className={`toggle-add-list settings-cancel
+					${isCreatingTodo ? "show" : ""}
+			`}
+				onClick={() => setIsCreatingTodo(false)}
+			>
+				<span className="icon-wrapper">{cancelIcon}</span>
+			</span>
+			<button
+				className={`button toggle-form toggle-add-list ${
+					isCreatingTodo ? "" : "show"
+				}`}
+				onClick={async () => {
+					await setIsCreatingTodo(true);
+					listInputRef.current.focus();
+				}}
+			>
+				<i className="icon icon-plus"></i>Add List
+			</button>
+		</li>
+	);
+};
 
 const ContextMemo = memo((props) => {
 	const todoApp = GENERAL_SETTING_APP_LIST.find((app) => app.name === TODO);
@@ -53,6 +107,56 @@ const ContextMemo = memo((props) => {
 				/>
 			</ul>
 		</>
+	);
+
+	const TodoList = ({ id, title, colour }) => (
+		<li
+			data-id={id}
+			className="settings-todo-list draggable-todo-list"
+			draggable="true"
+			key={id}
+		>
+			<span className="settings-todo-list-color">
+				<ColourPaletteWrapper
+					todoListColour={colour}
+					todoListId={id}
+					setTodoListColour={props.setTodoListColour}
+				/>
+			</span>
+			<span className="settings-todo-list-name">{title}</span>
+			<span className="settings-list-right">
+				<span className="action-group">
+					{defaultTodoListIds.includes(id) ? (
+						<span className="default">Default</span>
+					) : (
+						<>
+							<span className="todo-rename-list action">Rename</span>
+							<span className="todo-delete-list action" title="Delete">
+								{trashIcon}
+							</span>
+						</>
+					)}
+				</span>
+				{/* <span className="delete-group">
+					<span className="delete-1">
+						<span className="delete delete-msg">Delete list?</span>
+						<span className="delete delete-yes clickable">Yes</span>
+						<span className="delete delete-no clickable">No</span>
+					</span>
+					<span className="delete-2">
+						<span className="delete delete-msg-2">
+							List has 1 todo.
+						</span>
+						<span className="delete move-todos clickable">
+							Move to Inbox
+						</span>
+						<span className="delete delete-cancel clickable">
+							Cancel
+						</span>
+					</span>
+				</span> */}
+			</span>
+		</li>
 	);
 
 	const processedTodoLists = processTodoLists(props.todoLists);
@@ -92,78 +196,11 @@ const ContextMemo = memo((props) => {
 					<div id="custom-lists" className="settings-todo-lists-container">
 						{/* TODO: Make it draggable */}
 						<ul className="settings-list options-list settings-todo-lists">
-							{processedTodoLists.map(({ id, title, colour }) => (
-								<li
-									data-id={id}
-									className="settings-todo-list draggable-todo-list"
-									draggable="true"
-									key={id}
-								>
-									<span className="settings-todo-list-color">
-										<ColourPaletteWrapper
-											todoListColour={colour}
-											todoListId={id}
-											setTodoListColour={props.setTodoListColour}
-										/>
-									</span>
-									<span className="settings-todo-list-name">{title}</span>
-									<span className="settings-list-right">
-										<span className="action-group">
-											{defaultTodoListIds.includes(id) ? (
-												<span className="default">Default</span>
-											) : (
-												<>
-													<span className="todo-rename-list action">
-														Rename
-													</span>
-													<span
-														className="todo-delete-list action"
-														title="Delete"
-													>
-														{trashIcon}
-													</span>
-												</>
-											)}
-										</span>
-										{/* <span className="delete-group">
-											<span className="delete-1">
-												<span className="delete delete-msg">Delete list?</span>
-												<span className="delete delete-yes clickable">Yes</span>
-												<span className="delete delete-no clickable">No</span>
-											</span>
-											<span className="delete-2">
-												<span className="delete delete-msg-2">
-													List has 1 todo.
-												</span>
-												<span className="delete move-todos clickable">
-													Move to Inbox
-												</span>
-												<span className="delete delete-cancel clickable">
-													Cancel
-												</span>
-											</span>
-										</span> */}
-									</span>
-								</li>
+							{processedTodoLists.map((todoList) => (
+								<TodoList {...todoList} key={todoList.id} />
 							))}
 
-							<li className="settings-todo-add-list">
-								<input
-									type="text"
-									className="settings-todo-add-list-input"
-									placeholder="+ Add a list"
-									autoComplete="off"
-								/>
-								<span className="toggle-add-list settings-cancel">
-									<span className="icon-wrapper">{cancelIcon}</span>
-								</span>
-								<button
-									className="button toggle-form toggle-add-list show"
-									data-test="settings-todo-add-list"
-								>
-									<i className="icon icon-plus"></i>Add List
-								</button>
-							</li>
+							<AddList createTodoList={props.createTodoList} />
 						</ul>
 					</div>
 				</div>
@@ -180,8 +217,12 @@ const Todo = () => {
 			todoSettings: { keepTodoState, showTodoList },
 		},
 	} = useUserCustomization();
-	const { setTodoListColour, toggleTodoSetting, toggleShowApp } =
-		useUserActions();
+	const {
+		createTodoList,
+		setTodoListColour,
+		toggleTodoSetting,
+		toggleShowApp,
+	} = useUserActions();
 
 	return (
 		<ContextMemo
@@ -190,6 +231,7 @@ const Todo = () => {
 				showTodoList,
 				todoLists,
 				todoVisible,
+				createTodoList,
 				setTodoListColour,
 				toggleTodoSetting,
 				toggleShowApp,

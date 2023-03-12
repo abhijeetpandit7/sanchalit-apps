@@ -20,6 +20,7 @@ import {
 	createCountdown,
 	createNote,
 	createTodo,
+	createNewTodoList,
 	focusCursorAtEnd,
 	focusDisplayName,
 	focusNotesInput,
@@ -121,6 +122,35 @@ export const useUserActions = () => {
 		},
 		[storageUserCustomization.todos],
 	);
+
+	const createTodoList = useCallback((title) => {
+		let newTodoList = createNewTodoList();
+		const instantDate = new Date();
+
+		const { todoLists } = storageUserCustomization;
+		let lastOrderTodoInList;
+		try {
+			lastOrderTodoInList = todoLists.reduce((prev, current) =>
+				prev.order > current.order ? prev : current,
+			);
+		} catch (error) {}
+
+		newTodoList = {
+			...newTodoList,
+			title,
+			order: lastOrderTodoInList?.order + 1 || 0,
+		};
+
+		setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			todoLists: [...prevCustomization.todoLists, newTodoList],
+			todoSettings: {
+				...prevCustomization.todoSettings,
+				activeTodoListId: newTodoList.id,
+				todosUpdatedDate: instantDate,
+			},
+		}));
+	}, []);
 
 	const deleteCountdown = useCallback(
 		(targetCountdownId) =>
@@ -687,6 +717,7 @@ export const useUserActions = () => {
 		createNewCountdown,
 		createNoteFromEmptyState,
 		createTodoItem,
+		createTodoList,
 		deleteCountdown,
 		deleteNote,
 		editDisplayName,
