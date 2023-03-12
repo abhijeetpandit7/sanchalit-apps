@@ -123,34 +123,37 @@ export const useUserActions = () => {
 		[storageUserCustomization.todos],
 	);
 
-	const createTodoList = useCallback((title) => {
-		let newTodoList = createNewTodoList();
-		const instantDate = new Date();
+	const createTodoList = useCallback(
+		(title) => {
+			let newTodoList = createNewTodoList();
+			const instantDate = new Date();
 
-		const { todoLists } = storageUserCustomization;
-		let lastOrderTodoInList;
-		try {
-			lastOrderTodoInList = todoLists.reduce((prev, current) =>
-				prev.order > current.order ? prev : current,
-			);
-		} catch (error) {}
+			const { todoLists } = storageUserCustomization;
+			let lastOrderTodoInList;
+			try {
+				lastOrderTodoInList = todoLists.reduce((prev, current) =>
+					prev.order > current.order ? prev : current,
+				);
+			} catch (error) {}
 
-		newTodoList = {
-			...newTodoList,
-			title,
-			order: lastOrderTodoInList?.order + 1 || 0,
-		};
+			newTodoList = {
+				...newTodoList,
+				title,
+				order: lastOrderTodoInList?.order + 1 || 0,
+			};
 
-		setStorageUserCustomization((prevCustomization) => ({
-			...prevCustomization,
-			todoLists: [...prevCustomization.todoLists, newTodoList],
-			todoSettings: {
-				...prevCustomization.todoSettings,
-				activeTodoListId: newTodoList.id,
-				todosUpdatedDate: instantDate,
-			},
-		}));
-	}, []);
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				todoLists: [...prevCustomization.todoLists, newTodoList],
+				todoSettings: {
+					...prevCustomization.todoSettings,
+					activeTodoListId: newTodoList.id,
+					todosUpdatedDate: instantDate,
+				},
+			}));
+		},
+		[storageUserCustomization.todoLists],
+	);
 
 	const deleteCountdown = useCallback(
 		(targetCountdownId) =>
@@ -212,20 +215,23 @@ export const useUserActions = () => {
 		storageUserCustomization.displayNameVisible,
 	]);
 
-	const editTodoItemTitle = useCallback((event, id) => {
-		const element = event.target;
-		if (element.getAttribute("contenteditable") === "true") return;
-		element.setAttribute("contenteditable", true);
-		focusCursorAtEnd(element);
+	const editTodoItemTitle = useCallback(
+		(event, id) => {
+			const element = event.target;
+			if (element.getAttribute("contenteditable") === "true") return;
+			element.setAttribute("contenteditable", true);
+			focusCursorAtEnd(element);
 
-		element.addEventListener(
-			"keypress",
-			(event) => event.keyCode === 13 && saveTodoItemTitle(event, id),
-		);
-		element.addEventListener("blur", () => saveTodoItemTitle(event, id), {
-			once: true,
-		});
-	}, []);
+			element.addEventListener(
+				"keypress",
+				(event) => event.keyCode === 13 && saveTodoItemTitle(event, id),
+			);
+			element.addEventListener("blur", () => saveTodoItemTitle(event, id), {
+				once: true,
+			});
+		},
+		[storageUserCustomization.todos],
+	);
 
 	const restoreNote = useCallback((targetNote) => {
 		setStorageUserCustomization((prevCustomization) => ({
