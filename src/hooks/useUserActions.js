@@ -184,6 +184,7 @@ export const useUserActions = () => {
 		displayNameVisible === false && (await toggleDisplayNameVisible());
 
 		const element = displayNameRef.current;
+		if (element.getAttribute("contenteditable") === "true") return;
 		element.setAttribute("contenteditable", true);
 		toggleRefClassName(displayNameRef, EDITING);
 		toggleRefClassName(displayNameRef, INPUT_WRAPPER);
@@ -273,7 +274,9 @@ export const useUserActions = () => {
 		setTimeout(() => removeRefClassName(displayNameRef, PULSE), 500);
 
 		const newName = element.innerText;
-		if (newName.trim().length)
+		const oldName = storageUserCustomization.displayName;
+		if (newName === oldName) return;
+		else if (newName.trim().length)
 			setStorageUserCustomization((prevCustomization) => ({
 				...prevCustomization,
 				displayName: newName,
@@ -283,14 +286,18 @@ export const useUserActions = () => {
 				...prevCustomization,
 				displayName: null,
 			}));
-		else element.innerText = storageUserCustomization.displayName;
+		else element.innerText = oldName;
 	};
 
 	const saveTodoItemTitle = (event, id) => {
 		const element = event.target;
 		element.setAttribute("contenteditable", false);
 		const newTitle = element.innerText;
-		if (newTitle.trim().length)
+		const oldTitle = storageUserCustomization.todos.find(
+			(todo) => todo.id === id,
+		).title;
+		if (newTitle === oldTitle) return;
+		else if (newTitle.trim().length)
 			setStorageUserCustomization((prevCustomization) => {
 				const instantDate = new Date();
 				const targetTodoItem = prevCustomization.todos.find(
@@ -311,10 +318,7 @@ export const useUserActions = () => {
 					},
 				};
 			});
-		else
-			element.innerText = storageUserCustomization.todos.find(
-				(todo) => todo.id === id,
-			).title;
+		else element.innerText = oldTitle;
 	};
 
 	const saveNote = useCallback((event, activeNote) => {
