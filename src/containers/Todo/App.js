@@ -54,8 +54,8 @@ const ContextMemo = memo((props) => {
 			</div>
 			<Navbar
 				{...{
+					todoAppRef,
 					processedTodoLists,
-					processedTodos,
 					todos,
 					activeTodoList,
 					setActiveTodoListId,

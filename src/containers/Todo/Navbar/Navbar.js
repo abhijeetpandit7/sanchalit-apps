@@ -11,7 +11,10 @@ export const Navbar = (props) => {
 
 	const [isFocus, setIsFocus] = useState(false);
 
-	useEffect(() => props.updateAppHeight(), [isFocus]);
+	useEffect(() => {
+		props.updateAppHeight();
+		props.todoAppRef.current.style.overflowY = isFocus ? "auto" : "hidden";
+	}, [isFocus]);
 
 	return (
 		<header className="header todo-header has-assignee sanchalit-todo">
