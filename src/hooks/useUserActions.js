@@ -378,7 +378,7 @@ export const useUserActions = () => {
 		else if (newName.trim().length)
 			setStorageUserCustomization((prevCustomization) => ({
 				...prevCustomization,
-				displayName: newName,
+				displayName: newName.trim(),
 			}));
 		else if (isDisplayNameEmpty)
 			setStorageUserCustomization((prevCustomization) => ({
@@ -403,7 +403,7 @@ export const useUserActions = () => {
 					(todo) => todo.id === id,
 				);
 
-				targetTodoItem.title = newTitle;
+				targetTodoItem.title = newTitle.trim();
 				targetTodoItem.ts = instantDate.getTime();
 
 				return {
