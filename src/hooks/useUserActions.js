@@ -703,6 +703,27 @@ export const useUserActions = () => {
 				targetTodoItem.completedDate = targetTodoItem.done ? instantDate : null;
 				targetTodoItem.ts = instantDate.getTime();
 
+				if (targetTodoItem.done === false) {
+					const targetTodoItemHomeListId = targetTodoItem.homeListId;
+					const isTargetTodoItemHomeListDoneList =
+						targetTodoItemHomeListId === TODO_LIST_DONE_ID;
+					const isTargetTodoItemListDoneList =
+						targetTodoItem.listId === TODO_LIST_DONE_ID;
+
+					if (isTargetTodoItemHomeListDoneList)
+						targetTodoItem.homeListId = TODO_LIST_INBOX_ID;
+					else {
+						const ifTargetTodoItemHomeListExists =
+							prevCustomization.todoLists.some(
+								(todoList) => todoList.id === targetTodoItemHomeListId,
+							);
+						if (ifTargetTodoItemHomeListExists === false)
+							targetTodoItem.homeListId = TODO_LIST_INBOX_ID;
+					}
+					if (isTargetTodoItemListDoneList)
+						targetTodoItem.listId = targetTodoItem.homeListId;
+				}
+
 				return {
 					...prevCustomization,
 					todos: prevCustomization.todos.map((todo) =>
