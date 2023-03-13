@@ -15,6 +15,7 @@ import {
 	TOP_SITES,
 	TOP_SITES_PERMISSION,
 	TODO_LIST_DONE_ID,
+	TODO_LIST_INBOX_ID,
 	TODO_LIST_TODAY_ID,
 	isBuildTargetWeb,
 	createCountdown,
@@ -179,6 +180,21 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const deleteTodoList = useCallback(
+		(id) =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				todoLists: prevCustomization.todoLists.filter(
+					(todoList) => todoList.id !== id,
+				),
+				todoSettings: {
+					...prevCustomization.todoSettings,
+					todosUpdatedDate: new Date(),
+				},
+			})),
+		[],
+	);
+
 	const editDisplayName = useCallback(async () => {
 		const { displayName, displayNameVisible } = storageUserCustomization;
 		displayNameVisible === false && (await toggleDisplayNameVisible());
@@ -254,6 +270,67 @@ export const useUserActions = () => {
 			});
 		},
 		[storageUserCustomization.todoLists],
+	);
+
+	const getTodoListItemsCount = useCallback(
+		(id) =>
+			storageUserCustomization.todos.filter((todo) => todo.listId === id)
+				.length,
+		[storageUserCustomization.todos],
+	);
+
+	const moveAllTodoItems = useCallback(
+		(fromListId, toListId) =>
+			storageUserCustomization.todos
+				.filter((todo) => todo.listId === fromListId)
+				.map(async (todo) => await moveTodoItemTo(todo.id, toListId)),
+		[storageUserCustomization.todos],
+	);
+
+	const moveTodoItemTo = useCallback(
+		(itemId, listId) =>
+			setStorageUserCustomization((prevCustomization) => {
+				const instantDate = new Date();
+				const targetTodoItem = prevCustomization.todos.find(
+					(todo) => todo.id === itemId,
+				);
+				const isTargetTodoItemListDoneList =
+					targetTodoItem.listId === TODO_LIST_DONE_ID;
+				const targetTodoList = prevCustomization.todoLists.find(
+					(todoList) => todoList.id === listId,
+				);
+
+				const isTargetDoneList = listId === TODO_LIST_DONE_ID;
+				const isTargetTodayList = listId === TODO_LIST_TODAY_ID;
+
+				targetTodoItem.today = false;
+				if (isTargetTodoItemListDoneList) {
+					targetTodoItem.completedDate = null;
+					targetTodoItem.done = false;
+				}
+				if (isTargetDoneList) {
+					if (targetTodoItem.done === false)
+						targetTodoItem.completedDate = instantDate;
+					targetTodoItem.done = true;
+				} else if (isTargetTodayList) {
+					targetTodoItem.today = true;
+				}
+
+				targetTodoItem.listId = targetTodoList ? listId : TODO_LIST_INBOX_ID;
+				targetTodoItem.ts = instantDate.getTime();
+
+				return {
+					...prevCustomization,
+					todos: prevCustomization.todos.map((todo) =>
+						todo.id === itemId ? targetTodoItem : todo,
+					),
+					todoSettings: {
+						...prevCustomization.todoSettings,
+						todosUpdatedDate: instantDate,
+					},
+				};
+			}),
+		[],
 	);
 
 	const restoreNote = useCallback((targetNote) => {
@@ -806,9 +883,13 @@ export const useUserActions = () => {
 		createTodoList,
 		deleteCountdown,
 		deleteNote,
+		deleteTodoList,
 		editDisplayName,
 		editTodoItemTitle,
 		editTodoListTitle,
+		getTodoListItemsCount,
+		moveAllTodoItems,
+		moveTodoItemTo,
 		restoreNote,
 		saveCountdown,
 		saveNote,
