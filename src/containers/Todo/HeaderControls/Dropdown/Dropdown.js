@@ -12,6 +12,9 @@ const Dropdown = ({
 	isFocus,
 	processedTodos,
 	activeTodoList,
+	archiveAllDoneTodoItemsFrom,
+	moveAllTodoItems,
+	moveAllTodoItemsToOriginalList,
 	toggleHeaderControl,
 	toggleSettingsTodo,
 	updateAppHeight,
@@ -39,6 +42,10 @@ const Dropdown = ({
 				{isNeitherTodayNorDoneListAndIsAnyTodo && (
 					<li
 						className="dropdown-list-item"
+						onClick={() => {
+							moveAllTodoItems(activeTodoListId, TODO_LIST_TODAY_ID);
+							toggleHeaderControl();
+						}}
 						title={`Move all tasks from this list to ${TODAY}`}
 					>
 						<span className="dropdown-list-icon-wrapper">
@@ -50,6 +57,10 @@ const Dropdown = ({
 				{isTodayListAndIsAnyTodo && (
 					<li
 						className="dropdown-list-item"
+						onClick={() => {
+							moveAllTodoItemsToOriginalList(activeTodoListId);
+							toggleHeaderControl();
+						}}
 						title={`Send tasks to ${INBOX}/original lists`}
 					>
 						<span className="dropdown-list-icon-wrapper">{clearTasksIcon}</span>
@@ -57,7 +68,16 @@ const Dropdown = ({
 					</li>
 				)}
 				{isNotDoneListAndIsAnyCompletedTodo && (
-					<li className="dropdown-list-item">
+					<li
+						className="dropdown-list-item"
+						onClick={() => {
+							archiveAllDoneTodoItemsFrom({
+								listId: activeTodoListId,
+								onNewDay: false,
+							});
+							toggleHeaderControl();
+						}}
+					>
 						<span className="dropdown-list-icon-wrapper">{clearTasksIcon}</span>
 						<span className="dropdown-list-label">Clear completed tasks</span>
 					</li>

@@ -333,6 +333,22 @@ export const useUserActions = () => {
 		[storageUserCustomization.todos],
 	);
 
+	const moveAllTodoItemsToOriginalList = useCallback(
+		(fromListId) =>
+			storageUserCustomization.todos
+				.filter((todo) => todo.listId === fromListId)
+				.map(
+					async (todo) =>
+						await moveTodoItemTo(
+							todo.id,
+							todo.homeListId === TODO_LIST_TODAY_ID
+								? TODO_LIST_INBOX_ID
+								: todo.homeListId,
+						),
+				),
+		[storageUserCustomization.todos],
+	);
+
 	const moveTodoItemTo = useCallback(
 		(itemId, listId) =>
 			setStorageUserCustomization((prevCustomization) => {
@@ -362,7 +378,12 @@ export const useUserActions = () => {
 					targetTodoItem.today = true;
 				}
 
-				targetTodoItem.listId = targetTodoList ? listId : TODO_LIST_INBOX_ID;
+				if (targetTodoList) {
+					targetTodoItem.listId = listId;
+				} else {
+					targetTodoItem.homeListId = TODO_LIST_INBOX_ID;
+					targetTodoItem.listId = TODO_LIST_INBOX_ID;
+				}
 				targetTodoItem.ts = instantDate.getTime();
 
 				return {
@@ -936,6 +957,7 @@ export const useUserActions = () => {
 		editTodoListTitle,
 		getTodoListItemsCount,
 		moveAllTodoItems,
+		moveAllTodoItemsToOriginalList,
 		moveTodoItemTo,
 		restoreNote,
 		saveCountdown,
