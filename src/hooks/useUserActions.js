@@ -3,6 +3,7 @@ import { useUserCustomization } from "../hooks";
 import {
 	BOOKMARKS,
 	BOOKMARKS_PERMISSION,
+	DATE_ROLLOVER_HOUR,
 	EDITING,
 	EMPTY_NAME,
 	GENERAL_SETTING_APP_LIST,
@@ -44,6 +45,51 @@ export const useUserActions = () => {
 		setStorageUserCustomization,
 		widgetDispatch,
 	} = useUserCustomization();
+
+	const archiveAllDoneTodoItemsFrom = useCallback(
+		({ listId = false, onNewDay = true } = {}) =>
+			storageUserCustomization.todos
+				.filter((todo) =>
+					listId ? todo.listId === listId : todo.listId !== TODO_LIST_DONE_ID,
+				)
+				.filter((todo) => todo.done)
+				.filter((todo) => {
+					if (onNewDay) {
+						const today = new Date();
+						today.setHours(DATE_ROLLOVER_HOUR, 0, 0, 0);
+						const todoItemCompletedDate = new Date(todo.completedDate);
+						return todoItemCompletedDate.getTime() < today.getTime();
+					} else return true;
+				})
+				.map(async (todo) => await archiveTodoItem(todo.id)),
+		[storageUserCustomization.todos],
+	);
+
+	const archiveTodoItem = useCallback(
+		(id) =>
+			setStorageUserCustomization((prevCustomization) => {
+				const instantDate = new Date();
+				const targetTodoItem = prevCustomization.todos.find(
+					(todo) => todo.id === id,
+				);
+
+				targetTodoItem.today = false;
+				targetTodoItem.listId = TODO_LIST_DONE_ID;
+				targetTodoItem.ts = instantDate.getTime();
+
+				return {
+					...prevCustomization,
+					todos: prevCustomization.todos.map((todo) =>
+						todo.id === id ? targetTodoItem : todo,
+					),
+					todoSettings: {
+						...prevCustomization.todoSettings,
+						todosUpdatedDate: instantDate,
+					},
+				};
+			}),
+		[],
+	);
 
 	const cleanupNotes = useCallback(
 		() =>
@@ -876,6 +922,7 @@ export const useUserActions = () => {
 	);
 
 	return {
+		archiveAllDoneTodoItemsFrom,
 		cleanupNotes,
 		createNewCountdown,
 		createNoteFromEmptyState,
