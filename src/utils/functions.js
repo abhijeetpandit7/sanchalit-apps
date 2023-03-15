@@ -334,12 +334,6 @@ export const getNewOrderValue = (items, listId) => {
 		newOrderValue = 0;
 	}
 	return newOrderValue;
-	try {
-		lastOrderTodoInList = todoLists.reduce((prev, current) =>
-			prev.order > current.order ? prev : current,
-		);
-	} catch (error) {}
-
 };
 
 export const getRandomDelighter = () => randomElement(NOTE_DELIGHTER_LIST);

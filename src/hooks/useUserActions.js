@@ -374,6 +374,12 @@ export const useUserActions = () => {
 					targetTodoItem.homeListId = TODO_LIST_INBOX_ID;
 					targetTodoItem.listId = TODO_LIST_INBOX_ID;
 				}
+				if (isTargetDoneList === false) {
+					targetTodoItem.order = getNewOrderValue(
+						prevCustomization.todos,
+						targetTodoItem.listId,
+					);
+				}
 				targetTodoItem.ts = instantDate.getTime();
 
 				return {
@@ -669,8 +675,6 @@ export const useUserActions = () => {
 			targetTodoList.order = order;
 			targetTodoList.ts = instantDate.getTime();
 
-			console.log(targetTodoList);
-
 			return {
 				...prevCustomization,
 				todoLists: prevCustomization.todoLists.map((todoList) =>
@@ -916,8 +920,13 @@ export const useUserActions = () => {
 						if (ifTargetTodoItemHomeListExists === false)
 							targetTodoItem.homeListId = TODO_LIST_INBOX_ID;
 					}
-					if (isTargetTodoItemListDoneList)
+					if (isTargetTodoItemListDoneList) {
 						targetTodoItem.listId = targetTodoItem.homeListId;
+						targetTodoItem.order = getNewOrderValue(
+							prevCustomization.todos,
+							targetTodoItem.listId,
+						);
+					}
 				}
 
 				return {
