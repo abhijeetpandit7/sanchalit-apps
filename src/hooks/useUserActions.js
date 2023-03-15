@@ -28,6 +28,7 @@ import {
 	focusNotesInput,
 	getBookmarks,
 	getDaysDifference,
+	getNewOrderValue,
 	getPermissionAllowed,
 	getTopSites,
 	isValidListOrder,
@@ -139,14 +140,7 @@ export const useUserActions = () => {
 			const isActiveTodoListDoneList = activeTodoListId === TODO_LIST_DONE_ID;
 
 			const { todos } = storageUserCustomization;
-			let lastOrderTodoInList;
-			try {
-				lastOrderTodoInList = todos
-					.filter((todo) => todo.listId === activeTodoListId)
-					.reduce((prev, current) =>
-						prev.order > current.order ? prev : current,
-					);
-			} catch (error) {}
+			const newOrder = getNewOrderValue(todos, activeTodoListId);
 
 			newTodo = {
 				...newTodo,
@@ -154,7 +148,7 @@ export const useUserActions = () => {
 				completedDate: isActiveTodoListDoneList ? instantDate : null,
 				homeListId: activeTodoListId,
 				listId: activeTodoListId,
-				order: lastOrderTodoInList?.order + 1 || 0,
+				order: newOrder,
 				done: isActiveTodoListDoneList,
 				today: activeTodoListId === TODO_LIST_TODAY_ID,
 			};
@@ -177,17 +171,12 @@ export const useUserActions = () => {
 			const instantDate = new Date();
 
 			const { todoLists } = storageUserCustomization;
-			let lastOrderTodoInList;
-			try {
-				lastOrderTodoInList = todoLists.reduce((prev, current) =>
-					prev.order > current.order ? prev : current,
-				);
-			} catch (error) {}
+			const newOrder = getNewOrderValue(todoLists);
 
 			newTodoList = {
 				...newTodoList,
 				title,
-				order: lastOrderTodoInList?.order + 1 || 0,
+				order: newOrder,
 			};
 
 			setStorageUserCustomization((prevCustomization) => ({
@@ -407,6 +396,14 @@ export const useUserActions = () => {
 			.map(async (todoItem, index) => {
 				todoItem.order !== index &&
 					(await setTodoItemOrder(todoItem.id, index));
+			});
+
+	const reorderAllTodoLists = (todoLists) =>
+		todoLists
+			.sort((a, b) => a.order - b.order)
+			.map(async (todoList, index) => {
+				todoList.order !== index &&
+					(await setTodoListOrder(todoList.id, index));
 			});
 
 	const restoreNote = useCallback((targetNote) => {
@@ -654,6 +651,30 @@ export const useUserActions = () => {
 				...prevCustomization,
 				todos: prevCustomization.todos.map((todo) =>
 					todo.id === id ? targetTodoItem : todo,
+				),
+				todoSettings: {
+					...prevCustomization.todoSettings,
+					todosUpdatedDate: instantDate,
+				},
+			};
+		});
+
+	const setTodoListOrder = (id, order) =>
+		setStorageUserCustomization((prevCustomization) => {
+			const instantDate = new Date();
+			const targetTodoList = prevCustomization.todoLists.find(
+				(todoList) => todoList.id === id,
+			);
+
+			targetTodoList.order = order;
+			targetTodoList.ts = instantDate.getTime();
+
+			console.log(targetTodoList);
+
+			return {
+				...prevCustomization,
+				todoLists: prevCustomization.todoLists.map((todoList) =>
+					todoList.id === id ? targetTodoList : todoList,
 				),
 				todoSettings: {
 					...prevCustomization.todoSettings,
@@ -973,6 +994,13 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const validateTodoListsOrder = useCallback(async () => {
+		const todoLists = storageUserCustomization.todoLists;
+		return isValidListOrder(todoLists)
+			? null
+			: await reorderAllTodoLists(todoLists);
+	}, [storageUserCustomization.todoLists]);
+
 	const validateTodoListTodoItemsOrder = useCallback(
 		() =>
 			storageUserCustomization.todoLists
@@ -981,9 +1009,9 @@ export const useUserActions = () => {
 					const todoItems = storageUserCustomization.todos.filter(
 						(todoItem) => todoItem.listId === todoList.id,
 					);
-					return isValidListOrder(todoItems) === false
-						? await reorderAllTodoItems(todoItems)
-						: null;
+					return isValidListOrder(todoItems)
+						? null
+						: await reorderAllTodoItems(todoItems);
 				}),
 		[(storageUserCustomization.todoLists, storageUserCustomization.todos)],
 	);
@@ -1029,6 +1057,7 @@ export const useUserActions = () => {
 		toggleShowApp,
 		toggleTodoItemDone,
 		toggleTodoSetting,
+		validateTodoListsOrder,
 		validateTodoListTodoItemsOrder,
 	};
 };

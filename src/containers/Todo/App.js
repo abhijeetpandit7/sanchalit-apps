@@ -24,6 +24,7 @@ const ContextMemo = memo((props) => {
 		setActiveTodoListId,
 		setSettingsActiveNav,
 		toggleTodoItemDone,
+		validateTodoListsOrder,
 		validateTodoListTodoItemsOrder,
 	} = props;
 
@@ -42,7 +43,8 @@ const ContextMemo = memo((props) => {
 
 	useEffect(async () => {
 		await archiveAllDoneTodoItemsFrom();
-		validateTodoListTodoItemsOrder();
+		await validateTodoListTodoItemsOrder();
+		validateTodoListsOrder();
 	}, []);
 
 	const toggleSettingsTodo = async () => {
@@ -120,6 +122,7 @@ const App = () => {
 		setActiveTodoListId,
 		setSettingsActiveNav,
 		toggleTodoItemDone,
+		validateTodoListsOrder,
 		validateTodoListTodoItemsOrder,
 	} = useUserActions();
 
@@ -139,6 +142,7 @@ const App = () => {
 				setActiveTodoListId,
 				setSettingsActiveNav,
 				toggleTodoItemDone,
+				validateTodoListsOrder,
 				validateTodoListTodoItemsOrder,
 			}}
 		/>

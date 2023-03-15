@@ -321,6 +321,27 @@ export const getPermissionAllowed = (permission) =>
 		),
 	);
 
+export const getNewOrderValue = (items, listId) => {
+	let newOrderValue;
+	try {
+		newOrderValue =
+			items
+				.filter((item) => (listId ? item.listId === listId : true))
+				.reduce((prev, current) =>
+					prev.order > current.order ? prev : current,
+				).order + 1;
+	} catch (error) {
+		newOrderValue = 0;
+	}
+	return newOrderValue;
+	try {
+		lastOrderTodoInList = todoLists.reduce((prev, current) =>
+			prev.order > current.order ? prev : current,
+		);
+	} catch (error) {}
+
+};
+
 export const getRandomDelighter = () => randomElement(NOTE_DELIGHTER_LIST);
 
 export const getRandomIntBetween = (min, max) =>
