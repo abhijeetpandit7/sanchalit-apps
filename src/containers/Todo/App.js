@@ -24,6 +24,7 @@ const ContextMemo = memo((props) => {
 		setActiveTodoListId,
 		setSettingsActiveNav,
 		toggleTodoItemDone,
+		validateTodoListTodoItemsOrder,
 	} = props;
 
 	const todoAppRef = useRef(null);
@@ -39,7 +40,10 @@ const ContextMemo = memo((props) => {
 
 	useEffect(() => updateAppHeight(), [todos]);
 
-	useEffect(() => archiveAllDoneTodoItemsFrom(), []);
+	useEffect(async () => {
+		await archiveAllDoneTodoItemsFrom();
+		validateTodoListTodoItemsOrder();
+	}, []);
 
 	const toggleSettingsTodo = async () => {
 		await setSettingsActiveNav(SETTINGS_NAV_LIST[1].value);
@@ -116,6 +120,7 @@ const App = () => {
 		setActiveTodoListId,
 		setSettingsActiveNav,
 		toggleTodoItemDone,
+		validateTodoListTodoItemsOrder,
 	} = useUserActions();
 
 	return (
@@ -134,6 +139,7 @@ const App = () => {
 				setActiveTodoListId,
 				setSettingsActiveNav,
 				toggleTodoItemDone,
+				validateTodoListTodoItemsOrder,
 			}}
 		/>
 	);

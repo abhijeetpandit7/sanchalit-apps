@@ -30,6 +30,7 @@ import {
 	getDaysDifference,
 	getPermissionAllowed,
 	getTopSites,
+	isValidListOrder,
 	removeRefClassName,
 	requestPermissions,
 	toggleRefClassName,
@@ -400,6 +401,14 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const reorderAllTodoItems = (todoItems) =>
+		todoItems
+			.sort((a, b) => a.order - b.order)
+			.map(async (todoItem, index) => {
+				todoItem.order !== index &&
+					(await setTodoItemOrder(todoItem.id, index));
+			});
+
 	const restoreNote = useCallback((targetNote) => {
 		setStorageUserCustomization((prevCustomization) => ({
 			...prevCustomization,
@@ -630,6 +639,28 @@ export const useUserActions = () => {
 			}),
 		[],
 	);
+
+	const setTodoItemOrder = (id, order) =>
+		setStorageUserCustomization((prevCustomization) => {
+			const instantDate = new Date();
+			const targetTodoItem = prevCustomization.todos.find(
+				(todo) => todo.id === id,
+			);
+
+			targetTodoItem.order = order;
+			targetTodoItem.ts = instantDate.getTime();
+
+			return {
+				...prevCustomization,
+				todos: prevCustomization.todos.map((todo) =>
+					todo.id === id ? targetTodoItem : todo,
+				),
+				todoSettings: {
+					...prevCustomization.todoSettings,
+					todosUpdatedDate: instantDate,
+				},
+			};
+		});
 
 	const setTodoListColour = useCallback(
 		(id, colour) =>
@@ -942,6 +973,21 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const validateTodoListTodoItemsOrder = useCallback(
+		() =>
+			storageUserCustomization.todoLists
+				.filter((todoList) => todoList.id !== TODO_LIST_DONE_ID)
+				.map(async (todoList) => {
+					const todoItems = storageUserCustomization.todos.filter(
+						(todoItem) => todoItem.listId === todoList.id,
+					);
+					return isValidListOrder(todoItems) === false
+						? await reorderAllTodoItems(todoItems)
+						: null;
+				}),
+		[(storageUserCustomization.todoLists, storageUserCustomization.todos)],
+	);
+
 	return {
 		archiveAllDoneTodoItemsFrom,
 		cleanupNotes,
@@ -983,5 +1029,6 @@ export const useUserActions = () => {
 		toggleShowApp,
 		toggleTodoItemDone,
 		toggleTodoSetting,
+		validateTodoListTodoItemsOrder,
 	};
 };

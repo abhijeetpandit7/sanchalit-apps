@@ -472,6 +472,20 @@ export const isBoolean = (value) => typeof value === "boolean";
 
 export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
 
+export const isValidListOrder = (list) => {
+	let orderValues = new Set();
+	let maxOrderValue = null;
+	for (let i = 0; i < list.length; i++) {
+		const object = list[i];
+		const order = object.order;
+		if (order === null) return false;
+		if (orderValues.has(order)) return false;
+		if (maxOrderValue === null || order > maxOrderValue) maxOrderValue = order;
+		orderValues.add(order);
+	}
+	return maxOrderValue === orderValues.size - 1;
+};
+
 const isTouchDevice = () =>
 	/iPhone|iPod|iPad|Android/.test(navigator.userAgent) ||
 	(navigator.userAgent.includes("Mac") && "ontouchend" in document);
