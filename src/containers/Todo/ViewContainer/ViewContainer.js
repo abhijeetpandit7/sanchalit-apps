@@ -14,6 +14,55 @@ const ADD_A_TODO_TO_GET_STARTED = "Add a todo to get started";
 const NO_TODOS_YET = "No todos yet";
 const SWITCH_TO_ = "Switch to ";
 
+const TodoItem = ({
+	id,
+	done,
+	title,
+	isDoneList,
+	editTodoItemTitle,
+	toggleTodoItemDone,
+}) => {
+	const todoItemTitleClickHandler = (event, id) => {
+		switch (event.detail) {
+			case 2:
+				editTodoItemTitle(event, id);
+			default:
+				return;
+		}
+	};
+
+	return (
+		<li
+			className={`todo-item ${done ? "done" : ""} visible`}
+			data-todo-id={id}
+			draggable={isDoneList ? "false" : "true"}
+		>
+			<span className="todo-item-wrapper has-more">
+				<label onClick={() => toggleTodoItemDone(id, done)}>
+					<input
+						className="todo-item-checkbox"
+						type="checkbox"
+						defaultChecked={done}
+					/>
+				</label>
+				<span
+					className="todo-item-title"
+					onClick={(event) => todoItemTitleClickHandler(event, id)}
+				>
+					{title}
+				</span>
+				<div className="more">
+					<div className="icon-wrapper more-toggle">{ellipsisIcon1}</div>
+					<div className="dropdown todo-item-dropdown">
+						<ul className="dropdown-list"></ul>
+						<ul className="dropdown-list dropdown-detail"></ul>
+					</div>
+				</div>
+			</span>
+		</li>
+	);
+};
+
 export const ViewContainer = ({
 	todoInputRef,
 	activeTodoList,
@@ -92,15 +141,6 @@ export const ViewContainer = ({
 		todoInput.focus();
 	};
 
-	const todoItemTitleClickHandler = (event, id) => {
-		switch (event.detail) {
-			case 2:
-				editTodoItemTitle(event, id);
-			default:
-				return;
-		}
-	};
-
 	const EmptyView = () => (
 		<li className="empty">
 			<p className="title empty-title">{title}</p>
@@ -118,37 +158,6 @@ export const ViewContainer = ({
 			>
 				New Todo
 			</button>
-		</li>
-	);
-
-	const TodoItem = ({ id, done, title }) => (
-		<li
-			className={`todo-item ${done ? "done" : ""} visible`}
-			data-todo-id={id}
-			draggable={isDoneList ? "false" : "true"}
-		>
-			<span className="todo-item-wrapper has-more">
-				<label onClick={() => toggleTodoItemDone(id, done)}>
-					<input
-						className="todo-item-checkbox"
-						type="checkbox"
-						defaultChecked={done}
-					/>
-				</label>
-				<span
-					className="todo-item-title"
-					onClick={(event) => todoItemTitleClickHandler(event, id)}
-				>
-					{title}
-				</span>
-				<div className="more">
-					<div className="icon-wrapper more-toggle">{ellipsisIcon1}</div>
-					<div className="dropdown todo-item-dropdown">
-						<ul className="dropdown-list"></ul>
-						<ul className="dropdown-list dropdown-detail"></ul>
-					</div>
-				</div>
-			</span>
 		</li>
 	);
 
@@ -207,7 +216,10 @@ export const ViewContainer = ({
 			return (
 				<Fragment key={todoObj.item.id}>
 					{todoSection}
-					<TodoItem {...todoObj.item} />
+					<TodoItem
+						{...todoObj.item}
+						{...{ isDoneList, editTodoItemTitle, toggleTodoItemDone }}
+					/>
 				</Fragment>
 			);
 		});
@@ -224,7 +236,13 @@ export const ViewContainer = ({
 						isDoneList ? (
 							<DoneListTodoItems />
 						) : (
-							processedTodos.map((todo) => <TodoItem {...todo} key={todo.id} />)
+							processedTodos.map((todo) => (
+								<TodoItem
+									{...todo}
+									{...{ isDoneList, editTodoItemTitle, toggleTodoItemDone }}
+									key={todo.id}
+								/>
+							))
 						)
 					) : (
 						<EmptyView />
