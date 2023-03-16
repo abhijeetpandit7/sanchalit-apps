@@ -19,6 +19,7 @@ const Dropdown = ({
 	useEffect(() => {
 		updateAppHeight();
 		todoAppRef.current.style.overflowY = isParentFocus ? "auto" : "hidden";
+		todoAppRef.current.scrollTop = 0;
 	}, [isParentFocus]);
 
 	FocusOutHandler({
