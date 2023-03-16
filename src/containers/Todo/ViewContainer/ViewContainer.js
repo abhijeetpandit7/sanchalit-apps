@@ -74,18 +74,19 @@ export const ViewContainer = ({
 	};
 
 	const newTodoEnterHandler = async (event) => {
-		// TODO: Use Ctrl+Enter as well
 		if (event.key !== "Enter") {
 			return;
 		}
+		const isCtrlEnter = event.ctrlKey;
 		event.preventDefault();
 		const todoInput = todoInputRef.current;
 		if (todoInput.value.trim() === "") {
 			return;
 		}
 		todoInput.disabled = true;
-		await createTodoItem(todoInput.value, activeTodoList.id);
-		todoListRef.current.scrollTop = todoListRef.current.scrollHeight;
+		await createTodoItem(todoInput.value, activeTodoList.id, isCtrlEnter);
+		todoListRef.current.scrollTop =
+			isCtrlEnter || isDoneList ? 0 : todoListRef.current.scrollHeight;
 		todoInput.disabled = false;
 		todoInput.value = "";
 		todoInput.focus();
@@ -244,7 +245,7 @@ export const ViewContainer = ({
 					type="text"
 					placeholder="New Todo"
 					autoComplete="off"
-					// title="Use Ctrl-Enter to create a todo at top of the list"
+					title="Use Ctrl-Enter to create a todo at top of the list"
 				/>
 			</footer>
 		</>

@@ -134,13 +134,15 @@ export const useUserActions = () => {
 	}, []);
 
 	const createTodoItem = useCallback(
-		(title, activeTodoListId) => {
+		(title, activeTodoListId, isTopOrder) => {
 			let newTodo = createTodo();
 			const instantDate = new Date();
 			const isActiveTodoListDoneList = activeTodoListId === TODO_LIST_DONE_ID;
 
 			const { todos } = storageUserCustomization;
-			const newOrder = getNewOrderValue(todos, activeTodoListId);
+			const newOrder = isTopOrder
+				? 0
+				: getNewOrderValue(todos, activeTodoListId);
 
 			newTodo = {
 				...newTodo,
@@ -1015,9 +1017,9 @@ export const useUserActions = () => {
 			storageUserCustomization.todoLists
 				.filter((todoList) => todoList.id !== TODO_LIST_DONE_ID)
 				.map(async (todoList) => {
-					const todoItems = storageUserCustomization.todos.filter(
-						(todoItem) => todoItem.listId === todoList.id,
-					);
+					const todoItems = storageUserCustomization.todos
+						.filter((todoItem) => todoItem.listId === todoList.id)
+						.sort((a, b) => b.ts - a.ts);
 					return isValidListOrder(todoItems)
 						? null
 						: await reorderAllTodoItems(todoItems);

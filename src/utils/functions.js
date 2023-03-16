@@ -735,6 +735,7 @@ export const processTodos = (todos, activeTodoListId) =>
 				.sort((a, b) => b.completedDate - a.completedDate)
 		: todos
 				.filter((todo) => todo.listId === activeTodoListId)
+				.sort((a, b) => b.ts - a.ts)
 				.sort((a, b) => a.order - b.order);
 
 export const randomElement = (array) =>
