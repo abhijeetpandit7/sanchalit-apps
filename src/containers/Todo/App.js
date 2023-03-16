@@ -39,7 +39,7 @@ const ContextMemo = memo((props) => {
 	const processedTodos = processTodos(todos, activeTodoList.id);
 	const updateAppHeight = () => updateTodoAppHeight(todoAppRef);
 
-	useEffect(() => updateAppHeight(), [todos]);
+	useEffect(() => updateAppHeight(), [todos, activeTodoList]);
 
 	useEffect(async () => {
 		await archiveAllDoneTodoItemsFrom();
