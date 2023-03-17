@@ -83,7 +83,10 @@ const TodoItem = (props) => {
 					</div>
 					{componentDidMount && (
 						<Suspense fallback={null}>
-							<Dropdown {...props} {...{ isFocus, toggleMore }} />
+							<Dropdown
+								{...props}
+								{...{ isParentFocus: isFocus, toggleMore }}
+							/>
 						</Suspense>
 					)}
 				</div>
