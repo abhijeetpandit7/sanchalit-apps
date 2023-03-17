@@ -1,6 +1,15 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, {
+	Fragment,
+	lazy,
+	Suspense,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import _ from "lodash";
+import { FocusOutHandler } from "../../../hooks";
 import {
+	ACTIVE,
 	INBOX,
 	TODAY,
 	TODO_LIST_DONE_ID,
@@ -8,24 +17,42 @@ import {
 	TODO_LIST_TODAY_ID,
 	ellipsisIcon1,
 	formatDate,
+	hideRefClassName,
+	toggleRefClassNames,
 } from "../../../utils";
 
 const ADD_A_TODO_TO_GET_STARTED = "Add a todo to get started";
 const NO_TODOS_YET = "No todos yet";
 const SWITCH_TO_ = "Switch to ";
 
-const TodoItem = ({
-	id,
-	done,
-	title,
-	isDoneList,
-	editTodoItemTitle,
-	toggleTodoItemDone,
-}) => {
-	const todoItemTitleClickHandler = (event, id) => {
+const Dropdown = lazy(() => import("./Dropdown/Dropdown"));
+
+const TodoItem = (props) => {
+	const { activeTodoList, item, editTodoItemTitle, toggleTodoItemDone } = props;
+
+	const moreRef = useRef(null);
+	const [componentDidMount, setComponentDidMount] = useState(false);
+	const [isFocus, setIsFocus] = useState(false);
+
+	FocusOutHandler({
+		ref: moreRef,
+		classNames: [ACTIVE],
+		callback: hideRefClassName,
+		setIsFocus,
+	});
+
+	const isDoneList = activeTodoList.id === TODO_LIST_DONE_ID;
+
+	const toggleMore = () => {
+		toggleRefClassNames(moreRef, [ACTIVE]);
+		setComponentDidMount(true);
+		setIsFocus(moreRef.current.classList.contains(ACTIVE));
+	};
+
+	const todoItemTitleClickHandler = (event) => {
 		switch (event.detail) {
 			case 2:
-				editTodoItemTitle(event, id);
+				editTodoItemTitle(event, item.id);
 			default:
 				return;
 		}
@@ -33,30 +60,32 @@ const TodoItem = ({
 
 	return (
 		<li
-			className={`todo-item ${done ? "done" : ""} visible`}
-			data-todo-id={id}
+			className={`todo-item visible ${isFocus ? ACTIVE : ""} ${
+				item.done ? "done" : ""
+			}`}
+			data-todo-id={item.id}
 			draggable={isDoneList ? "false" : "true"}
 		>
 			<span className="todo-item-wrapper has-more">
-				<label onClick={() => toggleTodoItemDone(id, done)}>
+				<label onClick={() => toggleTodoItemDone(item.id, item.done)}>
 					<input
 						className="todo-item-checkbox"
 						type="checkbox"
-						defaultChecked={done}
+						defaultChecked={item.done}
 					/>
 				</label>
-				<span
-					className="todo-item-title"
-					onClick={(event) => todoItemTitleClickHandler(event, id)}
-				>
-					{title}
+				<span className="todo-item-title" onClick={todoItemTitleClickHandler}>
+					{item.title}
 				</span>
-				<div className="more">
-					<div className="icon-wrapper more-toggle">{ellipsisIcon1}</div>
-					<div className="dropdown todo-item-dropdown">
-						<ul className="dropdown-list"></ul>
-						<ul className="dropdown-list dropdown-detail"></ul>
+				<div className="more" ref={moreRef}>
+					<div className="icon-wrapper more-toggle" onClick={toggleMore}>
+						{ellipsisIcon1}
 					</div>
+					{componentDidMount && (
+						<Suspense fallback={null}>
+							<Dropdown {...props} {...{ isFocus, toggleMore }} />
+						</Suspense>
+					)}
 				</div>
 			</span>
 		</li>
@@ -64,14 +93,17 @@ const TodoItem = ({
 };
 
 export const ViewContainer = ({
+	todoAppRef,
 	todoInputRef,
 	activeTodoList,
 	processedTodos,
+	processedTodoLists,
 	todos,
 	createTodoItem,
 	editTodoItemTitle,
 	setActiveTodoListId,
 	toggleTodoItemDone,
+	updateAppHeight,
 }) => {
 	const [isCreatingTodo, setIsCreatingTodo] = useState(false);
 
@@ -217,8 +249,15 @@ export const ViewContainer = ({
 				<Fragment key={todoObj.item.id}>
 					{todoSection}
 					<TodoItem
-						{...todoObj.item}
-						{...{ isDoneList, editTodoItemTitle, toggleTodoItemDone }}
+						{...{
+							todoAppRef,
+							activeTodoList,
+							item: todoObj.item,
+							processedTodoLists,
+							editTodoItemTitle,
+							toggleTodoItemDone,
+							updateAppHeight,
+						}}
 					/>
 				</Fragment>
 			);
@@ -238,8 +277,15 @@ export const ViewContainer = ({
 						) : (
 							processedTodos.map((todo) => (
 								<TodoItem
-									{...todo}
-									{...{ isDoneList, editTodoItemTitle, toggleTodoItemDone }}
+									{...{
+										todoAppRef,
+										activeTodoList,
+										item: todo,
+										processedTodoLists,
+										editTodoItemTitle,
+										toggleTodoItemDone,
+										updateAppHeight,
+									}}
 									key={todo.id}
 								/>
 							))

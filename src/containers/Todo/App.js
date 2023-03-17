@@ -37,7 +37,8 @@ const ContextMemo = memo((props) => {
 		processedTodoLists.find(({ id }) => id === TODO_LIST_TODAY_ID);
 
 	const processedTodos = processTodos(todos, activeTodoList.id);
-	const updateAppHeight = () => updateTodoAppHeight(todoAppRef);
+	const updateAppHeight = (appHeight) =>
+		updateTodoAppHeight(todoAppRef, appHeight);
 
 	useEffect(() => updateAppHeight(), [todos, activeTodoList]);
 
@@ -89,14 +90,17 @@ const ContextMemo = memo((props) => {
 			</Navbar>
 			<ViewContainer
 				{...{
+					todoAppRef,
 					todoInputRef,
 					activeTodoList,
 					processedTodos,
+					processedTodoLists,
 					todos,
 					createTodoItem,
 					editTodoItemTitle,
 					setActiveTodoListId,
 					toggleTodoItemDone,
+					updateAppHeight,
 				}}
 			/>
 		</div>

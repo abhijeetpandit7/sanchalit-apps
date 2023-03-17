@@ -96,6 +96,14 @@
 	--filter-dark-brightness: none;
 	--filter-dark-invert: invert(1);
 }
+.light,
+.light-full {
+	--color-base: 0 0% 13%;
+	--opacity-stop-1: 0.06;
+	--opacity-stop-2: 0.11;
+	--filter-dark-brightness: brightness(13%);
+	--filter-dark-invert: none;
+}
 .dark.dark-full,
 .light.light-full {
 	--color-button: hsla(
@@ -6234,6 +6242,10 @@ input[type="number"].hide-controls {
 	display: inline-block;
 	visibility: visible;
 	opacity: 1;
+}
+.todo-item-active > .todo-item-wrapper,
+.todo-item.active {
+	background-color: var(--color-stop-1);
 }
 .todo-item.hidden {
 	display: none;

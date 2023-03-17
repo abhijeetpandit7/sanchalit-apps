@@ -852,3 +852,40 @@ export const toMilliseconds = (seconds) => seconds * 1000;
 export const toWeeks = (seconds) => seconds / ONE_WEEK;
 
 export const trimSpacesWithin = (string) => string.replace(/\s+/g, "");
+
+export const ensureTodoItemDropdownVisible = (todoAppRef, dropdownRef) => {
+	const dropdownList = dropdownRef.current.querySelector(".dropdown-list");
+	const todoList = todoAppRef.current.querySelector("ol.todo-list");
+	const todoItem = dropdownRef.current.closest(".todo-item");
+	const dropdownListHeight = dropdownList.offsetHeight;
+	const isOverflowing = dropdownListHeight > todoList.offsetHeight;
+	let offset;
+
+	if (isOverflowing)
+		offset = Math.min(
+			dropdownListHeight + 5,
+			document.body.getBoundingClientRect().height - 150,
+		);
+
+	const differenceHeight =
+		todoList.getBoundingClientRect().top +
+		todoList.offsetHeight -
+		(todoItem.getBoundingClientRect().top +
+			todoItem.offsetHeight +
+			dropdownListHeight);
+
+	if (differenceHeight < 4) {
+		dropdownRef.current.style.top = `${Math.max(
+			todoList.getBoundingClientRect().top -
+				todoItem.getBoundingClientRect().top,
+			differenceHeight + 18,
+		)}px`;
+		dropdownRef.current.style.right = "40px";
+	} else {
+		dropdownRef.current.style.top = "28px";
+	}
+	dropdownRef.current.style.bottom = "auto";
+
+	if (isOverflowing) return offset;
+	else return true;
+};
