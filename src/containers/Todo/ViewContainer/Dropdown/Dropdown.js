@@ -16,7 +16,12 @@ const Dropdown = ({
 	isParentFocus,
 	activeTodoList,
 	item,
+	archiveTodoItem,
+	deleteTodoItem,
+	editTodoItemTitle,
+	moveTodoItemTo,
 	processedTodoLists,
+	toggleMore,
 	updateAppHeight,
 }) => {
 	const dropdownRef = useRef(null);
@@ -98,7 +103,11 @@ const Dropdown = ({
 				{processedTodoLists
 					.filter((todoList) => todoList.id !== activeTodoList.id)
 					.map((todoList) => (
-						<li className="dropdown-list-item no-icon" key={todoList.id}>
+						<li
+							className="dropdown-list-item no-icon"
+							onClick={() => moveTodoItemTo(item.id, todoList.id, isDoneList)}
+							key={todoList.id}
+						>
 							<span
 								className="list-color menu-item-color"
 								style={{ backgroundColor: todoList.colour }}
@@ -124,13 +133,22 @@ const Dropdown = ({
 			ref={dropdownRef}
 		>
 			<ul className="dropdown-list">
-				<li className="dropdown-list-item no-icon">
+				<li
+					className="dropdown-list-item no-icon"
+					onClick={(event) => {
+						editTodoItemTitle(event, item.id);
+						toggleMore();
+					}}
+				>
 					<span className="dropdown-list-label">Edit</span>
 				</li>
 				<li className="dropdown-list-item line">
 					<span className="dropdown-list-label"></span>
 				</li>
-				<li className="dropdown-list-item no-icon">
+				<li
+					className="dropdown-list-item no-icon"
+					onClick={() => moveTodoItemTo(item.id, moveToTodoList.id, isDoneList)}
+				>
 					<span className="dropdown-list-label">{`Move to ${moveToTodoList.title}`}</span>
 				</li>
 				<li
@@ -140,14 +158,20 @@ const Dropdown = ({
 					<span className="dropdown-list-label">Move to...</span>
 				</li>
 				{isTodoItemDone && isDoneList === false && (
-					<li className="dropdown-list-item no-icon">
+					<li
+						className="dropdown-list-item no-icon"
+						onClick={() => archiveTodoItem(item.id)}
+					>
 						<span className="dropdown-list-label">Archive</span>
 					</li>
 				)}
 				<li className="dropdown-list-item line">
 					<span className="dropdown-list-label"></span>
 				</li>
-				<li className="dropdown-list-item no-icon">
+				<li
+					className="dropdown-list-item no-icon"
+					onClick={() => deleteTodoItem(item.id)}
+				>
 					<span className="dropdown-list-label">Delete</span>
 				</li>
 			</ul>

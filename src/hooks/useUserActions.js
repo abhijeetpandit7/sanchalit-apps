@@ -218,6 +218,19 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const deleteTodoItem = useCallback(
+		(id) =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				todos: prevCustomization.todos.filter((todo) => todo.id !== id),
+				todoSettings: {
+					...prevCustomization.todoSettings,
+					todosUpdatedDate: new Date(),
+				},
+			})),
+		[],
+	);
+
 	const deleteTodoList = useCallback(
 		(id) =>
 			setStorageUserCustomization((prevCustomization) => ({
@@ -272,7 +285,9 @@ export const useUserActions = () => {
 
 	const editTodoItemTitle = useCallback(
 		(event, id) => {
-			const element = event.target;
+			const element = event.target
+				.closest(".todo-item")
+				.querySelector(".todo-item-title");
 			if (element.getAttribute("contenteditable") === "true") return;
 			element.setAttribute("contenteditable", true);
 			focusCursorAtEnd(element);
@@ -342,14 +357,14 @@ export const useUserActions = () => {
 	);
 
 	const moveTodoItemTo = useCallback(
-		(itemId, listId) =>
+		(itemId, listId, fromDoneList) =>
 			setStorageUserCustomization((prevCustomization) => {
 				const instantDate = new Date();
 				const targetTodoItem = prevCustomization.todos.find(
 					(todo) => todo.id === itemId,
 				);
 				const isTargetTodoItemListDoneList =
-					targetTodoItem.listId === TODO_LIST_DONE_ID;
+					fromDoneList || targetTodoItem.listId === TODO_LIST_DONE_ID;
 				const targetTodoList = prevCustomization.todoLists.find(
 					(todoList) => todoList.id === listId,
 				);
@@ -470,7 +485,9 @@ export const useUserActions = () => {
 	};
 
 	const saveTodoItemTitle = (event, id) => {
-		const element = event.target;
+		const element = event.target
+			.closest(".todo-item")
+			.querySelector(".todo-item-title");
 		element.setAttribute("contenteditable", false);
 		const newTitle = element.innerText;
 		const oldTitle = storageUserCustomization.todos.find(
@@ -1029,6 +1046,7 @@ export const useUserActions = () => {
 
 	return {
 		archiveAllDoneTodoItemsFrom,
+		archiveTodoItem,
 		cleanupNotes,
 		createNewCountdown,
 		createNoteFromEmptyState,
@@ -1036,6 +1054,7 @@ export const useUserActions = () => {
 		createTodoList,
 		deleteCountdown,
 		deleteNote,
+		deleteTodoItem,
 		deleteTodoList,
 		editDisplayName,
 		editTodoItemTitle,

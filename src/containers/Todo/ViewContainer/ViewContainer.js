@@ -95,19 +95,15 @@ const TodoItem = (props) => {
 	);
 };
 
-export const ViewContainer = ({
-	todoAppRef,
-	todoInputRef,
-	activeTodoList,
-	processedTodos,
-	processedTodoLists,
-	todos,
-	createTodoItem,
-	editTodoItemTitle,
-	setActiveTodoListId,
-	toggleTodoItemDone,
-	updateAppHeight,
-}) => {
+export const ViewContainer = (props) => {
+	const {
+		todoInputRef,
+		activeTodoList,
+		processedTodos,
+		todos,
+		createTodoItem,
+		setActiveTodoListId,
+	} = props;
 	const [isCreatingTodo, setIsCreatingTodo] = useState(false);
 
 	useEffect(() => isCreatingTodo && setIsCreatingTodo(false), [activeTodoList]);
@@ -251,17 +247,7 @@ export const ViewContainer = ({
 			return (
 				<Fragment key={todoObj.item.id}>
 					{todoSection}
-					<TodoItem
-						{...{
-							todoAppRef,
-							activeTodoList,
-							item: todoObj.item,
-							processedTodoLists,
-							editTodoItemTitle,
-							toggleTodoItemDone,
-							updateAppHeight,
-						}}
-					/>
+					<TodoItem {...props} {...{ item: todoObj.item }} />
 				</Fragment>
 			);
 		});
@@ -279,18 +265,7 @@ export const ViewContainer = ({
 							<DoneListTodoItems />
 						) : (
 							processedTodos.map((todo) => (
-								<TodoItem
-									{...{
-										todoAppRef,
-										activeTodoList,
-										item: todo,
-										processedTodoLists,
-										editTodoItemTitle,
-										toggleTodoItemDone,
-										updateAppHeight,
-									}}
-									key={todo.id}
-								/>
+								<TodoItem {...props} {...{ item: todo }} key={todo.id} />
 							))
 						)
 					) : (
