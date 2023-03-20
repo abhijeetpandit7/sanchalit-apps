@@ -1093,6 +1093,7 @@ export const useUserActions = () => {
 		setDashAppStyles,
 		setSearchProvider,
 		setSettingsActiveNav,
+		setTodoListOrder,
 		setTodoListColour,
 		setWidgetReady,
 		toggleArchiveCountdown,

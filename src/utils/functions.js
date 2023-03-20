@@ -785,6 +785,13 @@ export const randomElement = (array) =>
 export const removeRefClassName = (ref, className) =>
 	ref.current.classList.remove(className);
 
+export const reorderListOnDrag = (list, startIndex, endIndex) => {
+	const reorderedList = Array.from(list);
+	const [movedItem] = reorderedList.splice(startIndex, 1);
+	reorderedList.splice(endIndex, 0, movedItem);
+	return reorderedList;
+};
+
 export const requestPermissions = (permssions) =>
 	new Promise((resolve, reject) =>
 		chrome.permissions.request({ permissions: [...permssions] }, (granted) =>

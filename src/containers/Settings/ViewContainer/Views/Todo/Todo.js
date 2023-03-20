@@ -1,4 +1,5 @@
 import React, { memo, useRef, useState } from "react";
+import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
 import {
 	CollapsibleHeaderWrapper,
 	ColourPaletteWrapper,
@@ -17,6 +18,7 @@ import {
 	GENERAL_SETTING_APP_LIST,
 	TODO_SHOW_SETTING,
 	processTodoLists,
+	reorderListOnDrag,
 } from "../../../../../utils";
 
 const TodoList = ({
@@ -28,6 +30,7 @@ const TodoList = ({
 	getTodoListItemsCount,
 	moveAllTodoItems,
 	setTodoListColour,
+	provided,
 }) => {
 	const defaultTodoListIds = [
 		TODO_LIST_DONE_ID,
@@ -143,9 +146,12 @@ const TodoList = ({
 		<li
 			data-id={id}
 			className="settings-todo-list draggable-todo-list"
+			ref={provided.innerRef}
 			onClick={todoListTitleClickHandler}
 			draggable="true"
 			key={id}
+			{...provided.draggableProps}
+			{...provided.dragHandleProps}
 		>
 			<span className="settings-todo-list-color">
 				<ColourPaletteWrapper
@@ -271,6 +277,21 @@ const ContextMemo = memo((props) => {
 
 	const processedTodoLists = processTodoLists(props.todoLists);
 
+	const handleDragEnd = (result) => {
+		if (!result.destination) return;
+
+		const reorderedTodoLists = reorderListOnDrag(
+			processedTodoLists,
+			result.source.index,
+			result.destination.index,
+		);
+		reorderedTodoLists.forEach(
+			async (todoList, index) =>
+				todoList.order !== index &&
+				(await props.setTodoListOrder(todoList.id, index)),
+		);
+	};
+
 	return (
 		<div id="settings-todo" className="settings-view settings-todo">
 			<div className="main-container">
@@ -304,22 +325,39 @@ const ContextMemo = memo((props) => {
 					</p>
 
 					<div id="custom-lists" className="settings-todo-lists-container">
-						{/* TODO: Make it draggable */}
-						<ul className="settings-list options-list settings-todo-lists">
-							{processedTodoLists.map((todoList) => (
-								<TodoList
-									{...todoList}
-									deleteTodoList={props.deleteTodoList}
-									editTodoListTitle={props.editTodoListTitle}
-									getTodoListItemsCount={props.getTodoListItemsCount}
-									moveAllTodoItems={props.moveAllTodoItems}
-									setTodoListColour={props.setTodoListColour}
-									key={todoList.id}
-								/>
-							))}
-
-							<AddList createTodoList={props.createTodoList} />
-						</ul>
+						<DragDropContext onDragEnd={handleDragEnd}>
+							<Droppable droppableId="droppable" direction="vertical">
+								{(provided) => (
+									<ul
+										className="settings-list options-list settings-todo-lists"
+										ref={provided.innerRef}
+										{...provided.droppableProps}
+									>
+										{processedTodoLists.map((todoList, index) => (
+											<Draggable
+												key={todoList.id}
+												draggableId={todoList.id}
+												index={index}
+											>
+												{(provided) => (
+													<TodoList
+														{...todoList}
+														deleteTodoList={props.deleteTodoList}
+														editTodoListTitle={props.editTodoListTitle}
+														getTodoListItemsCount={props.getTodoListItemsCount}
+														moveAllTodoItems={props.moveAllTodoItems}
+														setTodoListColour={props.setTodoListColour}
+														provided={provided}
+													/>
+												)}
+											</Draggable>
+										))}
+										{provided.placeholder}
+										<AddList createTodoList={props.createTodoList} />
+									</ul>
+								)}
+							</Droppable>
+						</DragDropContext>
 					</div>
 				</div>
 			</div>
@@ -342,6 +380,7 @@ const Todo = () => {
 		getTodoListItemsCount,
 		moveAllTodoItems,
 		setTodoListColour,
+		setTodoListOrder,
 		toggleTodoSetting,
 		toggleShowApp,
 	} = useUserActions();
@@ -359,6 +398,7 @@ const Todo = () => {
 				getTodoListItemsCount,
 				moveAllTodoItems,
 				setTodoListColour,
+				setTodoListOrder,
 				toggleTodoSetting,
 				toggleShowApp,
 			}}
