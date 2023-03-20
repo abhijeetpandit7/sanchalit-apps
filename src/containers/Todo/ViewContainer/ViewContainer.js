@@ -7,6 +7,7 @@ import React, {
 	useState,
 } from "react";
 import _ from "lodash";
+import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
 import { FocusOutHandler } from "../../../hooks";
 import {
 	ACTIVE,
@@ -18,6 +19,7 @@ import {
 	ellipsisIcon1,
 	formatDate,
 	hideRefClassName,
+	reorderListOnDrag,
 	toggleRefClassNames,
 } from "../../../utils";
 
@@ -63,8 +65,11 @@ const TodoItem = (props) => {
 			className={`todo-item visible ${isFocus ? ACTIVE : ""} ${
 				item.done ? "done" : ""
 			}`}
+			ref={props.provided?.innerRef}
 			data-todo-id={item.id}
 			draggable={isDoneList ? "false" : "true"}
+			{...props.provided?.draggableProps}
+			{...props.provided?.dragHandleProps}
 		>
 			<span className="todo-item-wrapper has-more">
 				<label onClick={() => toggleTodoItemDone(item.id, item.done)}>
@@ -103,12 +108,13 @@ export const ViewContainer = (props) => {
 		todos,
 		createTodoItem,
 		setActiveTodoListId,
+		setTodoItemOrder,
 	} = props;
 	const [isCreatingTodo, setIsCreatingTodo] = useState(false);
 
 	useEffect(() => isCreatingTodo && setIsCreatingTodo(false), [activeTodoList]);
 
-	const todoListRef = useRef(null);
+	const todoListWrapper = useRef(null);
 
 	const isDoneList = activeTodoList.id === TODO_LIST_DONE_ID;
 	const isTodayList = activeTodoList.id === TODO_LIST_TODAY_ID;
@@ -165,11 +171,26 @@ export const ViewContainer = (props) => {
 		}
 		todoInput.disabled = true;
 		await createTodoItem(todoInput.value, activeTodoList.id, isCtrlEnter);
-		todoListRef.current.scrollTop =
-			isCtrlEnter || isDoneList ? 0 : todoListRef.current.scrollHeight;
+		const todoList = todoListWrapper.current.querySelector(".todo-list");
+		todoList.scrollTop = isCtrlEnter || isDoneList ? 0 : todoList.scrollHeight;
 		todoInput.disabled = false;
 		todoInput.value = "";
 		todoInput.focus();
+	};
+
+	const handleDragEnd = (result) => {
+		if (!result.destination) return;
+
+		const reorderedTodoItems = reorderListOnDrag(
+			processedTodos,
+			result.source.index,
+			result.destination.index,
+		);
+		reorderedTodoItems.forEach(
+			async (todoItem, index) =>
+				todoItem.order !== index &&
+				(await setTodoItemOrder(todoItem.id, index)),
+		);
 	};
 
 	const EmptyView = () => (
@@ -255,23 +276,44 @@ export const ViewContainer = (props) => {
 
 	return (
 		<>
-			<div className="todo-list-wrapper">
-				<ol
-					className={`todo-list ${isAnyTodo ? "" : "is-empty"}`}
-					ref={todoListRef}
-				>
-					{isAnyTodo ? (
-						isDoneList ? (
-							<DoneListTodoItems />
-						) : (
-							processedTodos.map((todo) => (
-								<TodoItem {...props} {...{ item: todo }} key={todo.id} />
-							))
-						)
-					) : (
-						<EmptyView />
-					)}
-				</ol>
+			<div className="todo-list-wrapper" ref={todoListWrapper}>
+				<DragDropContext onDragEnd={handleDragEnd}>
+					<Droppable droppableId="droppable" direction="vertical">
+						{(provided) => (
+							<ol
+								className={`todo-list ${isAnyTodo ? "" : "is-empty"}`}
+								ref={provided.innerRef}
+								{...provided.droppableProps}
+							>
+								{isAnyTodo ? (
+									isDoneList ? (
+										<DoneListTodoItems />
+									) : (
+										<>
+											{processedTodos.map((todo, index) => (
+												<Draggable
+													draggableId={todo.id}
+													index={index}
+													key={todo.id}
+												>
+													{(provided) => (
+														<TodoItem
+															{...props}
+															{...{ item: todo, provided }}
+														/>
+													)}
+												</Draggable>
+											))}
+											{provided.placeholder}
+										</>
+									)
+								) : (
+									<EmptyView />
+								)}
+							</ol>
+						)}
+					</Droppable>
+				</DragDropContext>
 			</div>
 			<footer
 				className="footer-input new-todo-footer"
