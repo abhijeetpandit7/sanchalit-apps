@@ -702,27 +702,30 @@ export const useUserActions = () => {
 		[],
 	);
 
-	const setTodoListOrder = (id, order) =>
-		setStorageUserCustomization((prevCustomization) => {
-			const instantDate = new Date();
-			const targetTodoList = prevCustomization.todoLists.find(
-				(todoList) => todoList.id === id,
-			);
+	const setTodoListOrder = useCallback(
+		(id, order) =>
+			setStorageUserCustomization((prevCustomization) => {
+				const instantDate = new Date();
+				const targetTodoList = prevCustomization.todoLists.find(
+					(todoList) => todoList.id === id,
+				);
 
-			targetTodoList.order = order;
-			targetTodoList.ts = instantDate.getTime();
+				targetTodoList.order = order;
+				targetTodoList.ts = instantDate.getTime();
 
-			return {
-				...prevCustomization,
-				todoLists: prevCustomization.todoLists.map((todoList) =>
-					todoList.id === id ? targetTodoList : todoList,
-				),
-				todoSettings: {
-					...prevCustomization.todoSettings,
-					todosUpdatedDate: instantDate,
-				},
-			};
-		});
+				return {
+					...prevCustomization,
+					todoLists: prevCustomization.todoLists.map((todoList) =>
+						todoList.id === id ? targetTodoList : todoList,
+					),
+					todoSettings: {
+						...prevCustomization.todoSettings,
+						todosUpdatedDate: instantDate,
+					},
+				};
+			}),
+		[],
+	);
 
 	const setTodoListColour = useCallback(
 		(id, colour) =>
