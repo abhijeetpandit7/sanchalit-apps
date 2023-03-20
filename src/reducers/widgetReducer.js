@@ -47,6 +47,14 @@ export const widgetReducer = (state, action) => {
 			};
 		}
 
+		case "SET_SETTINGS_ACTIVE_NAV": {
+			const { value } = action.payload;
+			return {
+				...state,
+				settingsActiveNav: value,
+			};
+		}
+
 		default:
 			return state;
 	}

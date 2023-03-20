@@ -227,6 +227,7 @@ const ContextMemo = memo(
 		const onClick = async () => {
 			if (name === "") return;
 			if (edit) {
+				// TODO: Callback only if changed something
 				await saveCountdown(currentCountdownId, name, date, showTime, pinned);
 			} else {
 				await createNewCountdown(name, date, showTime, pinned);

@@ -4,6 +4,7 @@ import {
 	BOOKMARKS,
 	GENERAL,
 	HELP,
+	TODO,
 	SETTINGS_NAV_LIST,
 } from "../../../utils";
 
@@ -11,6 +12,7 @@ const About = lazy(() => import("./Views/About/About"));
 const Bookmarks = lazy(() => import("./Views/Bookmarks/Bookmarks"));
 const General = lazy(() => import("./Views/General/General"));
 const Help = lazy(() => import("./Views/Help/Help"));
+const Todo = lazy(() => import("./Views/Todo/Todo"));
 
 const getNavItemValue = (navItem) =>
 	SETTINGS_NAV_LIST.find(({ value }) => value === navItem).value;
@@ -20,6 +22,7 @@ const SETTINGS_VIEW_LIST = [
 		value: getNavItemValue(GENERAL),
 		component: <General />,
 	},
+	{ value: getNavItemValue(TODO), component: <Todo /> },
 	{
 		value: getNavItemValue(BOOKMARKS),
 		component: <Bookmarks />,

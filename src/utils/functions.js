@@ -39,6 +39,7 @@ import {
 	SHIFT_TO_LEFT,
 	SHOW,
 	SHOW_FADE_IN,
+	TODO_LIST_DONE_ID,
 	BROWSER_LIST,
 	NOTE_DELIGHTER_LIST,
 	THEME_COLOUR_OPTIONS,
@@ -48,6 +49,8 @@ import {
 	DASH_APP_STYLES,
 	DEFAULT_COUNTDOWN_OBJ,
 	DEFAULT_NOTE_OBJ,
+	DEFAULT_TODO_ITEM_OBJ,
+	DEFAULT_TODO_LIST_OBJ,
 	HOME_TAB_OBJ,
 	OVERFLOW_FOLDER_OBJ,
 	TOP_SITES_FOLDER_OBJ,
@@ -72,18 +75,81 @@ export const checkForMultiLineNote = (body) => {
 export const createCountdown = () => {
 	const newCountdown = _.cloneDeep(DEFAULT_COUNTDOWN_OBJ);
 	newCountdown.id = uuidv4();
+	const instantDate = new Date();
+	newCountdown.createdDate = instantDate;
+	newCountdown.updatedDate = instantDate.getTime();
 	return newCountdown;
 };
 
 export const createNote = () => {
 	const newNote = _.cloneDeep(DEFAULT_NOTE_OBJ);
 	newNote.id = uuidv4();
+	const instantDate = new Date();
+	newNote.createdDate = instantDate;
+	newNote.updatedDate = instantDate.getTime();
 	return newNote;
 };
 
-export const focusDisplayName = (displayNameRef) => {
-	const element = displayNameRef.current;
-	if (element.innerText === EMPTY_NAME) element.innerText = "";
+export const createTodo = () => {
+	const newTodo = _.cloneDeep(DEFAULT_TODO_ITEM_OBJ);
+	newTodo.id = uuidv4();
+	const instantDate = new Date();
+	newTodo.createdDate = instantDate;
+	newTodo.ts = instantDate.getTime();
+	return newTodo;
+};
+
+export const createNewTodoList = () => {
+	const newTodoList = _.cloneDeep(DEFAULT_TODO_LIST_OBJ);
+	newTodoList.id = uuidv4();
+	const instantDate = new Date();
+	newTodoList.createdDate = instantDate;
+	newTodoList.ts = instantDate.getTime();
+	return newTodoList;
+};
+
+export const ensureTodoItemDropdownVisible = (
+	todoAppRef,
+	dropdownRef,
+	dropdownHeight,
+) => {
+	const dropdownList = dropdownRef.current.querySelector(".dropdown-list");
+	const todoList = todoAppRef.current.querySelector("ol.todo-list");
+	const todoItem = dropdownRef.current.closest(".todo-item");
+	const dropdownListHeight = dropdownHeight ?? dropdownList.offsetHeight;
+	const isOverflowing = dropdownListHeight > todoList.offsetHeight;
+	let offset;
+
+	if (isOverflowing)
+		offset = Math.min(
+			dropdownListHeight + 5,
+			document.body.getBoundingClientRect().height - 150,
+		);
+
+	const differenceHeight =
+		todoList.getBoundingClientRect().top +
+		todoList.offsetHeight -
+		(todoItem.getBoundingClientRect().top +
+			todoItem.offsetHeight +
+			dropdownListHeight);
+
+	if (differenceHeight < 4) {
+		dropdownRef.current.style.top = `${Math.max(
+			todoList.getBoundingClientRect().top -
+				todoItem.getBoundingClientRect().top,
+			differenceHeight + 18,
+		)}px`;
+		dropdownRef.current.style.right = "40px";
+	} else {
+		dropdownRef.current.style.top = "28px";
+	}
+	dropdownRef.current.style.bottom = "auto";
+
+	if (isOverflowing) return offset;
+	else return true;
+};
+
+export const focusCursorAtEnd = (element) => {
 	const setpos = document.createRange();
 	const set = window.getSelection();
 	if (element.childNodes[0])
@@ -92,6 +158,12 @@ export const focusDisplayName = (displayNameRef) => {
 	set.removeAllRanges();
 	set.addRange(setpos);
 	element.focus();
+};
+
+export const focusDisplayName = (displayNameRef) => {
+	const element = displayNameRef.current;
+	if (element.innerText === EMPTY_NAME) element.innerText = "";
+	focusCursorAtEnd(element);
 };
 
 export const focusNotesInput = (notesInputRef) => {
@@ -104,13 +176,15 @@ export const formatDate = ({
 	timestamp,
 	hour12clock,
 	relativeDay = false,
+	calendarDate = false,
+	friendlyDate = false,
 } = {}) => {
 	const date = moment(timestamp);
 	const dateIsInThisYear = date.isSame(moment(), "year");
 	const dateDifference = date
 		.startOf("day")
 		.diff(moment().startOf("day"), "days");
-	if (relativeDay) {
+	if (relativeDay || friendlyDate) {
 		switch (dateDifference) {
 			case 0:
 				return "Today";
@@ -119,21 +193,25 @@ export const formatDate = ({
 			case -1:
 				return "Yesterday";
 			default:
+				if (friendlyDate) break;
 				const monthlyDayFormat = date.format("MMMM D");
 				return dateIsInThisYear
 					? monthlyDayFormat
 					: formatYearRelative(monthlyDayFormat, timestamp);
 		}
-	} else {
-		const dateIsToday = date.isSame(moment(), "day");
-		const dateIsInLast7d = dateDifference > -7 && dateDifference < 0;
-		const monthlyDayFormat = date.format("MMM D");
-
-		if (dateIsToday) return formatTime({ timestamp, hour12clock });
-		else if (dateIsInLast7d) return date.format("ddd");
-		else if (dateIsInThisYear) return monthlyDayFormat;
-		else return formatYearRelative(monthlyDayFormat, timestamp);
 	}
+	const dateIsToday = date.isSame(moment(), "day");
+	const dateIsInLast7d = dateDifference > -7 && dateDifference < 0;
+	const monthlyDayFormat = date.format(
+		`${calendarDate || friendlyDate ? "MMMM" : "MMM"} D`,
+	);
+
+	if (dateIsToday && calendarDate === false)
+		return formatTime({ timestamp, hour12clock });
+	else if (dateIsInLast7d && calendarDate === false)
+		return date.format(`${friendlyDate ? "dddd" : "ddd"}`);
+	else if (dateIsInThisYear) return monthlyDayFormat;
+	else return formatYearRelative(monthlyDayFormat, timestamp);
 };
 
 const formatYearRelative = (dateFormat, timestamp) =>
@@ -283,6 +361,21 @@ export const getPermissionAllowed = (permission) =>
 				: resolve(allowed),
 		),
 	);
+
+export const getNewOrderValue = (items, listId) => {
+	let newOrderValue;
+	try {
+		newOrderValue =
+			items
+				.filter((item) => (listId ? item.listId === listId : true))
+				.reduce((prev, current) =>
+					prev.order > current.order ? prev : current,
+				).order + 1;
+	} catch (error) {
+		newOrderValue = 0;
+	}
+	return newOrderValue;
+};
 
 export const getRandomDelighter = () => randomElement(NOTE_DELIGHTER_LIST);
 
@@ -435,6 +528,24 @@ export const isBoolean = (value) => typeof value === "boolean";
 
 export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
 
+export const isValidListOrder = (list) => {
+	let orderValues = new Set();
+	let maxOrderValue = null;
+	for (let i = 0; i < list.length; i++) {
+		const object = list[i];
+		const order = object.order;
+		if (order === null) return false;
+		if (orderValues.has(order)) return false;
+		if (maxOrderValue === null || order > maxOrderValue) maxOrderValue = order;
+		orderValues.add(order);
+	}
+	return maxOrderValue === orderValues.size - 1;
+};
+
+const isTouchDevice = () =>
+	/iPhone|iPod|iPad|Android/.test(navigator.userAgent) ||
+	(navigator.userAgent.includes("Mac") && "ontouchend" in document);
+
 export const parseAppPopupOverflow = (metricRef, topRight) => {
 	const isOverflowing = isAppPopupOverflowing(metricRef);
 	const appPopup = metricRef.current.querySelector(`.${POPUP}`);
@@ -550,6 +661,91 @@ export const parseBookmarksOverflow = (
 	} else return bookmarksList;
 };
 
+export const updateTodoAppHeight = (todoAppRef, appHeight) => {
+	let flag,
+		visibleHeight = 0,
+		offset = 30;
+	const todoList = todoAppRef.current.querySelector(".todo-list");
+	const heightLimit = getHeightLimit(todoAppRef);
+
+	if (heightLimit) {
+		if (appHeight === void 0) {
+			const isFirefox = getBrowserType().name === FIREFOX;
+			appHeight = 2;
+			if (todoList.children.length === 0) return;
+			for (let todo of todoList.children) {
+				todo.style.display !== "none" &&
+					(appHeight += isFirefox ? todo.scrollHeight + 1 : todo.scrollHeight);
+			}
+
+			const todoActiveListContainer = todoAppRef.current.querySelector(
+				".active-list-container",
+			);
+			const isTodoActiveListContainerExpanded =
+				todoActiveListContainer.classList.contains(ACTIVE);
+			isTodoActiveListContainerExpanded &&
+				(appHeight = Math.max(
+					todoActiveListContainer.querySelector(".dropdown").scrollHeight,
+					appHeight,
+				));
+
+			const todoHeaderControl = todoAppRef.current.querySelector(
+				".todo-header-control",
+			);
+			const isTodoHeaderControlExpanded =
+				todoHeaderControl.classList.contains(ACTIVE);
+			isTodoHeaderControlExpanded &&
+				(appHeight = Math.max(
+					todoHeaderControl.querySelector(".dropdown").scrollHeight,
+					appHeight,
+				));
+
+			flag = true;
+			visibleHeight = Math.min(appHeight, heightLimit);
+		}
+
+		appHeight >= todoList.scrollHeight
+			? ((appHeight = Math.min(appHeight, heightLimit)),
+			  (offset = appHeight + "px"),
+			  (todoList.parentElement.style.minHeight = offset))
+			: ((todoList.parentElement.style.minHeight =
+					Math.max(visibleHeight, appHeight, 30) + "px"),
+			  (offset = Math.max(visibleHeight, appHeight, 30) + "px")),
+			(todoList.style.minHeight = offset),
+			(todoList.parentElement.style.maxHeight =
+				(flag ? appHeight : heightLimit) + "px"),
+			(todoList.style.maxHeight = (flag ? appHeight : heightLimit) + "px");
+	}
+};
+
+const getHeightLimit = (todoAppRef) => {
+	const todoApp = todoAppRef.current.closest(".app");
+	const todoHeaderHeight = todoApp.querySelector(".todo-header").offsetHeight;
+	if (!todoHeaderHeight) return null;
+
+	const todoInputHeight = todoApp.querySelector(".todo-new").offsetHeight || 0;
+	const topOrBottomClearance =
+		document.querySelector(".top-left").offsetHeight +
+		document.querySelector(".bottom").offsetHeight;
+	const mobileMaxWidth = 450;
+	const mobileTopOrBottomClearance = 60;
+	const clearance =
+		window.innerWidth >= mobileMaxWidth
+			? topOrBottomClearance
+			: mobileTopOrBottomClearance;
+
+	const heightLimit =
+		document.body.getBoundingClientRect().height -
+		(clearance + todoHeaderHeight + todoInputHeight + 4);
+	if (isTouchDevice()) {
+		return Math.min(
+			window.visualViewport.height - todoHeaderHeight - todoInputHeight - 10,
+			heightLimit,
+		);
+	}
+	return heightLimit;
+};
+
 export const precedeZero = (number, size) => {
 	let numString = number.toString();
 	while (numString.length < (size || 2)) {
@@ -570,11 +766,31 @@ export const processNotes = (notes, searchText, trashSubView) => {
 		.sort((a, b) => new Date(b.updatedDate) - new Date(a.updatedDate));
 };
 
+export const processTodoLists = (todoLists) =>
+	todoLists.sort((a, b) => a.order - b.order);
+
+export const processTodos = (todos, activeTodoListId) =>
+	activeTodoListId === TODO_LIST_DONE_ID
+		? todos
+				.filter((todo) => todo.done)
+				.sort((a, b) => b.completedDate - a.completedDate)
+		: todos
+				.filter((todo) => todo.listId === activeTodoListId)
+				.sort((a, b) => b.ts - a.ts)
+				.sort((a, b) => a.order - b.order);
+
 export const randomElement = (array) =>
 	array[Math.floor(Math.random() * array.length)];
 
 export const removeRefClassName = (ref, className) =>
 	ref.current.classList.remove(className);
+
+export const reorderListOnDrag = (list, startIndex, endIndex) => {
+	const reorderedList = Array.from(list);
+	const [movedItem] = reorderedList.splice(startIndex, 1);
+	reorderedList.splice(endIndex, 0, movedItem);
+	return reorderedList;
+};
 
 export const requestPermissions = (permssions) =>
 	new Promise((resolve, reject) =>
@@ -682,3 +898,5 @@ export const toDays = (seconds) => seconds / ONE_DAY;
 export const toMilliseconds = (seconds) => seconds * 1000;
 
 export const toWeeks = (seconds) => seconds / ONE_WEEK;
+
+export const trimSpacesWithin = (string) => string.replace(/\s+/g, "");

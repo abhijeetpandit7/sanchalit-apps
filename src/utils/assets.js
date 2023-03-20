@@ -51,6 +51,15 @@ export const angleDownIcon = (
 		<path d="M31.836 43.006c.282-.281.518-.59.725-.912L54.17 20.485a5.403 5.403 0 0 0 0-7.638 5.403 5.403 0 0 0-7.638 0l-18.608 18.61L9.217 12.753A5.4 5.4 0 0 0 0 16.571a5.363 5.363 0 0 0 1.582 3.816l21.703 21.706c.207.323.445.631.729.913a5.367 5.367 0 0 0 3.91 1.572 5.37 5.37 0 0 0 3.912-1.572z"></path>
 	</svg>
 );
+export const angleDownIcon1 = (
+	<svg
+		className="icon icon-angle-down"
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 55.751 55.751"
+	>
+		<path d="M31.836 43.006c.282-.281.518-.59.725-.912L54.17 20.485a5.403 5.403 0 0 0 0-7.638 5.403 5.403 0 0 0-7.638 0l-18.608 18.61L9.217 12.753A5.4 5.4 0 0 0 0 16.571a5.363 5.363 0 0 0 1.582 3.816l21.703 21.706c.207.323.445.631.729.913a5.367 5.367 0 0 0 3.91 1.572 5.37 5.37 0 0 0 3.912-1.572z"></path>
+	</svg>
+);
 
 export const appsBase64Source =
 	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAkklEQVR4Xu3UoQ2AUAyE4bcJM4BiFqbBMwOGCREEe6iaC1dICHl9ScXvKr5UXAFQtViAcxwgKhREBnDvQgISkABrvosA8o4A8s77wKcIoAo8RP06uXXL8ZgB9q2oXABEDICIAbgrKiABCdBLSAB5R4DXS1ihRpfQxsXrtyVkAESvdiAqIAEJ0EtIAHlngKaWMAEX54YfOb4oBI0AAAAASUVORK5CYII=";
@@ -273,6 +282,44 @@ export const caretRight = (
 	</svg>
 );
 
+export const checkIcon = (
+	<svg
+		id="Layer_1"
+		className="check"
+		xmlns="http://www.w3.org/2000/svg"
+		xmlnsXlink="http://www.w3.org/1999/xlink"
+		version="1.1"
+		x="0px"
+		y="0px"
+		viewBox="0 0 512 512"
+		xmlSpace="preserve"
+		width="10px"
+		height="10px"
+	>
+		<defs>
+			<filter id="f4" x="0" y="0" width="200%" height="200%">
+				<feOffset result="offOut" in="SourceGraphic" dx="20" dy="20"></feOffset>
+				<feColorMatrix
+					result="matrixOut"
+					in="offOut"
+					type="matrix"
+					values="0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.2 0 0 0 0 0 1 0"
+				></feColorMatrix>
+				<feGaussianBlur
+					result="blurOut"
+					in="matrixOut"
+					stdDeviation="10"
+				></feGaussianBlur>
+				<feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend>
+			</filter>
+		</defs>
+		<path
+			className="path"
+			d="M504.502,75.496c-9.997-9.998-26.205-9.998-36.204,0L161.594,382.203L43.702,264.311c-9.997-9.998-26.205-9.997-36.204,0    c-9.998,9.997-9.998,26.205,0,36.203l135.994,135.992c9.994,9.997,26.214,9.99,36.204,0L504.502,111.7    C514.5,101.703,514.499,85.494,504.502,75.496z"
+		></path>
+	</svg>
+);
+
 export const chimesIcon = (
 	<svg
 		className="tile-icon feed-icon icon-chimes"
@@ -319,6 +366,38 @@ export const clearIcon = (
 		viewBox="0 0 212.982 212.982"
 	>
 		<path d="M131.804 106.491l75.936-75.936c6.99-6.99 6.99-18.323 0-25.312-6.99-6.99-18.322-6.99-25.312 0L106.491 81.18 30.554 5.242c-6.99-6.99-18.322-6.99-25.312 0-6.989 6.99-6.989 18.323 0 25.312l75.937 75.936-75.937 75.937c-6.989 6.99-6.989 18.323 0 25.312 6.99 6.99 18.322 6.99 25.312 0l75.937-75.937 75.937 75.937c6.989 6.99 18.322 6.99 25.312 0 6.99-6.99 6.99-18.322 0-25.312l-75.936-75.936z"></path>
+	</svg>
+);
+
+export const clearTasksIcon = (
+	<svg
+		className="dropdown-list-icon icon icon-clear"
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 39 39"
+	>
+		<g transform="translate(-1)" fill="none" fillRule="evenodd">
+			<rect
+				strokeWidth="3"
+				transform="rotate(45 17.5 23)"
+				x="14.5"
+				y="5.5"
+				width="6"
+				height="35"
+				rx="2"
+			></rect>
+			<path d="M7 34l14.5-14.5" strokeWidth="3.8" strokeLinecap="square"></path>
+			<path
+				d="M31.5.7V6M33.886 4.812l-4.772-2.625M29.114 4.812l4.772-2.625M37.2 15.2v5.3M39.548 19.117l-4.773-2.625M34.775 19.117l4.773-2.625"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			></path>
+			<path
+				d="M19.5 4.42V7.6M20.932 6.887l-2.864-1.575M18.068 6.887l2.864-1.575"
+				strokeWidth=".8"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			></path>
+		</g>
 	</svg>
 );
 
@@ -1223,6 +1302,29 @@ export const menuIcon = (
 		viewBox="0 0 124 124"
 	>
 		<path d="M112 6H12C5.4 6 0 11.4 0 18s5.4 12 12 12h100c6.6 0 12-5.4 12-12s-5.4-12-12-12zM112 50H12C5.4 50 0 55.4 0 62s5.4 12 12 12h100c6.6 0 12-5.4 12-12s-5.4-12-12-12zM112 94H12c-6.6 0-12 5.4-12 12s5.4 12 12 12h100c6.6 0 12-5.4 12-12s-5.4-12-12-12z"></path>
+	</svg>
+);
+
+export const moveToTodayIcon = (
+	<svg
+		className="dropdown-list-icon icon icon-move-to-today"
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 25 25"
+	>
+		<g fill="none" fillRule="evenodd">
+			<path
+				id="icon-path-one"
+				d="M8 10.773V7.5a.5.5 0 0 1 .5-.5H22a.5.5 0 0 1 .5.5c.006 4.712.006 7.739 0 9.08 0 .08-8.694-.078-8.694 0 .229.523.337 1.409.125 1.92H23.5a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H21a.25.25 0 0 1-.25-.25v-1a.75.75 0 0 0-1.5 0V4.5a.75.75 0 0 1-1.5 0v-2a.5.5 0 0 0-.5-.5H13a.25.25 0 0 1-.25-.25v-1a.75.75 0 0 0-1.5 0V4.5a.75.75 0 0 1-1.5 0v-2a.5.5 0 0 0-.5-.5H7a1 1 0 0 0-1 1v7.773c.665-.183 1.372-.152 2 0zm-1.5.727A6.5 6.5 0 1 0 13 18a6.508 6.508 0 0 0-6.5-6.5zm.161 9.3v-1.4c0-.193-.14-.35-.31-.35H2.931C2.418 19.05 2 18.58 2 18c0-.579.418-1.05.932-1.05H6.35c.172 0 .311-.156.311-.35v-1.399c-.001-.386.277-.7.62-.701.142 0 .28.055.39.154l3.108 2.8a.792.792 0 0 1 0 1.094l-3.107 2.799a.566.566 0 0 1-.66.083.712.712 0 0 1-.35-.63z"
+				fillRule="nonzero"
+			></path>
+			<path
+				id="icon-path-two"
+				d="M13 11l1.98 1.98M15 13l3.07-3.947"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			></path>
+		</g>
 	</svg>
 );
 

@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { FocusOutHandler, useUserCustomization } from "../../hooks";
 import { Navbar, UserActions, ViewContainer } from "../Settings";
 import {
@@ -11,11 +11,18 @@ import {
 const APP = "app";
 const SETTINGS_APP = "settings-app";
 
-const ContextMemo = memo(({ settingsRef }) => {
+const ContextMemo = memo(({ settingsRef, settingsActiveNav }) => {
 	const [activeNav, setActiveNav] = useState(SETTINGS_NAV_LIST[0].value);
 	const [componentDidMount, setComponentDidMount] = useState(false);
 
 	FocusOutHandler({ ref: settingsRef });
+
+	useEffect(() => {
+		if (settingsActiveNav) {
+			setActiveNav(settingsActiveNav);
+			toggleSettingsApp();
+		}
+	}, [settingsActiveNav]);
 
 	const toggleSettingsApp = () => {
 		toggleAppPopup(settingsRef);
@@ -63,7 +70,9 @@ const ContextMemo = memo(({ settingsRef }) => {
 });
 
 export const Settings = () => {
-	const { settingsRef } = useUserCustomization();
+	const { settingsRef, widgetManager } = useUserCustomization();
 
-	return <ContextMemo {...{ settingsRef }} />;
+	const { settingsActiveNav } = widgetManager;
+
+	return <ContextMemo {...{ settingsRef, settingsActiveNav }} />;
 };

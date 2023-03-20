@@ -73,8 +73,9 @@ export const COUNTDOWNS = "Countdowns";
 const COUNTDOWN_DESCRIPTION = "Count down to important dates and deadlines";
 const COUNTDOWN_VISIBLE = "countdownVisible";
 export const CUSTOMIZATION = "customization";
-export const DASH = "Dash";
 export const DARK = "dark";
+export const DASH = "Dash";
+export const DATE_ROLLOVER_HOUR = 4;
 export const DEFAULT = "default";
 const DEFAULT_MOST_VISITED = "defaultMostVisited";
 export const DELETE_CONF_ACTIVE = "delete-conf-active";
@@ -110,6 +111,7 @@ const INCLUDE_BOOKMARKS_MANAGER = "includeBookmarksManager";
 const INCLUDE_MOST_VISITED = "includeMostVisited";
 const INCLUDE_OTHER_BOOKMARKS = "includeOtherBookmarks";
 export const INPUT_WRAPPER = "input-wrapper";
+const KEEP_TODO_STATE = "keepTodoState";
 export const LIGHT = "light";
 export const LINKS_AND_BOOKMARKS = "Links & Bookmarks";
 export const MANTRAS = "Mantras";
@@ -139,6 +141,8 @@ export const QUOTES = "Quotes";
 const QUOTES_VISIBLE = "quotesVisible";
 export const RANDOM = "Random";
 export const CUSTOM = "Custom";
+const DONE = "Done";
+export const INBOX = "Inbox";
 const RETRO = "retro";
 export const SAFARI = "Safari";
 export const SEARCH = "Search";
@@ -148,6 +152,7 @@ export const SHIFT_TO_LEFT = "shift-to-left";
 export const SHOW = "show";
 export const SHOW_ANYWAY = "show-anyway";
 export const SHOW_FADE_IN = "show-fade-in";
+const SHOW_TODO_LIST = "showTodoList";
 export const SHOW_TOP_SITES = "Show Top Sites";
 export const SOUNDSCAPES = "Soundscapes";
 const SOUNDSCAPES_DESCRIPTION = "Sounds to help you focus and relax";
@@ -158,12 +163,18 @@ export const STATIC_RESOURCES = "static-resources";
 export const SYSTEM = "system";
 const THEME_COLOUR = "themeColour";
 const THEME_FONT = "themeFont";
+export const TODAY = "Today";
 export const TODO = "Todo";
+const TODO_LIST = "todo_list";
+export const TODO_LIST_DONE_ID = "done";
+export const TODO_LIST_INBOX_ID = "inbox";
+export const TODO_LIST_TODAY_ID = "today";
 const TODO_VISIBLE = "todoVisible";
 export const TOP_SITES = "Top Sites";
 const TOP_SITES_DESCRIPTION =
 	"Show most visited websites by default in Bookmarks Bar";
 export const TOP_SITES_PERMISSION = "topSites";
+export const TRANSPARENT_COLOUR = "rgba(0, 0, 0, 0)";
 const WAREHOUSE = "warehouse";
 const WEB = "web";
 
@@ -360,6 +371,24 @@ export const BROWSER_LIST = [
 	{ name: FIREFOX, key: FIREFOX },
 	{ name: SAFARI, key: SAFARI },
 ];
+export const COLOUR_PALETTE_LIST = [
+	"rgb(212, 32, 34)",
+	"rgb(240, 90, 15)",
+	"rgb(255, 170, 0)",
+	"rgb(234, 230, 11)",
+	"rgb(159, 234, 10)",
+	"rgb(64, 220, 25)",
+	"rgb(5, 235, 166)",
+	"rgb(23, 204, 222)",
+	"rgb(20, 167, 235)",
+	"rgb(51, 107, 232)",
+	"rgb(93, 86, 218)",
+	"rgb(153, 0, 153)",
+	"rgb(195, 15, 98)",
+	"rgb(227, 119, 194)",
+	"rgb(230, 230, 230)",
+	TRANSPARENT_COLOUR,
+];
 export const DASH_APP_LIST = [
 	{
 		name: COUNTDOWNS,
@@ -446,9 +475,17 @@ export const SEARCH_PROVIDER_LIST = [
 ];
 export const SETTINGS_NAV_LIST = [
 	{ value: GENERAL },
+	{ value: TODO },
 	{ value: BOOKMARKS },
 	{ value: HELP, secondary: true },
 	{ value: ABOUT, secondary: true },
+];
+export const TODO_FEED_SETTING_LIST = [
+	{
+		name: "Stay open",
+		description: "Stay open on new tab and other usage",
+		key: KEEP_TODO_STATE,
+	},
 ];
 export const SOUNDSCAPES_SCENE_LIST = [
 	{
@@ -681,20 +718,68 @@ export const TOP_SITES_FOLDER_OBJ = {
 export const DEFAULT_COUNTDOWN_OBJ = {
 	id: "",
 	archived: false,
-	createdDate: new Date(),
+	createdDate: null,
 	dueDate: null,
 	hasHours: false,
 	name: "",
 	pinned: false,
-	updatedDate: new Date().getTime(),
+	updatedDate: null,
 };
 export const DEFAULT_NOTE_OBJ = {
 	id: "",
 	body: "",
-	createdDate: new Date(),
+	createdDate: null,
 	deleted: false,
 	empty: true,
-	updatedDate: new Date().getTime(),
+	updatedDate: null,
+};
+
+export const DEFAULT_TODO_LIST_OBJ = {
+	id: "",
+	title: "",
+	colour: TRANSPARENT_COLOUR,
+	createdDate: new Date(),
+	order: null,
+	itemType: TODO_LIST,
+	reorder: true,
+	ts: new Date().getTime(),
+};
+
+export const DEFAULT_TODO_ITEM_OBJ = {
+	id: "",
+	title: "",
+	createdDate: null,
+	completedDate: null,
+	homeListId: "",
+	listId: "",
+	order: null,
+	done: false,
+	today: false,
+	ts: null,
+};
+
+const TODO_LIST_INBOX = {
+	...DEFAULT_TODO_LIST_OBJ,
+	id: TODO_LIST_INBOX_ID,
+	title: INBOX,
+	order: 0,
+};
+const TODO_LIST_TODAY = {
+	...DEFAULT_TODO_LIST_OBJ,
+	id: TODO_LIST_TODAY_ID,
+	title: TODAY,
+	order: 1,
+};
+const TODO_LIST_DONE = {
+	...DEFAULT_TODO_LIST_OBJ,
+	id: TODO_LIST_DONE_ID,
+	title: DONE,
+	order: 2,
+};
+
+export const TODO_SHOW_SETTING = {
+	name: "Show todo list",
+	key: SHOW_TODO_LIST,
 };
 
 export const DEFAULT_AUTHENTICATION = {
@@ -782,6 +867,14 @@ export const DEFAULT_CUSTOMIZATION = {
 	},
 	showRandomMetricCountdown: false,
 	[SOUNDSCAPES_VISIBLE]: true,
+	todoLists: [TODO_LIST_INBOX, TODO_LIST_TODAY, TODO_LIST_DONE],
+	todos: [],
+	todoSettings: {
+		activeTodoListId: null,
+		[KEEP_TODO_STATE]: false,
+		[SHOW_TODO_LIST]: false,
+		todosUpdatedDate: null,
+	},
 	[TODO_VISIBLE]: true,
 	topSites: [],
 	[THEME_COLOUR]: SYSTEM,
