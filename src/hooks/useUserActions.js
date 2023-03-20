@@ -413,21 +413,27 @@ export const useUserActions = () => {
 		[],
 	);
 
-	const reorderAllTodoItems = (todoItems) =>
-		todoItems
-			.sort((a, b) => a.order - b.order)
-			.map(async (todoItem, index) => {
-				todoItem.order !== index &&
-					(await setTodoItemOrder(todoItem.id, index));
-			});
+	const reorderAllTodoItems = useCallback(
+		(todoItems) =>
+			todoItems
+				.sort((a, b) => a.order - b.order)
+				.map(async (todoItem, index) => {
+					todoItem.order !== index &&
+						(await setTodoItemOrder(todoItem.id, index));
+				}),
+		[],
+	);
 
-	const reorderAllTodoLists = (todoLists) =>
-		todoLists
-			.sort((a, b) => a.order - b.order)
-			.map(async (todoList, index) => {
-				todoList.order !== index &&
-					(await setTodoListOrder(todoList.id, index));
-			});
+	const reorderAllTodoLists = useCallback(
+		(todoLists) =>
+			todoLists
+				.sort((a, b) => a.order - b.order)
+				.map(async (todoList, index) => {
+					todoList.order !== index &&
+						(await setTodoListOrder(todoList.id, index));
+				}),
+		[],
+	);
 
 	const restoreNote = useCallback((targetNote) => {
 		setStorageUserCustomization((prevCustomization) => ({
@@ -460,96 +466,105 @@ export const useUserActions = () => {
 		});
 	}, []);
 
-	const saveDisplayName = (isDisplayNameEmpty) => {
-		const element = displayNameRef.current;
-		element.setAttribute("contenteditable", false);
-		removeRefClassName(displayNameRef, EDITING);
-		removeRefClassName(displayNameRef, INPUT_WRAPPER);
-		toggleRefClassName(displayNameRef, PULSE);
-		setTimeout(() => removeRefClassName(displayNameRef, PULSE), 500);
+	const saveDisplayName = useCallback(
+		(isDisplayNameEmpty) => {
+			const element = displayNameRef.current;
+			element.setAttribute("contenteditable", false);
+			removeRefClassName(displayNameRef, EDITING);
+			removeRefClassName(displayNameRef, INPUT_WRAPPER);
+			toggleRefClassName(displayNameRef, PULSE);
+			setTimeout(() => removeRefClassName(displayNameRef, PULSE), 500);
 
-		const newName = element.innerText;
-		const oldName = storageUserCustomization.displayName;
-		if (newName === oldName) return;
-		else if (newName.trim().length)
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				displayName: newName.trim(),
-			}));
-		else if (isDisplayNameEmpty)
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				displayName: null,
-			}));
-		else element.innerText = oldName;
-	};
-
-	const saveTodoItemTitle = (event, id) => {
-		const element = event.target
-			.closest(".todo-item")
-			.querySelector(".todo-item-title");
-		element.setAttribute("contenteditable", false);
-		const newTitle = element.innerText;
-		const oldTitle = storageUserCustomization.todos.find(
-			(todo) => todo.id === id,
-		).title;
-		if (newTitle === oldTitle) return;
-		else if (newTitle.trim().length)
-			setStorageUserCustomization((prevCustomization) => {
-				const instantDate = new Date();
-				const targetTodoItem = prevCustomization.todos.find(
-					(todo) => todo.id === id,
-				);
-
-				targetTodoItem.title = newTitle.trim();
-				targetTodoItem.ts = instantDate.getTime();
-
-				return {
+			const newName = element.innerText;
+			const oldName = storageUserCustomization.displayName;
+			if (newName === oldName) return;
+			else if (newName.trim().length)
+				setStorageUserCustomization((prevCustomization) => ({
 					...prevCustomization,
-					todos: prevCustomization.todos.map((todo) =>
-						todo.id === id ? targetTodoItem : todo,
-					),
-					todoSettings: {
-						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate,
-					},
-				};
-			});
-		else element.innerText = oldTitle;
-	};
-
-	const saveTodoListTitle = (element, id) => {
-		element.setAttribute("contenteditable", false);
-		element.classList.remove(EDITING);
-		const newTitle = element.innerText;
-		const oldTilte = storageUserCustomization.todoLists.find(
-			(todoList) => todoList.id === id,
-		).title;
-
-		if (newTitle === oldTilte) return;
-		else if (newTitle.trim().length)
-			setStorageUserCustomization((prevCustomization) => {
-				const instantDate = new Date();
-				const targetTodoList = prevCustomization.todoLists.find(
-					(todoList) => todoList.id === id,
-				);
-
-				targetTodoList.title = newTitle;
-				targetTodoList.ts = instantDate.getTime();
-
-				return {
+					displayName: newName.trim(),
+				}));
+			else if (isDisplayNameEmpty)
+				setStorageUserCustomization((prevCustomization) => ({
 					...prevCustomization,
-					todoLists: prevCustomization.todoLists.map((todoList) =>
-						todoList.id === id ? targetTodoList : todoList,
-					),
-					todoSettings: {
-						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate,
-					},
-				};
-			});
-		else element.innerText = oldTilte;
-	};
+					displayName: null,
+				}));
+			else element.innerText = oldName;
+		},
+		[storageUserCustomization.displayName],
+	);
+
+	const saveTodoItemTitle = useCallback(
+		(event, id) => {
+			const element = event.target
+				.closest(".todo-item")
+				.querySelector(".todo-item-title");
+			element.setAttribute("contenteditable", false);
+			const newTitle = element.innerText;
+			const oldTitle = storageUserCustomization.todos.find(
+				(todo) => todo.id === id,
+			).title;
+			if (newTitle === oldTitle) return;
+			else if (newTitle.trim().length)
+				setStorageUserCustomization((prevCustomization) => {
+					const instantDate = new Date();
+					const targetTodoItem = prevCustomization.todos.find(
+						(todo) => todo.id === id,
+					);
+
+					targetTodoItem.title = newTitle.trim();
+					targetTodoItem.ts = instantDate.getTime();
+
+					return {
+						...prevCustomization,
+						todos: prevCustomization.todos.map((todo) =>
+							todo.id === id ? targetTodoItem : todo,
+						),
+						todoSettings: {
+							...prevCustomization.todoSettings,
+							todosUpdatedDate: instantDate,
+						},
+					};
+				});
+			else element.innerText = oldTitle;
+		},
+		[storageUserCustomization.todos],
+	);
+
+	const saveTodoListTitle = useCallback(
+		(element, id) => {
+			element.setAttribute("contenteditable", false);
+			element.classList.remove(EDITING);
+			const newTitle = element.innerText;
+			const oldTilte = storageUserCustomization.todoLists.find(
+				(todoList) => todoList.id === id,
+			).title;
+
+			if (newTitle === oldTilte) return;
+			else if (newTitle.trim().length)
+				setStorageUserCustomization((prevCustomization) => {
+					const instantDate = new Date();
+					const targetTodoList = prevCustomization.todoLists.find(
+						(todoList) => todoList.id === id,
+					);
+
+					targetTodoList.title = newTitle;
+					targetTodoList.ts = instantDate.getTime();
+
+					return {
+						...prevCustomization,
+						todoLists: prevCustomization.todoLists.map((todoList) =>
+							todoList.id === id ? targetTodoList : todoList,
+						),
+						todoSettings: {
+							...prevCustomization.todoSettings,
+							todosUpdatedDate: instantDate,
+						},
+					};
+				});
+			else element.innerText = oldTilte;
+		},
+		[storageUserCustomization.todoLists],
+	);
 
 	const saveNote = useCallback((event, activeNote) => {
 		const body = event.target.value;
@@ -662,27 +677,30 @@ export const useUserActions = () => {
 		[],
 	);
 
-	const setTodoItemOrder = (id, order) =>
-		setStorageUserCustomization((prevCustomization) => {
-			const instantDate = new Date();
-			const targetTodoItem = prevCustomization.todos.find(
-				(todo) => todo.id === id,
-			);
+	const setTodoItemOrder = useCallback(
+		(id, order) =>
+			setStorageUserCustomization((prevCustomization) => {
+				const instantDate = new Date();
+				const targetTodoItem = prevCustomization.todos.find(
+					(todo) => todo.id === id,
+				);
 
-			targetTodoItem.order = order;
-			targetTodoItem.ts = instantDate.getTime();
+				targetTodoItem.order = order;
+				targetTodoItem.ts = instantDate.getTime();
 
-			return {
-				...prevCustomization,
-				todos: prevCustomization.todos.map((todo) =>
-					todo.id === id ? targetTodoItem : todo,
-				),
-				todoSettings: {
-					...prevCustomization.todoSettings,
-					todosUpdatedDate: instantDate,
-				},
-			};
-		});
+				return {
+					...prevCustomization,
+					todos: prevCustomization.todos.map((todo) =>
+						todo.id === id ? targetTodoItem : todo,
+					),
+					todoSettings: {
+						...prevCustomization.todoSettings,
+						todosUpdatedDate: instantDate,
+					},
+				};
+			}),
+		[],
+	);
 
 	const setTodoListOrder = (id, order) =>
 		setStorageUserCustomization((prevCustomization) => {
