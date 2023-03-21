@@ -19,6 +19,7 @@ import {
 	TODO_LIST_INBOX_ID,
 	TODO_LIST_TODAY_ID,
 	isBuildTargetWeb,
+	TODO_SHOW_SETTING,
 	createCountdown,
 	createNote,
 	createTodo,
@@ -331,6 +332,19 @@ export const useUserActions = () => {
 				.length,
 		[storageUserCustomization.todos],
 	);
+
+	const hideTodoApp = useCallback(() => {
+		const {
+			todoVisible,
+			todoSettings: { keepTodoState, showTodoList },
+		} = storageUserCustomization;
+
+		if (todoVisible && keepTodoState && showTodoList)
+			toggleTodoSetting(TODO_SHOW_SETTING);
+	}, [
+		storageUserCustomization.todoVisible,
+		storageUserCustomization.todoSettings,
+	]);
 
 	const moveAllTodoItems = useCallback(
 		(fromListId, toListId) =>
@@ -1081,6 +1095,7 @@ export const useUserActions = () => {
 		editTodoItemTitle,
 		editTodoListTitle,
 		getTodoListItemsCount,
+		hideTodoApp,
 		moveAllTodoItems,
 		moveAllTodoItemsToOriginalList,
 		moveTodoItemTo,

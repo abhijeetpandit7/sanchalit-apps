@@ -20,7 +20,7 @@ import {
 
 const App = lazy(() => import("./App"));
 
-const ContextMemo = memo(({ setWidgetReady }) => {
+const ContextMemo = memo(({ hideTodoApp, setWidgetReady }) => {
 	const appWrapperRef = useRef(null);
 	const notesRef = useRef(null);
 	const [componentDidMount, setComponentDidMount] = useState(false);
@@ -30,6 +30,7 @@ const ContextMemo = memo(({ setWidgetReady }) => {
 	FocusOutHandler({ ref: notesRef });
 
 	const toggleNotesApp = () => {
+		hideTodoApp();
 		toggleAppPopup(notesRef);
 		setComponentDidMount(true);
 	};
@@ -57,7 +58,9 @@ export const Notes = () => {
 	const {
 		storageUserCustomization: { notesVisible },
 	} = useUserCustomization();
-	const { setWidgetReady } = useUserActions();
+	const { hideTodoApp, setWidgetReady } = useUserActions();
 
-	return <>{notesVisible && <ContextMemo {...{ setWidgetReady }} />}</>;
+	return (
+		<>{notesVisible && <ContextMemo {...{ hideTodoApp, setWidgetReady }} />}</>
+	);
 };

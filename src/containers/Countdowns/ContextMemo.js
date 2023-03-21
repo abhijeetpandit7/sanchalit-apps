@@ -9,8 +9,6 @@ import {
 	toMilliseconds,
 } from "../../utils";
 
-// TODO: random item
-
 const MetricItem = ({
 	name,
 	dueDate,
