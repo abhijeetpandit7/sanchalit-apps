@@ -1008,8 +1008,8 @@ h4 .badge {
 }
 .app select {
 	padding-right: 18px !important;
-	--moz-appearance: none;
-	--webkit-appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
 	background: 0 0;
 }
 .app option {

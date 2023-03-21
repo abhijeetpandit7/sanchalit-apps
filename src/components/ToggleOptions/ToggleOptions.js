@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { ACTIVE } from "../../utils";
 
 export const ToggleOptions = (props) => {
@@ -16,7 +16,7 @@ export const ToggleOptions = (props) => {
 			<Plus />
 			<span className="toggle-options">
 				{props.options.map((option, index) => (
-					<span key={option.key}>
+					<Fragment key={option.key}>
 						<span
 							className={`toggle-option special-link-option ${
 								option.key === props.value ? ACTIVE : ""
@@ -36,9 +36,10 @@ export const ToggleOptions = (props) => {
 								<Divider />
 							)
 						) : null}
-					</span>
+					</Fragment>
 				))}
 			</span>
+			<div className="option-clear"></div>
 		</li>
 	);
 };
