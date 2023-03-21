@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { MoreToggleWrapper2 } from "../../../../../components";
 import { useUserActions, useUserCustomization } from "../../../../../hooks";
 import {
@@ -56,25 +56,91 @@ const Day = ({ day, daysInMonth, setDay }) => (
 	</div>
 );
 
-const Year = ({ currentYear, year, setYear }) => (
-	<div className="select-wrapper year-group" data-v-59dbdd92>
-		<select
-			id="year"
-			className="year"
-			name="year"
-			value={year}
-			onChange={(event) => setYear(event.target.value)}
+const Year = ({
+	isOtherYear,
+	year,
+	availableYearOptions,
+	setIsOtherYear,
+	setYear,
+}) => {
+	const otherYearInputRef = useRef(null);
+
+	useEffect(() => {
+		const onFocusOutHandler = (event) => {
+			if (
+				otherYearInputRef.current &&
+				!otherYearInputRef.current.contains(event.target)
+			)
+				otherYearEnterHandler(null, true);
+		};
+		document.addEventListener("mousedown", onFocusOutHandler);
+
+		return () => document.removeEventListener("mousedown", onFocusOutHandler);
+	}, []);
+
+	const yearChangeHandler = async (event) => {
+		const { value } = event.target;
+		if (availableYearOptions.includes(+value)) setYear(value);
+		else {
+			await setIsOtherYear(true);
+			otherYearInputRef.current.focus();
+		}
+	};
+
+	const otherYearEnterHandler = (event, onSave) => {
+		if (event?.key !== "Enter" && onSave !== true) {
+			return;
+		}
+		const otherYearInput = otherYearInputRef.current;
+		if (otherYearInput.value.trim() === "" || +otherYearInput.value < 100) {
+			otherYearInput.value = 1900 + +otherYearInput.value;
+		}
+		otherYearInput.disabled = true;
+		setYear(otherYearInput.value);
+		otherYearInput.disabled = false;
+	};
+
+	return (
+		<div
+			className={`select-wrapper year-group ${
+				isOtherYear ? "other-active" : ""
+			}`}
 			data-v-59dbdd92
 		>
-			{/* TODO: Previous & future year handler */}
-			{[...Array(5).keys()].map((i) => (
-				<option value={currentYear + i} key={i} data-v-59dbdd92>
-					{currentYear + i}
+			<select
+				id="year"
+				className="year"
+				name="year"
+				value={year}
+				onChange={yearChangeHandler}
+				data-v-59dbdd92
+			>
+				{[...availableYearOptions].map((i) => (
+					<option value={i} key={i} data-v-59dbdd92>
+						{i}
+					</option>
+				))}
+				<option value="other" data-v-59dbdd92>
+					Other
 				</option>
-			))}
-		</select>
-	</div>
-);
+			</select>
+			{isOtherYear && (
+				<input
+					id="countdown-year-other"
+					className="countdown-year-other"
+					ref={otherYearInputRef}
+					defaultValue={year}
+					onKeyDown={otherYearEnterHandler}
+					name="countdown-year-other"
+					type="text"
+					placeholder="yyyy"
+					maxLength={4}
+					data-v-59dbdd92
+				/>
+			)}
+		</div>
+	);
+};
 
 const Time = ({
 	hour,
@@ -166,12 +232,16 @@ const ContextMemo = memo(
 		const monthNames = getMonthNames();
 		let defaultDate = getDateFromToday(7);
 		const currentYear = new Date().getFullYear();
+		const availableYearOptions = [...Array(5).keys()].map(
+			(i) => currentYear + i,
+		);
 
 		const [name, setName] = useState("");
 		const [date, setDate] = useState("");
 		const [day, setDay] = useState("");
 		const [month, setMonth] = useState("");
 		const [year, setYear] = useState("");
+		const [isOtherYear, setIsOtherYear] = useState(false);
 		const [hour, setHour] = useState(9);
 		const [minute, setMinute] = useState(0);
 		const [timePeriod, setTimePeriod] = useState(AM);
@@ -199,6 +269,9 @@ const ContextMemo = memo(
 						setTimePeriod(dueDateTimePeriod);
 					}
 				}
+				setIsOtherYear(
+					availableYearOptions.includes(defaultDate.getFullYear()) === false,
+				);
 			}
 			setDay(defaultDate.getDate());
 			setMonth(monthNames[defaultDate.getMonth()]);
@@ -332,18 +405,15 @@ const ContextMemo = memo(
 											<label data-v-59dbdd92>Date</label>
 											<Month {...{ month, monthNames, setMonth }} />
 											<Day {...{ day, daysInMonth, setDay }} />
-											{/* TODO: Add custom year */}
-											{/* other-active */}
-											<Year {...{ currentYear, year, setYear }} />
-											{/* <input
-												id="countdown-year-other"
-												className="countdown-year-other"
-												name="countdown-year-other"
-												type="text"
-												placeholder="yyyy"
-												maxlength="4"
-												data-v-59dbdd92
-											/> */}
+											<Year
+												{...{
+													isOtherYear,
+													year,
+													availableYearOptions,
+													setIsOtherYear,
+													setYear,
+												}}
+											/>
 										</div>
 										<div data-v-a966943c data-v-59dbdd92>
 											<div
