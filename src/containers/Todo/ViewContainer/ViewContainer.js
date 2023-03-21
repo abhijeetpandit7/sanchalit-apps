@@ -112,7 +112,10 @@ export const ViewContainer = (props) => {
 	} = props;
 	const [isCreatingTodo, setIsCreatingTodo] = useState(false);
 
-	useEffect(() => isCreatingTodo && setIsCreatingTodo(false), [activeTodoList]);
+	useEffect(() => {
+		isAnyTodo && todoInputRef.current.focus();
+		isCreatingTodo && setIsCreatingTodo(false);
+	}, [activeTodoList]);
 
 	const todoListWrapper = useRef(null);
 
