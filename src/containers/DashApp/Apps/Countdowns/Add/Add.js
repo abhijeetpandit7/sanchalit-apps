@@ -318,12 +318,15 @@ const ContextMemo = memo(
 					>
 						<div
 							className="buttons header-left"
-							onClick={() => setActiveView(HOME)}
 							data-v-57e867a2
 							data-v-53b21e9c
 						>
 							<div data-v-57e867a2>
-								<div className="icon-wrapper go-back" data-v-57e867a2>
+								<div
+									className="icon-wrapper go-back"
+									onClick={() => setActiveView(HOME)}
+									data-v-57e867a2
+								>
 									{backIcon1}
 								</div>
 							</div>
