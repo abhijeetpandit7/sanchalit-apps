@@ -23,6 +23,7 @@ const App = lazy(() => import("./App"));
 const ContextMemo = memo(({ hideTodoApp, setWidgetReady }) => {
 	const appWrapperRef = useRef(null);
 	const notesRef = useRef(null);
+	const notesToggleAppRef = useRef(null);
 	const [componentDidMount, setComponentDidMount] = useState(false);
 
 	useEffect(() => setWidgetReady({ widget: NOTES }), []);
@@ -43,11 +44,16 @@ const ContextMemo = memo(({ hideTodoApp, setWidgetReady }) => {
 			>
 				{componentDidMount && (
 					<Suspense fallback={null}>
-						<App {...{ notesRef, appWrapperRef }} />
+						<App {...{ notesRef, notesToggleAppRef, appWrapperRef }} />
 					</Suspense>
 				)}
 			</div>
-			<span className="app-dash toggle Notes-toggle" onClick={toggleNotesApp}>
+			<span
+				className="app-dash toggle Notes-toggle"
+				ref={notesToggleAppRef}
+				onClick={toggleNotesApp}
+				data-v-383d39c5
+			>
 				Notes
 			</span>
 		</div>

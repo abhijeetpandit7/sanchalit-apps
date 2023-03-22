@@ -23,6 +23,7 @@ import {
 	FOLDER_DROPDOWN,
 	FULLSCREEN,
 	FULLSCREEN_TEXTAREA,
+	HIDDEN,
 	HIDE_CONTENT,
 	NIPPLE,
 	NIPPLE_BOTTOM_RIGHT,
@@ -842,6 +843,7 @@ export const toggleBookmarkFolder = (appRef, ignoreOverflow) => {
 
 export const toggleFullscreen = async (
 	notesRef,
+	notesToggleAppRef,
 	appWrapperRef,
 	notesAppRef,
 ) => {
@@ -849,6 +851,7 @@ export const toggleFullscreen = async (
 	await new Promise((resolve) =>
 		setTimeout(() => resolve(removeRefClassName(notesRef, HIDE_CONTENT)), 300),
 	);
+	toggleRefClassName(notesToggleAppRef, HIDDEN);
 	toggleRefClassNames(notesRef, [FULLSCREEN, SHOW_ANYWAY]);
 	toggleRefClassNames(appWrapperRef, [NIPPLE, NIPPLE_BOTTOM_RIGHT]);
 	toggleRefClassName(notesAppRef, FULLSCREEN_TEXTAREA);

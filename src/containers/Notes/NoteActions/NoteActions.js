@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
 	DELETE_CONF_ACTIVE,
 	checkmarkIcon,
+	collapseIcon,
 	crossmarkIcon,
 	expandIcon,
 	hideIcon,
@@ -92,7 +93,9 @@ export const NoteActions = (props) => {
 								title="Toggle Fullscreen"
 								onClick={props.toggleFullscreenHandler}
 							>
-								<span className="icon-wrapper">{expandIcon}</span>
+								<span className="icon-wrapper">
+									{props.isFullscreen ? collapseIcon : expandIcon}
+								</span>
 							</span>
 							{/* TODO: close notes onClick */}
 							<span className="control mobile-close" title="Close Notes">

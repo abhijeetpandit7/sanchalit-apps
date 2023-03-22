@@ -7,6 +7,7 @@ const ContextMemo = memo((props) => {
 	const {
 		appWrapperRef,
 		notesRef,
+		notesToggleAppRef,
 		notesInputRef,
 		currentNoteId,
 		hour12clock,
@@ -25,6 +26,7 @@ const ContextMemo = memo((props) => {
 	// TODO: Add other sorting
 	const [searchText, setSearchText] = useState("");
 	const [trashSubView, setTrashSubView] = useState(false);
+	const [isFullscreen, setIsFullscreen] = useState(false);
 	const [processedNotes, setProcessedNotes] = useState(
 		processNotes(notes, searchText, trashSubView),
 	);
@@ -44,12 +46,14 @@ const ContextMemo = memo((props) => {
 	const isDeletedNotesNotEmpty = () => processNotes(notes, "", true).length;
 
 	const toggleFullscreenHandler = async () => {
-		const isFullscreen = await toggleFullscreen(
+		const isNotesFullscreen = await toggleFullscreen(
 			notesRef,
+			notesToggleAppRef,
 			appWrapperRef,
 			notesAppRef,
 		);
-		isFullscreen ? hideApps() : showApps();
+		isNotesFullscreen ? hideApps() : showApps();
+		setIsFullscreen(isNotesFullscreen);
 	};
 
 	return (
@@ -93,6 +97,7 @@ const ContextMemo = memo((props) => {
 					{...{
 						activeNote,
 						hour12clock,
+						isFullscreen,
 						processedNotes,
 						trashSubView,
 						createNoteFromEmptyState,
@@ -108,7 +113,7 @@ const ContextMemo = memo((props) => {
 	);
 });
 
-const App = ({ appWrapperRef, notesRef }) => {
+const App = ({ appWrapperRef, notesRef, notesToggleAppRef }) => {
 	const {
 		notesInputRef,
 		storageUserCustomization: { currentNoteId, hour12clock, notes },
@@ -129,6 +134,7 @@ const App = ({ appWrapperRef, notesRef }) => {
 			{...{
 				appWrapperRef,
 				notesRef,
+				notesToggleAppRef,
 				notesInputRef,
 				currentNoteId,
 				hour12clock,

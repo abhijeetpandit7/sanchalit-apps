@@ -99,6 +99,7 @@ export const GOOGLE = "Google";
 export const GREETING = "Greeting";
 const GREETING_VISIBLE = "greetingVisible";
 export const HELP = "Help";
+export const HIDDEN = "hidden";
 export const HIDE_BACKGROUND_OVERLAY = "hide-background-overlay";
 export const HIDE_VISIBILITY = "m-hide-visibility";
 export const HIDE_CONTENT = "hide-content";

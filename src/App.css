@@ -3928,6 +3928,9 @@ body:not(.touch) .search {
 .show .app-dash[data-v-76a7e140] {
 	opacity: 1;
 }
+.app-dash.hidden[data-v-383d39c5] {
+	opacity: 0;
+}
 .placeholder[data-v-76a7e140] {
 	position: relative;
 	display: inline-block;
