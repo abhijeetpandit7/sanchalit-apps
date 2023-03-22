@@ -22,6 +22,14 @@ import {
 
 const App = lazy(() => import("./App"));
 
+const Loading = () => (
+	<div className="app todo-app" style={{ height: "250px" }}>
+		<div className="app-loading" data-v-d1d2d8c8>
+			Loading… <div className="loading-icon"></div>
+		</div>
+	</div>
+);
+
 const ContextMemo = memo(
 	({
 		todoAppRef,
@@ -56,7 +64,7 @@ const ContextMemo = memo(
 			<div id="todo" className="app-container todo" ref={todoAppRef}>
 				<div className={`app-wrapper ${NIPPLE} ${NIPPLE_BOTTOM_RIGHT}`}>
 					{componentDidMount && (
-						<Suspense fallback={null}>
+						<Suspense fallback={<Loading />}>
 							<App />
 						</Suspense>
 					)}

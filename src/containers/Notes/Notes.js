@@ -20,6 +20,14 @@ import {
 
 const App = lazy(() => import("./App"));
 
+const Loading = () => (
+	<div className="app notes-app">
+		<div className="app-loading" data-v-d1d2d8c8>
+			Loading… <div className="loading-icon"></div>
+		</div>
+	</div>
+);
+
 const ContextMemo = memo(({ hideTodoApp, setWidgetReady }) => {
 	const appWrapperRef = useRef(null);
 	const notesRef = useRef(null);
@@ -43,7 +51,7 @@ const ContextMemo = memo(({ hideTodoApp, setWidgetReady }) => {
 				ref={appWrapperRef}
 			>
 				{componentDidMount && (
-					<Suspense fallback={null}>
+					<Suspense fallback={<Loading />}>
 						<App {...{ notesRef, notesToggleAppRef, appWrapperRef }} />
 					</Suspense>
 				)}
