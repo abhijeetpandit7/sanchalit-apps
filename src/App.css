@@ -6240,7 +6240,7 @@ input[type="number"].hide-controls {
 	font-size: 1rem;
 	line-height: 1.1875;
 }
-.todo-item.visible {
+#todo.todo.show .todo-item.visible {
 	width: 100%;
 	display: inline-block;
 	visibility: visible;
@@ -6528,6 +6528,9 @@ input[type="number"].hide-controls {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+}
+#todo.todo:not(.show) .footer-input {
+	visibility: hidden !important;
 }
 .todo .is-empty .todo-app {
 	overflow: hidden;
