@@ -129,8 +129,8 @@ export const useUserActions = () => {
 		await setStorageUserCustomization((prevCustomization) => ({
 			...prevCustomization,
 			notes: [...prevCustomization.notes, newNote],
-			currentNoteId: newNote.id,
 		}));
+		await setCurrentNoteId(newNote.id);
 		focusNotesInput(notesInputRef);
 	}, []);
 
@@ -580,7 +580,8 @@ export const useUserActions = () => {
 		[storageUserCustomization.todoLists],
 	);
 
-	const saveNote = useCallback((body, activeNote) => {
+	const saveNote = useCallback((event, activeNote) => {
+		const body = event.target.value;
 		setStorageUserCustomization((prevCustomization) => {
 			const targetNote = prevCustomization.notes.find(
 				(note) => note.id === activeNote.id,
