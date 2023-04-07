@@ -527,6 +527,22 @@ const isAppPopupOverflowing = (metricRef) => {
 
 export const isBoolean = (value) => typeof value === "boolean";
 
+/*
+ * This recursively compares two objects' properties.
+ * The customizer function handles cases where properties are arrays or objects,
+ * sorting them before comparison using isEqual.
+ * Extra properties will cause isEqualWith to return false.
+ */
+export const isDeepEqual = (obj1, obj2) =>
+	_.isEqualWith(obj1, obj2, (val1, val2) => {
+		if (_.isArray(val1) && _.isArray(val2)) {
+			return _.isEqual(_.sortBy(val1), _.sortBy(val2));
+		}
+		if (_.isObject(val1) && _.isObject(val2)) {
+			return isDeepEqual(_.sortBy(_.values(val1)), _.sortBy(_.values(val2)));
+		}
+	});
+
 export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
 
 export const isValidListOrder = (list) => {

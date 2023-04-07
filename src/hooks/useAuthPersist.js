@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { debounce } from "lodash";
 import { useAuth, useUserActions, useUserCustomization } from "../hooks";
 import {
 	API,
@@ -12,6 +13,9 @@ import {
 	isObjectEmpty,
 	setLocalStorageItem,
 } from "../utils";
+
+const DEBOUNCE_TIME = 1;
+const MAX_DEBOUNCE_TIME = 10;
 
 export const useAuthPersist = () => {
 	const { storageAuth, setStorageAuth } = useAuth();
@@ -79,14 +83,56 @@ export const useAuthPersist = () => {
 				isObjectEmpty(storageAuth) === false &&
 				isObjectEmpty(storageUserCustomization) === false
 			) {
-				await setLocalStorageItem(AUTH, JSON.stringify(storageAuth));
-				await setLocalStorageItem(
-					CUSTOMIZATION,
-					JSON.stringify(storageUserCustomization),
+				const localStorageAuth = await JSON.parse(getLocalStorageItem(AUTH));
+				const localStorageUserCustomization = await JSON.parse(
+					getLocalStorageItem(CUSTOMIZATION),
 				);
+				if (isDeepEqual(storageAuth, localStorageAuth) === false) {
+					await setLocalStorageItem(AUTH, JSON.stringify(storageAuth));
+				}
+				if (
+					isDeepEqual(
+						storageUserCustomization,
+						localStorageUserCustomization,
+					) === false
+				) {
+					await setLocalStorageItem(
+						CUSTOMIZATION,
+						JSON.stringify(storageUserCustomization),
+					);
+				}
 			}
 		})();
 	}, [storageAuth, storageUserCustomization]);
+
+	useEffect(() => {
+		(async () => {
+			const storageChangeHandler = (event) => {
+				const { key, newValue } = event;
+				if ([AUTH, CUSTOMIZATION].includes(key)) {
+					const parsedValue = JSON.parse(newValue);
+					if (key === AUTH) {
+						setStorageAuth(parsedValue);
+					} else if (key === CUSTOMIZATION) {
+						setStorageUserCustomization(parsedValue);
+					}
+				}
+			};
+			const debouncedStorageChangeHandler = debounce(
+				storageChangeHandler,
+				DEBOUNCE_TIME * 1000,
+				{
+					maxWait: MAX_DEBOUNCE_TIME * 1000,
+				},
+			);
+			window.addEventListener("storage", debouncedStorageChangeHandler);
+
+			return () => {
+				window.removeEventListener("storage", debouncedStorageChangeHandler);
+				debouncedStorageChangeHandler.cancel();
+			};
+		})();
+	}, []);
 };
 
 // TODO: Hotkey for toggling bookmars
