@@ -6,6 +6,7 @@ import {
 	DATE_ROLLOVER_HOUR,
 	EDITING,
 	EMPTY_NAME,
+	FIREFOX,
 	GENERAL_SETTING_APP_LIST,
 	INPUT_WRAPPER,
 	NOTE_DELETE_TIMEOUT,
@@ -28,6 +29,7 @@ import {
 	focusDisplayName,
 	focusNotesInput,
 	getBookmarks,
+	getBrowserType,
 	getDaysDifference,
 	getNewOrderValue,
 	getPermissionAllowed,
@@ -898,10 +900,11 @@ export const useUserActions = () => {
 								defaultMostVisited === false &&
 								bookmarksVisible === false
 							)
-								toggleShowApp(
+								toggleShowBookmarksApp(
 									GENERAL_SETTING_APP_LIST.find(
 										(app) => app.name === BOOKMARKS,
 									),
+									true,
 								);
 							return;
 
@@ -922,10 +925,12 @@ export const useUserActions = () => {
 	);
 
 	const toggleShowBookmarksApp = useCallback(
-		async (app) => {
-			const isPermissionAllowed = await getPermissionAllowed(
-				BOOKMARKS_PERMISSION,
-			);
+		async (app, alreadyRequestedPermission) => {
+			// Avoid checking permissionAllowed in firefox, to prevent user input handler error
+			const isFirefox = getBrowserType().name === FIREFOX;
+			const isPermissionAllowed = isFirefox
+				? !!alreadyRequestedPermission
+				: await getPermissionAllowed(BOOKMARKS_PERMISSION);
 			if (isPermissionAllowed === false) {
 				const isPermissionGranted = await requestPermissions([
 					BOOKMARKS_PERMISSION,
@@ -1011,9 +1016,11 @@ export const useUserActions = () => {
 
 	const toggleTopSitesSetting = useCallback(
 		async (setting) => {
-			const isPermissionAllowed = await getPermissionAllowed(
-				TOP_SITES_PERMISSION,
-			);
+			// Avoid checking permissionAllowed in firefox, to prevent user input handler error
+			const isFirefox = getBrowserType().name === FIREFOX;
+			const isPermissionAllowed = isFirefox
+				? false
+				: await getPermissionAllowed(TOP_SITES_PERMISSION);
 			if (isPermissionAllowed === false) {
 				const isPermissionGranted = await requestPermissions([
 					TOP_SITES_PERMISSION,
