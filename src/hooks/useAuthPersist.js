@@ -8,14 +8,25 @@ import {
 	DEFAULT_AUTHENTICATION,
 	DEFAULT_CUSTOMIZATION,
 	getBookmarks,
+	getExtensionStorageItem,
 	getLocalStorageItem,
 	getTopSites,
+	isBuildTargetWeb,
+	isDeepEqual,
 	isObjectEmpty,
+	setExtensionStorageItem,
 	setLocalStorageItem,
 } from "../utils";
 
 const DEBOUNCE_TIME = 1;
 const MAX_DEBOUNCE_TIME = 10;
+
+const getStorageItem = isBuildTargetWeb
+	? getLocalStorageItem
+	: getExtensionStorageItem;
+const setStorageItem = isBuildTargetWeb
+	? setLocalStorageItem
+	: setExtensionStorageItem;
 
 export const useAuthPersist = () => {
 	const { storageAuth, setStorageAuth } = useAuth();
@@ -49,10 +60,8 @@ export const useAuthPersist = () => {
 
 	useEffect(() => {
 		(async () => {
-			let auth = await JSON.parse(getLocalStorageItem(AUTH));
-			let userCustomization = await JSON.parse(
-				getLocalStorageItem(CUSTOMIZATION),
-			);
+			let auth = await getStorageItem(AUTH);
+			let userCustomization = await getStorageItem(CUSTOMIZATION);
 
 			if (isObjectEmpty(auth)) auth = DEFAULT_AUTHENTICATION;
 			if (isObjectEmpty(userCustomization))
@@ -83,12 +92,12 @@ export const useAuthPersist = () => {
 				isObjectEmpty(storageAuth) === false &&
 				isObjectEmpty(storageUserCustomization) === false
 			) {
-				const localStorageAuth = await JSON.parse(getLocalStorageItem(AUTH));
-				const localStorageUserCustomization = await JSON.parse(
-					getLocalStorageItem(CUSTOMIZATION),
+				const localStorageAuth = await getStorageItem(AUTH);
+				const localStorageUserCustomization = await getStorageItem(
+					CUSTOMIZATION,
 				);
 				if (isDeepEqual(storageAuth, localStorageAuth) === false) {
-					await setLocalStorageItem(AUTH, JSON.stringify(storageAuth));
+					await setStorageItem(AUTH, storageAuth);
 				}
 				if (
 					isDeepEqual(
@@ -96,10 +105,7 @@ export const useAuthPersist = () => {
 						localStorageUserCustomization,
 					) === false
 				) {
-					await setLocalStorageItem(
-						CUSTOMIZATION,
-						JSON.stringify(storageUserCustomization),
-					);
+					await setStorageItem(CUSTOMIZATION, storageUserCustomization);
 				}
 			}
 		})();
@@ -107,6 +113,8 @@ export const useAuthPersist = () => {
 
 	useEffect(() => {
 		(async () => {
+			if (isBuildTargetWeb === false) return;
+
 			const storageChangeHandler = (event) => {
 				const { key, newValue } = event;
 				if ([AUTH, CUSTOMIZATION].includes(key)) {
@@ -129,6 +137,40 @@ export const useAuthPersist = () => {
 
 			return () => {
 				window.removeEventListener("storage", debouncedStorageChangeHandler);
+				debouncedStorageChangeHandler.cancel();
+			};
+		})();
+	}, []);
+
+	useEffect(() => {
+		(async () => {
+			if (isBuildTargetWeb) return;
+
+			const storageChangeHandler = (changes, namespace) => {
+				if (namespace !== "local") return;
+				for (let [key, { newValue }] of Object.entries(changes)) {
+					if ([AUTH, CUSTOMIZATION].includes(key)) {
+						if (key === AUTH) {
+							setStorageAuth(newValue);
+						} else if (key === CUSTOMIZATION) {
+							setStorageUserCustomization(newValue);
+						}
+					}
+				}
+			};
+
+			const debouncedStorageChangeHandler = debounce(
+				storageChangeHandler,
+				DEBOUNCE_TIME * 1000,
+				{
+					maxWait: MAX_DEBOUNCE_TIME * 1000,
+				},
+			);
+
+			chrome.storage.onChanged.addListener(debouncedStorageChangeHandler);
+
+			return () => {
+				chrome.storage.onChanged.removeListener(debouncedStorageChangeHandler);
 				debouncedStorageChangeHandler.cancel();
 			};
 		})();

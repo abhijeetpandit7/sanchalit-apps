@@ -150,6 +150,15 @@ export const ensureTodoItemDropdownVisible = (
 	else return true;
 };
 
+export const getExtensionStorageItem = (key) =>
+	new Promise((resolve, reject) =>
+		chrome.storage.local.get(key, (result) =>
+			chrome.runtime.lastError
+				? reject(Error(chrome.runtime.lastError.message))
+				: resolve(result[key]),
+		),
+	);
+
 export const focusCursorAtEnd = (element) => {
 	const setpos = document.createRange();
 	const set = window.getSelection();
@@ -315,7 +324,8 @@ export const getGreetingMessage = (userNameVisible, userName) => {
 	else return `Good ${dayPeriod}`;
 };
 
-export const getLocalStorageItem = (key) => localStorage.getItem(key);
+export const getLocalStorageItem = (key) =>
+	JSON.parse(localStorage.getItem(key));
 
 export const getBookmarks = () =>
 	new Promise((resolve, reject) =>
@@ -834,8 +844,17 @@ export const setBodyFont = (themeFont) => {
 	document.body.classList.add(toFontClassName(themeFont));
 };
 
+export const setExtensionStorageItem = (key, value) =>
+	new Promise((resolve, reject) =>
+		chrome.storage.local.set({ [key]: value }, (result) =>
+			chrome.runtime.lastError
+				? reject(Error(chrome.runtime.lastError.message))
+				: resolve(result),
+		),
+	);
+
 export const setLocalStorageItem = (key, value) =>
-	localStorage.setItem(key, value);
+	localStorage.setItem(JSON.stringify(key), value);
 
 export const toCSSUrl = (link) => `url("${link}")`;
 
