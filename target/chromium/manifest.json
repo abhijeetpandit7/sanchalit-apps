@@ -4,7 +4,7 @@
 	"short_name": "Sanchalit",
 	"version": "0.1.0",
 	"description": "Bring inspiration, focus and productivity to your new tab page.",
-	"background": { "service_worker ": "background.js" },
+	"background": { "service_worker": "background.js" },
 	"action": { "default_title": "Sanchalit" },
 	"chrome_url_overrides": { "newtab": "index.html" },
 	"content_security_policy": {

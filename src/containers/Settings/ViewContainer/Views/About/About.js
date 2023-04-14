@@ -1,19 +1,13 @@
 import React from "react";
-import { brandLogo, getBrowserType, toLowerCase } from "../../../../../utils";
-import chromium from "../../../../../../target/chromium/manifest.json";
-import safari from "../../../../../../target/safari/manifest.json";
-import firefox from "../../../../../../target/firefox/manifest.json";
+import { brandLogo } from "../../../../../utils";
 
-const ContextMemo = (props) => {
-	const browserKey = toLowerCase(getBrowserType().key);
-	const manifestVersion = props[browserKey].version;
-
+const About = () => {
 	return (
 		<div id="settings-about" className="settings-view settings-about">
 			<div className="logo logo-white">{brandLogo}</div>
 			<h3>Sanchalit</h3>
 			<p className="made">
-				<span className="version">v{manifestVersion}</span>
+				<span className="version">v{process.env.VERSION}</span>
 			</p>
 
 			<p className="thanks">Thank you for your support!</p>
@@ -38,15 +32,5 @@ const ContextMemo = (props) => {
 		</div>
 	);
 };
-
-const About = () => (
-	<ContextMemo
-		{...{
-			chromium,
-			safari,
-			firefox,
-		}}
-	/>
-);
 
 export default About;

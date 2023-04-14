@@ -176,6 +176,7 @@ const TOP_SITES_DESCRIPTION =
 	"Show most visited websites by default in Bookmarks Bar";
 export const TOP_SITES_PERMISSION = "topSites";
 export const TRANSPARENT_COLOUR = "rgba(0, 0, 0, 0)";
+export const URL_ROOT_DOMAIN = "https://sanchalit.live";
 const WAREHOUSE = "warehouse";
 const WEB = "web";
 
