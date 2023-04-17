@@ -89,7 +89,7 @@ export const useUserActions = () => {
 					),
 					todoSettings: {
 						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate,
+						todosUpdatedDate: instantDate.toISOString(),
 					},
 				};
 			}),
@@ -114,7 +114,7 @@ export const useUserActions = () => {
 		let newCountdown = createCountdown();
 		newCountdown = {
 			...newCountdown,
-			dueDate: date,
+			dueDate: date.toISOString(),
 			hasHours: showTime,
 			name,
 			pinned,
@@ -150,7 +150,9 @@ export const useUserActions = () => {
 			newTodo = {
 				...newTodo,
 				title,
-				completedDate: isActiveTodoListDoneList ? instantDate : null,
+				completedDate: isActiveTodoListDoneList
+					? instantDate.toISOString()
+					: null,
 				homeListId: activeTodoListId,
 				listId: activeTodoListId,
 				order: newOrder,
@@ -163,7 +165,7 @@ export const useUserActions = () => {
 				todos: [...prevCustomization.todos, newTodo],
 				todoSettings: {
 					...prevCustomization.todoSettings,
-					todosUpdatedDate: instantDate,
+					todosUpdatedDate: instantDate.toISOString(),
 				},
 			}));
 		},
@@ -190,7 +192,7 @@ export const useUserActions = () => {
 				todoSettings: {
 					...prevCustomization.todoSettings,
 					activeTodoListId: newTodoList.id,
-					todosUpdatedDate: instantDate,
+					todosUpdatedDate: instantDate.toISOString(),
 				},
 			}));
 		},
@@ -228,7 +230,7 @@ export const useUserActions = () => {
 				todos: prevCustomization.todos.filter((todo) => todo.id !== id),
 				todoSettings: {
 					...prevCustomization.todoSettings,
-					todosUpdatedDate: new Date(),
+					todosUpdatedDate: new Date().toISOString(),
 				},
 			})),
 		[],
@@ -243,7 +245,7 @@ export const useUserActions = () => {
 				),
 				todoSettings: {
 					...prevCustomization.todoSettings,
-					todosUpdatedDate: new Date(),
+					todosUpdatedDate: new Date().toISOString(),
 				},
 			})),
 		[],
@@ -395,7 +397,7 @@ export const useUserActions = () => {
 				}
 				if (isTargetDoneList) {
 					if (targetTodoItem.done === false)
-						targetTodoItem.completedDate = instantDate;
+						targetTodoItem.completedDate = instantDate.toISOString();
 					targetTodoItem.done = true;
 				} else if (isTargetTodayList) {
 					targetTodoItem.today = true;
@@ -422,7 +424,7 @@ export const useUserActions = () => {
 					),
 					todoSettings: {
 						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate,
+						todosUpdatedDate: instantDate.toISOString(),
 					},
 				};
 			}),
@@ -467,7 +469,7 @@ export const useUserActions = () => {
 			const targetCountdown = prevCustomization.countdowns.find(
 				(countdown) => countdown.id === id,
 			);
-			targetCountdown.dueDate = date;
+			targetCountdown.dueDate = date.toISOString();
 			targetCountdown.hasHours = showTime;
 			targetCountdown.name = name;
 			targetCountdown.pinned = pinned;
@@ -537,7 +539,7 @@ export const useUserActions = () => {
 						),
 						todoSettings: {
 							...prevCustomization.todoSettings,
-							todosUpdatedDate: instantDate,
+							todosUpdatedDate: instantDate.toISOString(),
 						},
 					};
 				});
@@ -573,7 +575,7 @@ export const useUserActions = () => {
 						),
 						todoSettings: {
 							...prevCustomization.todoSettings,
-							todosUpdatedDate: instantDate,
+							todosUpdatedDate: instantDate.toISOString(),
 						},
 					};
 				});
@@ -711,7 +713,7 @@ export const useUserActions = () => {
 					),
 					todoSettings: {
 						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate,
+						todosUpdatedDate: instantDate.toISOString(),
 					},
 				};
 			}),
@@ -736,7 +738,7 @@ export const useUserActions = () => {
 					),
 					todoSettings: {
 						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate,
+						todosUpdatedDate: instantDate.toISOString(),
 					},
 				};
 			}),
@@ -761,7 +763,7 @@ export const useUserActions = () => {
 					),
 					todoSettings: {
 						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate,
+						todosUpdatedDate: instantDate.toISOString(),
 					},
 				};
 			}),
@@ -959,7 +961,9 @@ export const useUserActions = () => {
 				);
 
 				targetTodoItem.done = !done;
-				targetTodoItem.completedDate = targetTodoItem.done ? instantDate : null;
+				targetTodoItem.completedDate = targetTodoItem.done
+					? instantDate.toISOString()
+					: null;
 				targetTodoItem.ts = instantDate.getTime();
 
 				if (targetTodoItem.done === false) {
@@ -995,7 +999,7 @@ export const useUserActions = () => {
 					),
 					todoSettings: {
 						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate,
+						todosUpdatedDate: instantDate.toISOString(),
 					},
 				};
 			}),

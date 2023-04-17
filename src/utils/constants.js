@@ -740,7 +740,7 @@ export const DEFAULT_TODO_LIST_OBJ = {
 	id: "",
 	title: "",
 	colour: TRANSPARENT_COLOUR,
-	createdDate: new Date(),
+	createdDate: new Date().toISOString(),
 	order: null,
 	itemType: TODO_LIST,
 	reorder: true,

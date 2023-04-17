@@ -77,7 +77,7 @@ export const createCountdown = () => {
 	const newCountdown = _.cloneDeep(DEFAULT_COUNTDOWN_OBJ);
 	newCountdown.id = uuidv4();
 	const instantDate = new Date();
-	newCountdown.createdDate = instantDate;
+	newCountdown.createdDate = instantDate.toISOString();
 	newCountdown.updatedDate = instantDate.getTime();
 	return newCountdown;
 };
@@ -86,7 +86,7 @@ export const createNote = () => {
 	const newNote = _.cloneDeep(DEFAULT_NOTE_OBJ);
 	newNote.id = uuidv4();
 	const instantDate = new Date();
-	newNote.createdDate = instantDate;
+	newNote.createdDate = instantDate.toISOString();
 	newNote.updatedDate = instantDate.getTime();
 	return newNote;
 };
@@ -95,7 +95,7 @@ export const createTodo = () => {
 	const newTodo = _.cloneDeep(DEFAULT_TODO_ITEM_OBJ);
 	newTodo.id = uuidv4();
 	const instantDate = new Date();
-	newTodo.createdDate = instantDate;
+	newTodo.createdDate = instantDate.toISOString();
 	newTodo.ts = instantDate.getTime();
 	return newTodo;
 };
@@ -104,7 +104,7 @@ export const createNewTodoList = () => {
 	const newTodoList = _.cloneDeep(DEFAULT_TODO_LIST_OBJ);
 	newTodoList.id = uuidv4();
 	const instantDate = new Date();
-	newTodoList.createdDate = instantDate;
+	newTodoList.createdDate = instantDate.toISOString();
 	newTodoList.ts = instantDate.getTime();
 	return newTodoList;
 };
@@ -854,7 +854,7 @@ export const setExtensionStorageItem = (key, value) =>
 	);
 
 export const setLocalStorageItem = (key, value) =>
-	localStorage.setItem(JSON.stringify(key), value);
+	localStorage.setItem(key, JSON.stringify(value));
 
 export const toCSSUrl = (link) => `url("${link}")`;
 
