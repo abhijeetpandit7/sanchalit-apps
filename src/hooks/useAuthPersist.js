@@ -39,6 +39,7 @@ export const useAuthPersist = () => {
 	} = useUserCustomization();
 	const { setWidgetReady } = useUserActions();
 
+	// Transits from overlay to main-view onReady widgetManager
 	useEffect(() => {
 		(async () => {
 			if (
@@ -86,31 +87,32 @@ export const useAuthPersist = () => {
 		})();
 	}, []);
 
+	// Updates auth in storage onChange storageAuth
 	useEffect(() => {
 		(async () => {
-			if (
-				isObjectEmpty(storageAuth) === false &&
-				isObjectEmpty(storageUserCustomization) === false
-			) {
-				const localStorageAuth = await getStorageItem(AUTH);
-				const localStorageUserCustomization = await getStorageItem(
-					CUSTOMIZATION,
-				);
-				if (isDeepEqual(storageAuth, localStorageAuth) === false) {
-					await setStorageItem(AUTH, storageAuth);
-				}
-				if (
-					isDeepEqual(
-						storageUserCustomization,
-						localStorageUserCustomization,
-					) === false
-				) {
-					await setStorageItem(CUSTOMIZATION, storageUserCustomization);
-				}
+			if (isObjectEmpty(storageAuth)) return;
+			const localStorageAuth = await getStorageItem(AUTH);
+			if (isDeepEqual(storageAuth, localStorageAuth) === false) {
+				await setStorageItem(AUTH, storageAuth);
 			}
 		})();
-	}, [storageAuth, storageUserCustomization]);
+	}, [storageAuth]);
 
+	// Updates customization in storage onChange storageUserCustomization
+	useEffect(() => {
+		(async () => {
+			if (isObjectEmpty(storageUserCustomization)) return;
+			const localStorageUserCustomization = await getStorageItem(CUSTOMIZATION);
+			if (
+				isDeepEqual(storageUserCustomization, localStorageUserCustomization) ===
+				false
+			) {
+				await setStorageItem(CUSTOMIZATION, storageUserCustomization);
+			}
+		})();
+	}, [storageUserCustomization]);
+
+	// storageChangeListener for web
 	useEffect(() => {
 		(async () => {
 			if (isBuildTargetWeb === false) return;
@@ -142,6 +144,7 @@ export const useAuthPersist = () => {
 		})();
 	}, []);
 
+	// storageChangeListener for extension
 	useEffect(() => {
 		(async () => {
 			if (isBuildTargetWeb) return;
