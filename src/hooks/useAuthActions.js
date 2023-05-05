@@ -1,8 +1,17 @@
 import { useCallback } from "react";
-import { useAuth } from "../hooks";
+import axios from "axios";
+import { useAuth, useUserCustomization } from "../hooks";
+import { DEFAULT_AUTHENTICATION, DEFAULT_CUSTOMIZATION } from "../utils";
 
 export const useAuthActions = () => {
 	const { setStorageAuth } = useAuth();
+	const { setStorageUserCustomization } = useUserCustomization();
+
+	const logOutUser = useCallback(async () => {
+		setStorageAuth(DEFAULT_AUTHENTICATION);
+		setStorageUserCustomization(DEFAULT_CUSTOMIZATION);
+	}, []);
+
 	const setSubscriptionSummary = useCallback(
 		(data) =>
 			setStorageAuth((prevAuth) => ({
@@ -15,9 +24,18 @@ export const useAuthActions = () => {
 		[],
 	);
 
+	const signUpUser = useCallback(async () => {
+		try {
+			const response = await axios.post("/user/register");
+			return response.data;
+		} catch (error) {}
+	}, []);
+
 	}, []);
 
 	return {
+		logOutUser,
 		setSubscriptionSummary,
+		signUpUser,
 	};
 };

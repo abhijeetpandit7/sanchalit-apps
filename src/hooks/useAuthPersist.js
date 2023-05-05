@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { debounce } from "lodash";
 import jwt_decode from "jwt-decode";
 import {
@@ -49,7 +49,7 @@ const setCookieItem = isBuildTargetWeb
 
 export const useAuthPersist = () => {
 	const { storageAuth, setStorageAuth } = useAuth();
-	const { setSubscriptionSummary } = useAuthActions();
+	const { setSubscriptionSummary, signUpUser } = useAuthActions();
 	const { setAxiosAuthHeader, setAxiosBaseURL, setAxiosIntercept } = useAxios();
 	const {
 		storageUserCustomization,
@@ -59,6 +59,7 @@ export const useAuthPersist = () => {
 		showMainView,
 	} = useUserCustomization();
 	const { setWidgetReady } = useUserActions();
+	const isTokenFromCookie = useRef(false);
 
 	// Transits from overlay to main-view onReady widgetManager
 	useEffect(() => {
@@ -93,10 +94,31 @@ export const useAuthPersist = () => {
 			setAxiosBaseURL();
 			setAxiosIntercept();
 
+			/*
+				For extension, if token doesn't exist in storage
+					if tokenFromCookie exists, reset storage and set isTokenFromCookie which fetches profileDetails
+					else signUpUser
+				For web, even if token exists in storage
+						if tokenFromCookie exists, comapre both tokens
+							if different, reset storage and set isTokenFromCookie which fetches profileDetails
+			*/
 			if (!!auth?.token === false || isBuildTargetWeb) {
 				const tokenFromCookie = await getCookieItem(TOKEN);
 				if (tokenFromCookie) {
+					const isWebAndMismatchedToken =
+						isBuildTargetWeb && auth?.token !== tokenFromCookie;
+					if (isBuildTargetWeb === false || isWebAndMismatchedToken) {
+						isTokenFromCookie.current = true;
+						auth = DEFAULT_AUTHENTICATION;
 						auth.token = tokenFromCookie;
+						userCustomization = DEFAULT_CUSTOMIZATION;
+					}
+				} else if (isBuildTargetWeb === false) {
+					const response = await signUpUser();
+					if (response?.success) {
+						auth = { ...auth, ...response.auth };
+					}
+				}
 			}
 
 			const {
@@ -210,7 +232,6 @@ export const useAuthPersist = () => {
 		})();
 	}, []);
 
-	// Updates Authorization, cookie onChange token
 	// Updates Authorization, cookie and review subscriptionSummary onChange token
 	useEffect(() => {
 		(async () => {
@@ -218,6 +239,7 @@ export const useAuthPersist = () => {
 
 			setAxiosAuthHeader(storageAuth.token);
 			setCookieItem(TOKEN, storageAuth?.token ? storageAuth.token : "");
+
 			const decodedPayload = jwt_decode(storageAuth.token);
 			const { subscriptionSummary } = decodedPayload;
 			const subscriptionPlanFromStorage = storageAuth.subscriptionSummary.plan;
