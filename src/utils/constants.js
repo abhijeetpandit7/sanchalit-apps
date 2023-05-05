@@ -787,47 +787,18 @@ export const TODO_SHOW_SETTING = {
 };
 
 export const DEFAULT_AUTHENTICATION = {
-	activeSubscription: false,
-	birthDate: null,
-	created: null,
-	displayName: null,
-	email: {
-		created: null,
-		address: null,
-		isValidated: false,
-	},
+	email: null,
 	fullName: null,
 	subscriptionSummary: {
-		active: false,
-		firstSubscriptionStart: null,
-		subscriptionEnd: null,
-		trialing: false,
-		trialEnd: null,
+		startDate: null,
+		endDate: null,
+		plan: null,
 	},
-	token_uuid: null,
-	user_id: null,
+	[TOKEN]: null,
+	userId: null,
 };
 
 export const DEFAULT_CUSTOMIZATION = {
-	backgroundSettings: {
-		data: [
-			{
-				_id: null,
-				destinationName: null,
-				fileName: null,
-				forDate: null,
-				isFavourite: false,
-				source: null,
-				sourceUrl: null,
-				title: null,
-				widgetColor: {
-					hsla: null,
-					bodyTextColor: null,
-				},
-			},
-		],
-		ts: null,
-	},
 	bookmarks: [],
 	bookmarksSettings: {
 		[ICONS_ONLY]: false,
