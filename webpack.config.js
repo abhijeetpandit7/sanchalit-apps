@@ -87,16 +87,13 @@ const config = {
 		}),
 		new HtmlWebpackPlugin({
 			template: `./target/${buildTarget}/index.html`,
-			excludeChunks: ["background"],
+			excludeChunks: ["background", "content_script"],
 		}),
 		new MiniCssExtractPlugin({
 			filename: isWeb ? "[name].[contenthash:12].css" : "[name].css",
 		}),
 		new webpack.EnvironmentPlugin({
 			BUILD_TARGET: JSON.stringify(buildTarget),
-			GOOGLE_CLIENT_SECRET_KEY: JSON.stringify(
-				process.env.GOOGLE_CLIENT_SECRET_KEY,
-			),
 			MANIFEST_VERSION: JSON.stringify(manifestVersion),
 			VERSION: version,
 		}),
@@ -125,6 +122,7 @@ if (isProduction) {
 
 if (!isWeb) {
 	config.entry.background = "./src/background.js";
+	config.entry.content_script = "./src/content.js";
 }
 
 module.exports = config;

@@ -64,6 +64,39 @@ import {
 	bookmarksManagerBase64Source,
 } from "../utils";
 
+const addOrMergeArrayElements = (array, newElements, identifier) => {
+	if (array.length === 0) return newElements;
+
+	const elementMap = array.reduce((map, element) => {
+		map.set(element[identifier], element);
+		return map;
+	}, new Map());
+	newElements.forEach((element) => {
+		elementMap.set(element[identifier], {
+			...elementMap.get(element[identifier]),
+			...element,
+		});
+	});
+	return Array.from(elementMap.values());
+};
+
+export const addOrMergeObjectProperties = (object, newProperties) => {
+	const mergedObject = { ...object };
+
+	for (const [key, newValue] of Object.entries(newProperties)) {
+		const oldValue = object[key];
+		if (_.isArray(oldValue) && _.isArray(newValue)) {
+			mergedObject[key] = addOrMergeArrayElements(oldValue, newValue, "id");
+		} else if (_.isObject(oldValue) && _.isObject(newValue)) {
+			mergedObject[key] = addOrMergeObjectProperties(oldValue, newValue);
+		} else {
+			mergedObject[key] = newValue;
+		}
+	}
+
+	return mergedObject;
+};
+
 export const addRefClassName = (ref, className) =>
 	ref.current.classList.add(className);
 

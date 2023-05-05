@@ -31,8 +31,6 @@ export const useAuthActions = () => {
 		} catch (error) {}
 	}, []);
 
-	}, []);
-
 	return {
 		logOutUser,
 		setSubscriptionSummary,
