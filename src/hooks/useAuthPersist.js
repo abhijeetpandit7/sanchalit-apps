@@ -1,6 +1,11 @@
 import { useEffect } from "react";
 import { debounce } from "lodash";
-import { useAuth, useUserActions, useUserCustomization } from "../hooks";
+import {
+	useAuth,
+	useAxios,
+	useUserActions,
+	useUserCustomization,
+} from "../hooks";
 import {
 	AUTH,
 	CUSTOMIZATION,
@@ -41,6 +46,7 @@ const setCookieItem = isBuildTargetWeb
 
 export const useAuthPersist = () => {
 	const { storageAuth, setStorageAuth } = useAuth();
+	const { setAxiosAuthHeader, setAxiosBaseURL, setAxiosIntercept } = useAxios();
 	const {
 		storageUserCustomization,
 		setStorageUserCustomization,
@@ -79,6 +85,9 @@ export const useAuthPersist = () => {
 			if (isObjectEmpty(auth)) auth = DEFAULT_AUTHENTICATION;
 			if (isObjectEmpty(userCustomization))
 				userCustomization = DEFAULT_CUSTOMIZATION;
+
+			setAxiosBaseURL();
+			setAxiosIntercept();
 
 			if (!!auth?.token === false || isBuildTargetWeb) {
 				const tokenFromCookie = await getCookieItem(TOKEN);
@@ -197,11 +206,12 @@ export const useAuthPersist = () => {
 		})();
 	}, []);
 
-	// Updates cookie onChange token
+	// Updates Authorization, cookie onChange token
 	useEffect(() => {
 		(async () => {
 			if (isObjectEmpty(storageAuth)) return;
 
+			setAxiosAuthHeader(storageAuth.token);
 			setCookieItem(TOKEN, storageAuth?.token ? storageAuth.token : "");
 		})();
 	}, [storageAuth.token]);
