@@ -5,11 +5,11 @@ import {
 	cafeIcon,
 	campfireIcon,
 	chimesIcon,
+	coWorkersIcon,
 	coffeeMakerIcon,
 	copierIcon,
-	coWorkersIcon,
-	cricketsIcon,
 	creekIcon,
+	cricketsIcon,
 	cupIcon,
 	customIcon,
 	fireIcon,
@@ -171,6 +171,7 @@ export const TODO_LIST_DONE_ID = "done";
 export const TODO_LIST_INBOX_ID = "inbox";
 export const TODO_LIST_TODAY_ID = "today";
 const TODO_VISIBLE = "todoVisible";
+export const TOKEN = "token";
 export const TOP_SITES = "Top Sites";
 const TOP_SITES_DESCRIPTION =
 	"Show most visited websites by default in Bookmarks Bar";

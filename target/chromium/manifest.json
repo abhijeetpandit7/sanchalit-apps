@@ -16,6 +16,7 @@
 		"48": "icons/favicon-48.png",
 		"144": "icons/favicon-144.png"
 	},
+	"host_permissions": ["*://*.sanchalit.live/*"],
 	"permissions": ["storage", "cookies", "unlimitedStorage"],
 	"optional_permissions": ["topSites", "bookmarks"],
 	"offline_enabled": true

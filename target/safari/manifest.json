@@ -18,6 +18,7 @@
 		"storage",
 		"cookies",
 		"unlimitedStorage",
+		"*://*.sanchalit.live/*"
 	],
 	"offline_enabled": true
 }

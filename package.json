@@ -66,6 +66,7 @@
 		"ts-loader": "^9.2.5",
 		"typescript": "^4.3.5",
 		"typescript-react-intl": "^0.4.1",
+		"universal-cookie": "^4.0.4",
 		"url-loader": "^4.1.1",
 		"uuid": "^9.0.0",
 		"webpack": "^5.48.0",

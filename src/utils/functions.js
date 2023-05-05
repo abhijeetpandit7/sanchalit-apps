@@ -1,4 +1,5 @@
 import React from "react";
+import Cookies from "universal-cookie";
 import moment from "moment";
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
@@ -35,12 +36,14 @@ import {
 	OVERFLOW,
 	PM,
 	POPUP,
+	PRODUCTION,
 	SHOW_ANYWAY,
 	SAFARI,
 	SHIFT_TO_LEFT,
 	SHOW,
 	SHOW_FADE_IN,
 	TODO_LIST_DONE_ID,
+	URL_ROOT_DOMAIN,
 	BROWSER_LIST,
 	NOTE_DELIGHTER_LIST,
 	THEME_COLOUR_OPTIONS,
@@ -285,6 +288,15 @@ export const getBodyTitle = (body) => {
 	);
 };
 
+export const getBrowserCookieItem = (key) =>
+	new Promise((resolve, reject) =>
+		chrome.cookies.get({ url: URL_ROOT_DOMAIN, name: key }, (result) =>
+			chrome.runtime.lastError
+				? reject(Error(chrome.runtime.lastError.message))
+				: resolve(result?.value),
+		),
+	);
+
 export const getDaysInMonth = (month, year) => {
 	const date = moment([year, month]);
 	const daysInMonth = date.daysInMonth();
@@ -299,6 +311,8 @@ export const getDateFromToday = (numberOfDays) => {
 
 export const getDateFullFormat = (timestamp) =>
 	moment(timestamp).format("ddd MMM D, YYYY");
+
+const getDateInUnix = (date) => moment(date).unix();
 
 export const getMonthNames = () => moment.monthsShort();
 
@@ -363,6 +377,8 @@ export const getBrowserType = () => {
 
 export const getDaysDifference = (timestamp) =>
 	moment(timestamp).diff(moment(), "days");
+
+export const getLocalCookieItem = (key) => new Cookies().get(key);
 
 export const getPermissionAllowed = (permission) =>
 	new Promise((resolve, reject) =>
@@ -844,6 +860,23 @@ export const setBodyFont = (themeFont) => {
 	document.body.classList.add(toFontClassName(themeFont));
 };
 
+export const setBrowserCookieItem = (key, value) =>
+	new Promise((resolve, reject) =>
+		chrome.cookies.set(
+			{
+				domain: `.${URL_ROOT_DOMAIN.split("https://")[1]}`,
+				url: URL_ROOT_DOMAIN,
+				name: key,
+				value: value,
+				expirationDate: getDateInUnix(getDateFromToday(365)),
+			},
+			() =>
+				chrome.runtime.lastError
+					? reject(Error(chrome.runtime.lastError.message))
+					: resolve(),
+		),
+	);
+
 export const setExtensionStorageItem = (key, value) =>
 	new Promise((resolve, reject) =>
 		chrome.storage.local.set({ [key]: value }, (result) =>
@@ -852,6 +885,15 @@ export const setExtensionStorageItem = (key, value) =>
 				: resolve(result),
 		),
 	);
+
+export const setLocalCookieItem = (key, value) =>
+	new Cookies().set(key, value, {
+		domain:
+			process.env.NODE_ENV === PRODUCTION
+				? `.${URL_ROOT_DOMAIN.split("https://")[1]}`
+				: "",
+		expires: getDateFromToday(365),
+	});
 
 export const setLocalStorageItem = (key, value) =>
 	localStorage.setItem(key, JSON.stringify(value));

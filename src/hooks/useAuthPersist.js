@@ -7,14 +7,19 @@ import {
 	DEFAULT_AUTHENTICATION,
 	DEFAULT_CUSTOMIZATION,
 	STORAGE,
+	TOKEN,
 	getBookmarks,
+	getBrowserCookieItem,
 	getExtensionStorageItem,
+	getLocalCookieItem,
 	getLocalStorageItem,
 	getTopSites,
 	isBuildTargetWeb,
 	isDeepEqual,
 	isObjectEmpty,
+	setBrowserCookieItem,
 	setExtensionStorageItem,
+	setLocalCookieItem,
 	setLocalStorageItem,
 } from "../utils";
 
@@ -27,6 +32,12 @@ const getStorageItem = isBuildTargetWeb
 const setStorageItem = isBuildTargetWeb
 	? setLocalStorageItem
 	: setExtensionStorageItem;
+const getCookieItem = isBuildTargetWeb
+	? getLocalCookieItem
+	: getBrowserCookieItem;
+const setCookieItem = isBuildTargetWeb
+	? setLocalCookieItem
+	: setBrowserCookieItem;
 
 export const useAuthPersist = () => {
 	const { storageAuth, setStorageAuth } = useAuth();
@@ -68,6 +79,12 @@ export const useAuthPersist = () => {
 			if (isObjectEmpty(auth)) auth = DEFAULT_AUTHENTICATION;
 			if (isObjectEmpty(userCustomization))
 				userCustomization = DEFAULT_CUSTOMIZATION;
+
+			if (!!auth?.token === false || isBuildTargetWeb) {
+				const tokenFromCookie = await getCookieItem(TOKEN);
+				if (tokenFromCookie) {
+						auth.token = tokenFromCookie;
+			}
 
 			const {
 				bookmarksVisible,
@@ -179,6 +196,15 @@ export const useAuthPersist = () => {
 			};
 		})();
 	}, []);
+
+	// Updates cookie onChange token
+	useEffect(() => {
+		(async () => {
+			if (isObjectEmpty(storageAuth)) return;
+
+			setCookieItem(TOKEN, storageAuth?.token ? storageAuth.token : "");
+		})();
+	}, [storageAuth.token]);
 };
 
 // TODO: Hotkey for toggling bookmars

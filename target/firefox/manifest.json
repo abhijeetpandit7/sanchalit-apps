@@ -18,6 +18,7 @@
 		"storage",
 		"cookies",
 		"unlimitedStorage",
+		"*://*.sanchalit.live/*"
 	],
 	"optional_permissions": ["topSites", "bookmarks"]
 }
