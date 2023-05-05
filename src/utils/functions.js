@@ -551,6 +551,12 @@ const isAppPopupOverflowing = (metricRef) => {
 	return isOverflowing;
 };
 
+export const isActiveSubscription = (subscriptionSummary) => {
+	const { startDate, endDate } = subscriptionSummary;
+	const isActive = moment().isBetween(moment(startDate), moment(endDate));
+	return isActive;
+};
+
 export const isBoolean = (value) => typeof value === "boolean";
 
 /*

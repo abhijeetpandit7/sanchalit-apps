@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import { debounce } from "lodash";
+import jwt_decode from "jwt-decode";
 import {
 	useAuth,
+	useAuthActions,
 	useAxios,
 	useUserActions,
 	useUserCustomization,
@@ -19,6 +21,7 @@ import {
 	getLocalCookieItem,
 	getLocalStorageItem,
 	getTopSites,
+	isActiveSubscription,
 	isBuildTargetWeb,
 	isDeepEqual,
 	isObjectEmpty,
@@ -46,6 +49,7 @@ const setCookieItem = isBuildTargetWeb
 
 export const useAuthPersist = () => {
 	const { storageAuth, setStorageAuth } = useAuth();
+	const { setSubscriptionSummary } = useAuthActions();
 	const { setAxiosAuthHeader, setAxiosBaseURL, setAxiosIntercept } = useAxios();
 	const {
 		storageUserCustomization,
@@ -207,12 +211,26 @@ export const useAuthPersist = () => {
 	}, []);
 
 	// Updates Authorization, cookie onChange token
+	// Updates Authorization, cookie and review subscriptionSummary onChange token
 	useEffect(() => {
 		(async () => {
 			if (isObjectEmpty(storageAuth)) return;
 
 			setAxiosAuthHeader(storageAuth.token);
 			setCookieItem(TOKEN, storageAuth?.token ? storageAuth.token : "");
+			const decodedPayload = jwt_decode(storageAuth.token);
+			const { subscriptionSummary } = decodedPayload;
+			const subscriptionPlanFromStorage = storageAuth.subscriptionSummary.plan;
+			const subscriptionPlanFromToken = subscriptionSummary.plan;
+			const isActiveSubscriptionFromToken =
+				isActiveSubscription(subscriptionSummary);
+			if (subscriptionPlanFromStorage) {
+				if (isActiveSubscriptionFromToken === false) {
+					setSubscriptionSummary({ plan: null });
+				}
+			} else if (subscriptionPlanFromToken && isActiveSubscriptionFromToken) {
+				setSubscriptionSummary(subscriptionSummary);
+			}
 		})();
 	}, [storageAuth.token]);
 };

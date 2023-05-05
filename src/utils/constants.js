@@ -789,6 +789,7 @@ export const TODO_SHOW_SETTING = {
 export const DEFAULT_AUTHENTICATION = {
 	email: null,
 	fullName: null,
+	profilePictureUrl: null,
 	subscriptionSummary: {
 		startDate: null,
 		endDate: null,
