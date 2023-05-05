@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import { debounce } from "lodash";
 import { useAuth, useUserActions, useUserCustomization } from "../hooks";
 import {
-	API,
 	AUTH,
 	CUSTOMIZATION,
 	DEFAULT_AUTHENTICATION,
 	DEFAULT_CUSTOMIZATION,
+	STORAGE,
 	getBookmarks,
 	getExtensionStorageItem,
 	getLocalStorageItem,
@@ -59,6 +59,7 @@ export const useAuthPersist = () => {
 		(async () => {})();
 	}, [storageUserCustomization]);
 
+	// Initializes storageAuth and storageUserCustomization
 	useEffect(() => {
 		(async () => {
 			let auth = await getStorageItem(AUTH);
@@ -83,7 +84,7 @@ export const useAuthPersist = () => {
 
 			setStorageAuth(auth);
 			setStorageUserCustomization(userCustomization);
-			setWidgetReady({ widget: API, type: "data" });
+			setWidgetReady({ widget: STORAGE, type: "data" });
 		})();
 	}, []);
 
