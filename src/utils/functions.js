@@ -45,6 +45,8 @@ import {
 	TODO_LIST_DONE_ID,
 	URL_ROOT_DOMAIN,
 	BROWSER_LIST,
+	GENERAL_SETTING_APP_LIST,
+	GENERAL_SETTING_APPEARANCE_LIST,
 	NOTE_DELIGHTER_LIST,
 	THEME_COLOUR_OPTIONS,
 	THEME_FONT_OPTIONS,
@@ -410,6 +412,12 @@ export const getBrowserType = () => {
 
 export const getDaysDifference = (timestamp) =>
 	moment(timestamp).diff(moment(), "days");
+
+export const getGeneralSettingsKeyList = () =>
+	[...GENERAL_SETTING_APP_LIST, ...GENERAL_SETTING_APPEARANCE_LIST].reduce(
+		(accumulator, setting) => [...accumulator, setting.key],
+		["searchSettings"],
+	);
 
 export const getLocalCookieItem = (key) => new Cookies().get(key);
 

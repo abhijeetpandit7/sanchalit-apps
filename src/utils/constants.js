@@ -825,19 +825,6 @@ export const DEFAULT_CUSTOMIZATION = {
 	currentNoteId: null,
 	[NOTES_VISIBLE]: true,
 	[QUOTES_VISIBLE]: true,
-	quoteSettings: {
-		data: [
-			{
-				_id: null,
-				body: null,
-				forDate: null,
-				isCustom: false,
-				isFavourite: false,
-				source: null,
-			},
-		],
-		ts: null,
-	},
 	[SEARCH_VISIBLE]: true,
 	searchSettings: {
 		inCenter: true,

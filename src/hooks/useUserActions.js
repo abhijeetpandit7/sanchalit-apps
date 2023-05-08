@@ -1,5 +1,6 @@
 import { useCallback } from "react";
-import { useUserCustomization } from "../hooks";
+import _ from "lodash";
+import { useAuthActions, useUserCustomization } from "../hooks";
 import {
 	BOOKMARKS,
 	BOOKMARKS_PERMISSION,
@@ -31,6 +32,7 @@ import {
 	getBookmarks,
 	getBrowserType,
 	getDaysDifference,
+	getGeneralSettingsKeyList,
 	getNewOrderValue,
 	getPermissionAllowed,
 	getTopSites,
@@ -42,6 +44,7 @@ import {
 } from "../utils";
 
 export const useUserActions = () => {
+	const { debouncedPostUserData, postUserData } = useAuthActions();
 	const {
 		displayNameRef,
 		notesInputRef,
@@ -638,10 +641,20 @@ export const useUserActions = () => {
 
 	const selectGeneralSetting = useCallback(
 		(setting) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				[setting.keyValue]: setting.newValue,
-			})),
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = { [setting.keyValue]: setting.newValue };
+				debouncedPostUserData(
+					"/customization",
+					_.extend(
+						_.pick(prevCustomization, getGeneralSettingsKeyList()),
+						updatedObject,
+					),
+				);
+				return {
+					...prevCustomization,
+					...updatedObject,
+				};
+			}),
 		[],
 	);
 
@@ -868,13 +881,27 @@ export const useUserActions = () => {
 			toggleShowApp(
 				GENERAL_SETTING_APP_LIST.find((app) => app.name === SEARCH),
 			);
-		setStorageUserCustomization((prevCustomization) => ({
-			...prevCustomization,
-			searchSettings: {
-				...prevCustomization.searchSettings,
-				inCenter: !prevCustomization.searchSettings.inCenter,
-			},
-		}));
+		setStorageUserCustomization((prevCustomization) => {
+			const updatedObject = {
+				searchSettings: {
+					inCenter: !prevCustomization.searchSettings.inCenter,
+				},
+			};
+			debouncedPostUserData(
+				"/customization",
+				_.extend(
+					_.pick(prevCustomization, getGeneralSettingsKeyList()),
+					updatedObject,
+				),
+			);
+			return {
+				...prevCustomization,
+				searchSettings: {
+					...prevCustomization.searchSettings,
+					...updatedObject.searchSettings,
+				},
+			};
+		});
 	}, [
 		storageUserCustomization.searchSettings,
 		storageUserCustomization.searchVisible,
@@ -915,10 +942,20 @@ export const useUserActions = () => {
 					}
 				}
 			} else
-				setStorageUserCustomization((prevCustomization) => ({
-					...prevCustomization,
-					[app.key]: !prevCustomization[app.key],
-				}));
+				setStorageUserCustomization((prevCustomization) => {
+					const updatedObject = { [app.key]: !prevCustomization[app.key] };
+					debouncedPostUserData(
+						"/customization",
+						_.extend(
+							_.pick(prevCustomization, getGeneralSettingsKeyList()),
+							updatedObject,
+						),
+					);
+					return {
+						...prevCustomization,
+						...updatedObject,
+					};
+				});
 		},
 		[
 			storageUserCustomization.bookmarksVisible,
@@ -943,11 +980,23 @@ export const useUserActions = () => {
 			let fetchedBookmarks;
 			if (bookmarks.length === 0) fetchedBookmarks = await getBookmarks();
 
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				[app.key]: !prevCustomization[app.key],
-				bookmarks: fetchedBookmarks || prevCustomization.bookmarks,
-			}));
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					[app.key]: !prevCustomization[app.key],
+				};
+				debouncedPostUserData(
+					"/customization",
+					_.extend(
+						_.pick(prevCustomization, getGeneralSettingsKeyList()),
+						updatedObject,
+					),
+				);
+				return {
+					...prevCustomization,
+					...updatedObject,
+					bookmarks: fetchedBookmarks || prevCustomization.bookmarks,
+				};
+			});
 		},
 		[storageUserCustomization.bookmarks],
 	);
@@ -1036,14 +1085,22 @@ export const useUserActions = () => {
 			let fetchedTopSites;
 			if (topSites.length === 0) fetchedTopSites = await getTopSites();
 
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				topSites: fetchedTopSites || prevCustomization.topSites,
-				bookmarksSettings: {
-					...prevCustomization.bookmarksSettings,
-					[setting.key]: !prevCustomization.bookmarksSettings[setting.key],
-				},
-			}));
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					bookmarksSettings: {
+						[setting.key]: !prevCustomization.bookmarksSettings[setting.key],
+					},
+				};
+				postUserData("/customization", updatedObject);
+				return {
+					...prevCustomization,
+					topSites: fetchedTopSites || prevCustomization.topSites,
+					bookmarksSettings: {
+						...prevCustomization.bookmarksSettings,
+						...updatedObject.bookmarksSettings,
+					},
+				};
+			});
 		},
 		[
 			storageUserCustomization.topSites,
