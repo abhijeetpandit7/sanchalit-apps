@@ -22,6 +22,7 @@ import {
 	TODO_LIST_TODAY_ID,
 	isBuildTargetWeb,
 	TODO_SHOW_SETTING,
+	addOrMergeObjectProperties,
 	createCountdown,
 	createNote,
 	createTodo,
@@ -640,13 +641,27 @@ export const useUserActions = () => {
 
 	const selectBookmarksSetting = useCallback(
 		(setting) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				bookmarksSettings: {
-					...prevCustomization.bookmarksSettings,
-					[setting.keyValue]: setting.newValue,
-				},
-			})),
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					bookmarksSettings: {
+						[setting.keyValue]: setting.newValue,
+					},
+				};
+				debouncedPostUserData(
+					"/customization",
+					addOrMergeObjectProperties(
+						_.pick(prevCustomization, ["bookmarksSettings"]),
+						updatedObject,
+					),
+				);
+				return {
+					...prevCustomization,
+					bookmarksSettings: {
+						...prevCustomization.bookmarksSettings,
+						...updatedObject.bookmarksSettings,
+					},
+				};
+			}),
 		[storageUserCustomization.bookmarksSettings],
 	);
 
@@ -698,13 +713,21 @@ export const useUserActions = () => {
 
 	const setSearchProvider = useCallback(
 		(searchProvider) => {
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				searchSettings: {
-					...prevCustomization.searchSettings,
-					provider: searchProvider,
-				},
-			}));
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					searchSettings: {
+						provider: searchProvider,
+					},
+				};
+				debouncedPostUserData("/customization", updatedObject);
+				return {
+					...prevCustomization,
+					searchSettings: {
+						...prevCustomization.searchSettings,
+						...updatedObject.searchSettings,
+					},
+				};
+			});
 			searchInputRef.current.focus();
 		},
 		[storageUserCustomization.searchSettings],
@@ -815,23 +838,37 @@ export const useUserActions = () => {
 				} else {
 					switch (setting.name) {
 						case START_IN_TOP_SITES:
-							return toggleTopSitesSetting(setting);
+							return toggleTopSitesSetting(setting, true);
 
 						case SHOW_TOP_SITES:
-							return toggleTopSitesSetting(setting);
+							return toggleTopSitesSetting(setting, true);
 
 						default:
 							return;
 					}
 				}
 			} else
-				setStorageUserCustomization((prevCustomization) => ({
-					...prevCustomization,
-					bookmarksSettings: {
-						...prevCustomization.bookmarksSettings,
-						[setting.key]: !prevCustomization.bookmarksSettings[setting.key],
-					},
-				}));
+				setStorageUserCustomization((prevCustomization) => {
+					const updatedObject = {
+						bookmarksSettings: {
+							[setting.key]: !prevCustomization.bookmarksSettings[setting.key],
+						},
+					};
+					debouncedPostUserData(
+						"/customization",
+						addOrMergeObjectProperties(
+							_.pick(prevCustomization, ["bookmarksSettings"]),
+							updatedObject,
+						),
+					);
+					return {
+						...prevCustomization,
+						bookmarksSettings: {
+							...prevCustomization.bookmarksSettings,
+							[setting.key]: !prevCustomization.bookmarksSettings[setting.key],
+						},
+					};
+				});
 		},
 		[storageUserCustomization.bookmarksSettings],
 	);
@@ -916,7 +953,7 @@ export const useUserActions = () => {
 			};
 			debouncedPostUserData(
 				"/customization",
-				_.extend(
+				addOrMergeObjectProperties(
 					_.pick(prevCustomization, getGeneralSettingsKeyList()),
 					updatedObject,
 				),
@@ -1095,7 +1132,7 @@ export const useUserActions = () => {
 	);
 
 	const toggleTopSitesSetting = useCallback(
-		async (setting) => {
+		async (setting, toggledFromBookmarks) => {
 			// Avoid checking permissionAllowed in firefox, to prevent user input handler error
 			const isFirefox = getBrowserType().name === FIREFOX;
 			const isPermissionAllowed = isFirefox
@@ -1118,7 +1155,15 @@ export const useUserActions = () => {
 						[setting.key]: !prevCustomization.bookmarksSettings[setting.key],
 					},
 				};
-				postUserData("/customization", updatedObject);
+				toggledFromBookmarks
+					? debouncedPostUserData(
+							"/customization",
+							addOrMergeObjectProperties(
+								_.pick(prevCustomization, ["bookmarksSettings"]),
+								updatedObject,
+							),
+					  )
+					: postUserData("/customization", updatedObject);
 				return {
 					...prevCustomization,
 					topSites: fetchedTopSites || prevCustomization.topSites,
