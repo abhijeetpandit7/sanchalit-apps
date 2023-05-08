@@ -7,7 +7,6 @@ const DEBOUNCE_TIME = 1;
 const MAX_DEBOUNCE_TIME = 10;
 
 export const useAuthActions = () => {
-	const { setStorageAuth } = useAuth();
 	const { storageAuth, setStorageAuth } = useAuth();
 	const { setStorageUserCustomization } = useUserCustomization();
 

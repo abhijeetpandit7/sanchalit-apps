@@ -413,6 +413,11 @@ export const getBrowserType = () => {
 export const getDaysDifference = (timestamp) =>
 	moment(timestamp).diff(moment(), "days");
 
+export const getDisplayNameSettingsKeyList = () => [
+	"displayName",
+	"displayNameVisible",
+];
+
 export const getGeneralSettingsKeyList = () =>
 	[...GENERAL_SETTING_APP_LIST, ...GENERAL_SETTING_APPEARANCE_LIST].reduce(
 		(accumulator, setting) => [...accumulator, setting.key],

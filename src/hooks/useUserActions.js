@@ -32,6 +32,7 @@ import {
 	getBookmarks,
 	getBrowserType,
 	getDaysDifference,
+	getDisplayNameSettingsKeyList,
 	getGeneralSettingsKeyList,
 	getNewOrderValue,
 	getPermissionAllowed,
@@ -500,10 +501,20 @@ export const useUserActions = () => {
 			const oldName = storageUserCustomization.displayName;
 			if (newName === oldName) return;
 			else if (newName.trim().length)
-				setStorageUserCustomization((prevCustomization) => ({
-					...prevCustomization,
-					displayName: newName.trim(),
-				}));
+				setStorageUserCustomization((prevCustomization) => {
+					const updatedObject = { displayName: newName.trim() };
+					debouncedPostUserData(
+						"/customization",
+						_.extend(
+							_.pick(prevCustomization, getDisplayNameSettingsKeyList()),
+							updatedObject,
+						),
+					);
+					return {
+						...prevCustomization,
+						...updatedObject,
+					};
+				});
 			else if (isDisplayNameEmpty)
 				setStorageUserCustomization((prevCustomization) => ({
 					...prevCustomization,
@@ -846,19 +857,35 @@ export const useUserActions = () => {
 
 	const toggleDisplayNameVisible = useCallback(
 		() =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				displayNameVisible: !prevCustomization.displayNameVisible,
-			})),
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					displayNameVisible: !prevCustomization.displayNameVisible,
+				};
+				debouncedPostUserData(
+					"/customization",
+					_.extend(
+						_.pick(prevCustomization, getDisplayNameSettingsKeyList()),
+						updatedObject,
+					),
+				);
+				return {
+					...prevCustomization,
+					...updatedObject,
+				};
+			}),
 		[],
 	);
 
 	const toggleHour12Clock = useCallback(
 		() =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				hour12clock: !prevCustomization.hour12clock,
-			})),
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = { hour12clock: !prevCustomization.hour12clock };
+				debouncedPostUserData("/customization", updatedObject);
+				return {
+					...prevCustomization,
+					...updatedObject,
+				};
+			}),
 		[],
 	);
 
