@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import axios from "axios";
+import { debounce } from "lodash";
 import { useAuth, useUserCustomization } from "../hooks";
 import { DEFAULT_AUTHENTICATION, DEFAULT_CUSTOMIZATION } from "../utils";
 
@@ -16,7 +17,7 @@ export const useAuthActions = () => {
 	}, []);
 
 	const postUserData = useCallback(
-		async (endpoint, payload, id) => {
+		async (endpoint, payload) => {
 			if (!!storageAuth?.token === false) return;
 			try {
 				await axios.post(endpoint, { data: payload });
