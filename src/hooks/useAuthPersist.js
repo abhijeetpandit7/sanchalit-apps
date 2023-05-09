@@ -240,7 +240,12 @@ export const useAuthPersist = () => {
 			setAxiosAuthHeader(storageAuth.token);
 			setCookieItem(TOKEN, storageAuth?.token ? storageAuth.token : "");
 
-			const decodedPayload = jwt_decode(storageAuth.token);
+			let decodedPayload;
+			try {
+				decodedPayload = jwt_decode(storageAuth.token);
+			} catch (error) {
+				decodedPayload = { subscriptionSummary: {} };
+			}
 			const { subscriptionSummary } = decodedPayload;
 			const subscriptionPlanFromStorage = storageAuth.subscriptionSummary.plan;
 			const subscriptionPlanFromToken = subscriptionSummary.plan;
