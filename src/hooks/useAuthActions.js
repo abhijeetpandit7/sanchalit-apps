@@ -11,6 +11,16 @@ export const useAuthActions = () => {
 	const { storageAuth, setStorageAuth } = useAuth();
 	const { setStorageUserCustomization } = useUserCustomization();
 
+	const deleteUserData = useCallback(
+		async (endpoint, payload) => {
+			if (!!storageAuth?.token === false) return;
+			try {
+				await axios.delete(endpoint, { data: payload });
+			} catch (error) {}
+		},
+		[storageAuth.token],
+	);
+
 	const logOutUser = useCallback(async () => {
 		setStorageAuth(DEFAULT_AUTHENTICATION);
 		setStorageUserCustomization(DEFAULT_CUSTOMIZATION);
@@ -53,6 +63,7 @@ export const useAuthActions = () => {
 
 	return {
 		debouncedPostUserData,
+		deleteUserData,
 		logOutUser,
 		postUserData,
 		setSubscriptionSummary,

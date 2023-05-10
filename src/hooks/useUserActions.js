@@ -46,7 +46,8 @@ import {
 } from "../utils";
 
 export const useUserActions = () => {
-	const { debouncedPostUserData, postUserData } = useAuthActions();
+	const { debouncedPostUserData, deleteUserData, postUserData } =
+		useAuthActions();
 	const {
 		displayNameRef,
 		notesInputRef,
@@ -180,8 +181,6 @@ export const useUserActions = () => {
 	const createTodoList = useCallback(
 		(title) => {
 			let newTodoList = createNewTodoList();
-			const instantDate = new Date();
-
 			const { todoLists } = storageUserCustomization;
 			const newOrder = getNewOrderValue(todoLists);
 
@@ -190,14 +189,20 @@ export const useUserActions = () => {
 				title,
 				order: newOrder,
 			};
-
+			const updatedObject = {
+				todoList: newTodoList,
+				todoSettings: {
+					todosUpdatedDate: new Date().toISOString(),
+				},
+			};
+			postUserData("/todoList", updatedObject);
 			setStorageUserCustomization((prevCustomization) => ({
 				...prevCustomization,
 				todoLists: [...prevCustomization.todoLists, newTodoList],
 				todoSettings: {
 					...prevCustomization.todoSettings,
 					activeTodoListId: newTodoList.id,
-					todosUpdatedDate: instantDate.toISOString(),
+					...updatedObject.todoSettings,
 				},
 			}));
 		},
@@ -241,20 +246,24 @@ export const useUserActions = () => {
 		[],
 	);
 
-	const deleteTodoList = useCallback(
-		(id) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				todoLists: prevCustomization.todoLists.filter(
-					(todoList) => todoList.id !== id,
-				),
-				todoSettings: {
-					...prevCustomization.todoSettings,
-					todosUpdatedDate: new Date().toISOString(),
-				},
-			})),
-		[],
-	);
+	const deleteTodoList = useCallback((id) => {
+		const updatedObject = {
+			todoSettings: {
+				todosUpdatedDate: new Date().toISOString(),
+			},
+		};
+		deleteUserData(`/todoList/${id}`, updatedObject);
+		setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			todoLists: prevCustomization.todoLists.filter(
+				(todoList) => todoList.id !== id,
+			),
+			todoSettings: {
+				...prevCustomization.todoSettings,
+				...updatedObject.todoSettings,
+			},
+		}));
+	}, []);
 
 	const editDisplayName = useCallback(async () => {
 		const { displayName, displayNameVisible } = storageUserCustomization;
@@ -422,6 +431,19 @@ export const useUserActions = () => {
 				}
 				targetTodoItem.ts = instantDate.getTime();
 
+				const updatedObject = {
+					todo: _.omit(targetTodoItem, [
+						"id",
+						"title",
+						"createdDate",
+						"viewSectionId",
+					]),
+					todoSettings: {
+						todosUpdatedDate: instantDate.toISOString(),
+					},
+				};
+				postUserData(`todo/${itemId}`, updatedObject);
+
 				return {
 					...prevCustomization,
 					todos: prevCustomization.todos.map((todo) =>
@@ -429,7 +451,7 @@ export const useUserActions = () => {
 					),
 					todoSettings: {
 						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate.toISOString(),
+						...updatedObject.todoSettings,
 					},
 				};
 			}),
@@ -573,15 +595,27 @@ export const useUserActions = () => {
 			).title;
 
 			if (newTitle === oldTilte) return;
-			else if (newTitle.trim().length)
+			else if (newTitle.trim().length) {
+				const instantDate = new Date();
+				const updatedObject = {
+					todoList: {
+						title: newTitle,
+						ts: instantDate.getTime(),
+					},
+					todoSettings: {
+						todosUpdatedDate: instantDate.toISOString(),
+					},
+				};
+				postUserData(`/todoList/${id}`, updatedObject);
 				setStorageUserCustomization((prevCustomization) => {
-					const instantDate = new Date();
-					const targetTodoList = prevCustomization.todoLists.find(
+					let targetTodoList = prevCustomization.todoLists.find(
 						(todoList) => todoList.id === id,
 					);
 
-					targetTodoList.title = newTitle;
-					targetTodoList.ts = instantDate.getTime();
+					targetTodoList = {
+						...targetTodoList,
+						...updatedObject.todoList,
+					};
 
 					return {
 						...prevCustomization,
@@ -590,11 +624,11 @@ export const useUserActions = () => {
 						),
 						todoSettings: {
 							...prevCustomization.todoSettings,
-							todosUpdatedDate: instantDate.toISOString(),
+							...updatedObject.todoSettings,
 						},
 					};
 				});
-			else element.innerText = oldTilte;
+			} else element.innerText = oldTilte;
 		},
 		[storageUserCustomization.todoLists],
 	);
@@ -765,55 +799,75 @@ export const useUserActions = () => {
 		[],
 	);
 
-	const setTodoListOrder = useCallback(
-		(id, order) =>
-			setStorageUserCustomization((prevCustomization) => {
-				const instantDate = new Date();
-				const targetTodoList = prevCustomization.todoLists.find(
-					(todoList) => todoList.id === id,
-				);
+	const setTodoListOrder = useCallback((id, order) => {
+		const instantDate = new Date();
+		const updatedObject = {
+			todoList: {
+				order,
+				ts: instantDate.getTime(),
+			},
+			todoSettings: {
+				todosUpdatedDate: instantDate.toISOString(),
+			},
+		};
+		postUserData(`/todoList/${id}`, updatedObject);
+		setStorageUserCustomization((prevCustomization) => {
+			let targetTodoList = prevCustomization.todoLists.find(
+				(todoList) => todoList.id === id,
+			);
 
-				targetTodoList.order = order;
-				targetTodoList.ts = instantDate.getTime();
+			targetTodoList = {
+				...targetTodoList,
+				...updatedObject.todoList,
+			};
 
-				return {
-					...prevCustomization,
-					todoLists: prevCustomization.todoLists.map((todoList) =>
-						todoList.id === id ? targetTodoList : todoList,
-					),
-					todoSettings: {
-						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate.toISOString(),
-					},
-				};
-			}),
-		[],
-	);
+			return {
+				...prevCustomization,
+				todoLists: prevCustomization.todoLists.map((todoList) =>
+					todoList.id === id ? targetTodoList : todoList,
+				),
+				todoSettings: {
+					...prevCustomization.todoSettings,
+					...updatedObject.todoSettings,
+				},
+			};
+		});
+	}, []);
 
-	const setTodoListColour = useCallback(
-		(id, colour) =>
-			setStorageUserCustomization((prevCustomization) => {
-				const instantDate = new Date();
-				const targetTodoList = prevCustomization.todoLists.find(
-					(todoList) => todoList.id === id,
-				);
+	const setTodoListColour = useCallback((id, colour) => {
+		const instantDate = new Date();
+		const updatedObject = {
+			todoList: {
+				colour,
+				ts: instantDate.getTime(),
+			},
+			todoSettings: {
+				todosUpdatedDate: instantDate.toISOString(),
+			},
+		};
+		postUserData(`/todoList/${id}`, updatedObject);
+		setStorageUserCustomization((prevCustomization) => {
+			let targetTodoList = prevCustomization.todoLists.find(
+				(todoList) => todoList.id === id,
+			);
 
-				targetTodoList.colour = colour;
-				targetTodoList.ts = instantDate.getTime();
+			targetTodoList = {
+				...targetTodoList,
+				...updatedObject.todoList,
+			};
 
-				return {
-					...prevCustomization,
-					todoLists: prevCustomization.todoLists.map((todoList) =>
-						todoList.id === id ? targetTodoList : todoList,
-					),
-					todoSettings: {
-						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate.toISOString(),
-					},
-				};
-			}),
-		[],
-	);
+			return {
+				...prevCustomization,
+				todoLists: prevCustomization.todoLists.map((todoList) =>
+					todoList.id === id ? targetTodoList : todoList,
+				),
+				todoSettings: {
+					...prevCustomization.todoSettings,
+					...updatedObject.todoSettings,
+				},
+			};
+		});
+	}, []);
 
 	const setWidgetReady = useCallback(
 		({ widget, type = "app" } = {}) =>
@@ -1119,13 +1173,21 @@ export const useUserActions = () => {
 
 	const toggleTodoSetting = useCallback(
 		(setting) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				todoSettings: {
-					...prevCustomization.todoSettings,
-					[setting.key]: !prevCustomization.todoSettings[setting.key],
-				},
-			})),
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					todoSettings: {
+						[setting.key]: !prevCustomization.todoSettings[setting.key],
+					},
+				};
+				postUserData("/customization", updatedObject);
+				return {
+					...prevCustomization,
+					todoSettings: {
+						...prevCustomization.todoSettings,
+						...updatedObject.todoSettings,
+					},
+				};
+			}),
 		[storageUserCustomization.todoSettings],
 	);
 
