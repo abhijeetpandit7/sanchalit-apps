@@ -71,7 +71,7 @@ const ContextMemo = memo((props) => {
 			className={`user-container ${props.plan ? "has-plus" : ""}`}
 			ref={userContainerRef}
 		>
-			<div className="user">
+			<div className="user" title={props.email}>
 				<div className="user-row" onClick={toggleUserContainer}>
 					<div className="user-avatar-wrapper">
 						<div className="user-avatar">

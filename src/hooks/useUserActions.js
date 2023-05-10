@@ -713,21 +713,19 @@ export const useUserActions = () => {
 
 	const setSearchProvider = useCallback(
 		(searchProvider) => {
-			setStorageUserCustomization((prevCustomization) => {
-				const updatedObject = {
-					searchSettings: {
-						provider: searchProvider,
-					},
-				};
-				debouncedPostUserData("/customization", updatedObject);
-				return {
-					...prevCustomization,
-					searchSettings: {
-						...prevCustomization.searchSettings,
-						...updatedObject.searchSettings,
-					},
-				};
-			});
+			const updatedObject = {
+				searchSettings: {
+					provider: searchProvider,
+				},
+			};
+			debouncedPostUserData("/customization", updatedObject);
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				searchSettings: {
+					...prevCustomization.searchSettings,
+					...updatedObject.searchSettings,
+				},
+			}));
 			searchInputRef.current.focus();
 		},
 		[storageUserCustomization.searchSettings],
