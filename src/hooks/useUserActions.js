@@ -365,32 +365,60 @@ export const useUserActions = () => {
 	]);
 
 	const moveAllTodoItems = useCallback(
-		(fromListId, toListId) =>
-			storageUserCustomization.todos
+		async (fromListId, toListId) => {
+			let updatedItems = [];
+			await storageUserCustomization.todos
 				.filter((todo) => todo.listId === fromListId)
-				.map(async (todo) => await moveTodoItemTo(todo.id, toListId)),
+				.map(async (todo) =>
+					updatedItems.push(
+						await moveTodoItemTo(todo.id, toListId, null, false),
+					),
+				);
+			await Promise.all(updatedItems);
+			if (updatedItems.length) {
+				const updatedObject = {
+					todos: updatedItems.map((item) => item.todo),
+					todoSettings: _.last(updatedItems).todoSettings,
+				};
+				postUserData("/todo", updatedObject);
+			}
+		},
 		[storageUserCustomization.todos],
 	);
 
 	const moveAllTodoItemsToOriginalList = useCallback(
-		(fromListId) =>
-			storageUserCustomization.todos
+		async (fromListId) => {
+			let updatedItems = [];
+			await storageUserCustomization.todos
 				.filter((todo) => todo.listId === fromListId)
-				.map(
-					async (todo) =>
+				.map(async (todo) =>
+					updatedItems.push(
 						await moveTodoItemTo(
 							todo.id,
 							todo.homeListId === TODO_LIST_TODAY_ID
 								? TODO_LIST_INBOX_ID
 								: todo.homeListId,
+							null,
+							false,
 						),
-				),
+					),
+				);
+			await Promise.all(updatedItems);
+			if (updatedItems.length) {
+				const updatedObject = {
+					todos: updatedItems.map((item) => item.todo),
+					todoSettings: _.last(updatedItems).todoSettings,
+				};
+				postUserData("/todo", updatedObject);
+			}
+		},
 		[storageUserCustomization.todos],
 	);
 
 	const moveTodoItemTo = useCallback(
-		(itemId, listId, fromDoneList) =>
-			setStorageUserCustomization((prevCustomization) => {
+		async (itemId, listId, fromDoneList, postData = true) => {
+			let updatedObject;
+			await setStorageUserCustomization((prevCustomization) => {
 				const instantDate = new Date();
 				const targetTodoItem = prevCustomization.todos.find(
 					(todo) => todo.id === itemId,
@@ -431,9 +459,8 @@ export const useUserActions = () => {
 				}
 				targetTodoItem.ts = instantDate.getTime();
 
-				const updatedObject = {
+				updatedObject = {
 					todo: _.omit(targetTodoItem, [
-						"id",
 						"title",
 						"createdDate",
 						"viewSectionId",
@@ -442,7 +469,7 @@ export const useUserActions = () => {
 						todosUpdatedDate: instantDate.toISOString(),
 					},
 				};
-				postUserData(`todo/${itemId}`, updatedObject);
+				if (postData) postUserData("/todo", updatedObject);
 
 				return {
 					...prevCustomization,
@@ -454,7 +481,9 @@ export const useUserActions = () => {
 						...updatedObject.todoSettings,
 					},
 				};
-			}),
+			});
+			return updatedObject;
+		},
 		[],
 	);
 
@@ -1189,7 +1218,8 @@ export const useUserActions = () => {
 						[setting.key]: !prevCustomization.todoSettings[setting.key],
 					},
 				};
-				postUserData("/customization", updatedObject);
+				if (setting.key !== "showTodoList")
+					postUserData("/customization", updatedObject);
 				return {
 					...prevCustomization,
 					todoSettings: {
