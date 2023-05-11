@@ -469,16 +469,23 @@ export const useUserActions = () => {
 		[],
 	);
 
-	const reorderAllTodoLists = useCallback(
-		(todoLists) =>
-			todoLists
-				.sort((a, b) => a.order - b.order)
-				.map(async (todoList, index) => {
-					todoList.order !== index &&
-						(await setTodoListOrder(todoList.id, index));
-				}),
-		[],
-	);
+	const reorderAllTodoLists = useCallback(async (todoLists) => {
+		let updatedItems = [];
+		await todoLists
+			.sort((a, b) => a.order - b.order)
+			.map(async (todoList, index) => {
+				if (todoList.order !== index)
+					updatedItems.push(await setTodoListOrder(todoList.id, index));
+			});
+		await Promise.all(updatedItems);
+		if (updatedItems.length) {
+			const updatedObject = {
+				todoLists: updatedItems.map((item) => item.todoList),
+				todoSettings: _.last(updatedItems).todoSettings,
+			};
+			postUserData("/todoList", updatedObject);
+		}
+	}, []);
 
 	const restoreNote = useCallback((targetNote) => {
 		setStorageUserCustomization((prevCustomization) => ({
