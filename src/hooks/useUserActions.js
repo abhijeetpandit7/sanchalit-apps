@@ -599,6 +599,7 @@ export const useUserActions = () => {
 				const instantDate = new Date();
 				const updatedObject = {
 					todoList: {
+						id,
 						title: newTitle,
 						ts: instantDate.getTime(),
 					},
@@ -606,7 +607,7 @@ export const useUserActions = () => {
 						todosUpdatedDate: instantDate.toISOString(),
 					},
 				};
-				postUserData(`/todoList/${id}`, updatedObject);
+				postUserData("/todoList", updatedObject);
 				setStorageUserCustomization((prevCustomization) => {
 					let targetTodoList = prevCustomization.todoLists.find(
 						(todoList) => todoList.id === id,
@@ -803,6 +804,7 @@ export const useUserActions = () => {
 		const instantDate = new Date();
 		const updatedObject = {
 			todoList: {
+				id,
 				order,
 				ts: instantDate.getTime(),
 			},
@@ -838,6 +840,7 @@ export const useUserActions = () => {
 		const instantDate = new Date();
 		const updatedObject = {
 			todoList: {
+				id,
 				colour,
 				ts: instantDate.getTime(),
 			},
@@ -845,7 +848,7 @@ export const useUserActions = () => {
 				todosUpdatedDate: instantDate.toISOString(),
 			},
 		};
-		postUserData(`/todoList/${id}`, updatedObject);
+		postUserData("/todoList", updatedObject);
 		setStorageUserCustomization((prevCustomization) => {
 			let targetTodoList = prevCustomization.todoLists.find(
 				(todoList) => todoList.id === id,
