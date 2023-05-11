@@ -800,7 +800,7 @@ export const useUserActions = () => {
 		[],
 	);
 
-	const setTodoListOrder = useCallback((id, order) => {
+	const setTodoListOrder = useCallback(async (id, order) => {
 		const instantDate = new Date();
 		const updatedObject = {
 			todoList: {
@@ -812,8 +812,7 @@ export const useUserActions = () => {
 				todosUpdatedDate: instantDate.toISOString(),
 			},
 		};
-		postUserData(`/todoList/${id}`, updatedObject);
-		setStorageUserCustomization((prevCustomization) => {
+		await setStorageUserCustomization((prevCustomization) => {
 			let targetTodoList = prevCustomization.todoLists.find(
 				(todoList) => todoList.id === id,
 			);
@@ -834,6 +833,7 @@ export const useUserActions = () => {
 				},
 			};
 		});
+		return updatedObject;
 	}, []);
 
 	const setTodoListColour = useCallback((id, colour) => {
