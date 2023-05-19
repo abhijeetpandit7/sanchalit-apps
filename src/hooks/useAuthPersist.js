@@ -156,6 +156,7 @@ export const useAuthPersist = () => {
 	useEffect(() => {
 		(async () => {
 			if (isObjectEmpty(storageUserCustomization)) return;
+			userCustomizationRef.current = storageUserCustomization;
 			const localStorageUserCustomization = await getStorageItem(CUSTOMIZATION);
 			if (
 				isDeepEqual(storageUserCustomization, localStorageUserCustomization) ===
@@ -236,14 +237,6 @@ export const useAuthPersist = () => {
 			};
 		})();
 	}, []);
-
-	// Duplicate storageUserCustomization to access in extension storageChangeHandler
-	useEffect(() => {
-		(async () => {
-			if (isBuildTargetWeb) return;
-			userCustomizationRef.current = storageUserCustomization;
-		})();
-	}, [storageUserCustomization]);
 
 	// Updates Authorization, cookie and review subscriptionSummary onChange token
 	useEffect(() => {

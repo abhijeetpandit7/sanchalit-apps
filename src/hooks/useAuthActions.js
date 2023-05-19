@@ -9,7 +9,8 @@ const MAX_DEBOUNCE_TIME = 10;
 
 export const useAuthActions = () => {
 	const { storageAuth, setStorageAuth } = useAuth();
-	const { setStorageUserCustomization } = useUserCustomization();
+	const { setStorageUserCustomization, networkRequestDispatch } =
+		useUserCustomization();
 
 	const deleteUserData = useCallback(
 		async (endpoint, payload) => {
@@ -35,10 +36,20 @@ export const useAuthActions = () => {
 		},
 		[storageAuth.token],
 	);
+
 	const debouncedPostUserData = useCallback(
-		debounce(postUserData, DEBOUNCE_TIME * 1000, {
-			maxWait: MAX_DEBOUNCE_TIME * 1000,
-		}),
+		debounce(
+			(endpoint, payload) => {
+				postUserData(endpoint, payload);
+				networkRequestDispatch({
+					type: "RESET_PAYLOAD",
+				});
+			},
+			DEBOUNCE_TIME * 1000,
+			{
+				maxWait: MAX_DEBOUNCE_TIME * 1000,
+			},
+		),
 		[storageAuth.token],
 	);
 
@@ -65,7 +76,6 @@ export const useAuthActions = () => {
 		debouncedPostUserData,
 		deleteUserData,
 		logOutUser,
-		postUserData,
 		setSubscriptionSummary,
 		signUpUser,
 	};
