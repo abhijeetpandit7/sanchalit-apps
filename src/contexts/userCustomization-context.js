@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useRef, useState } from "react";
-import { widgetReducer } from "../reducers";
+import { networkRequestReducer, widgetReducer } from "../reducers";
 import {
 	BACKGROUND,
 	PHOTO_INFO,
@@ -54,6 +54,13 @@ export const UserCustomizationProvider = ({ children }) => {
 		settingsActiveNav: null,
 	});
 
+	const [networkRequestManager, networkRequestDispatch] = useReducer(
+		networkRequestReducer,
+		{
+			payload: {},
+		},
+	);
+
 	return (
 		<UserCustomizationContext.Provider
 			value={{
@@ -69,6 +76,8 @@ export const UserCustomizationProvider = ({ children }) => {
 				todoInputRef,
 				storageUserCustomization,
 				setStorageUserCustomization,
+				networkRequestManager,
+				networkRequestDispatch,
 				widgetManager,
 				widgetDispatch,
 			}}

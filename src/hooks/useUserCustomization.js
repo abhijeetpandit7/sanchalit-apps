@@ -22,14 +22,13 @@ export const useUserCustomization = () => {
 		todoInputRef,
 		storageUserCustomization,
 		setStorageUserCustomization,
+		networkRequestManager,
+		networkRequestDispatch,
 		widgetManager,
 		widgetDispatch,
 	} = useContext(UserCustomizationContext);
 
-	const hideApps = useCallback(
-		() => addRefClassName(appsRef, HIDE_APPS),
-		[],
-	);
+	const hideApps = useCallback(() => addRefClassName(appsRef, HIDE_APPS), []);
 
 	const showApps = useCallback(
 		() => removeRefClassName(appsRef, HIDE_APPS),
@@ -59,6 +58,8 @@ export const useUserCustomization = () => {
 		todoInputRef,
 		storageUserCustomization,
 		setStorageUserCustomization,
+		networkRequestManager,
+		networkRequestDispatch,
 		widgetManager,
 		widgetDispatch,
 		hideApps,
