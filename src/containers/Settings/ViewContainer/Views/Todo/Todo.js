@@ -1,11 +1,7 @@
 import React, { memo, useRef, useState } from "react";
 import _ from "lodash";
 import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
-import {
-	useAuthActions,
-	useUserActions,
-	useUserCustomization,
-} from "../../../../../hooks";
+import { useUserActions, useUserCustomization } from "../../../../../hooks";
 import {
 	CollapsibleHeaderWrapper,
 	ColourPaletteWrapper,
@@ -301,7 +297,7 @@ const ContextMemo = memo((props) => {
 				todoLists: updatedItems.map((item) => item.todoList),
 				todoSettings: _.last(updatedItems).todoSettings,
 			};
-			props.postUserData("/todoList", updatedObject);
+			props.setNetworkRequestPayload(updatedObject);
 		}
 	};
 
@@ -392,12 +388,12 @@ const Todo = () => {
 		editTodoListTitle,
 		getTodoListItemsCount,
 		moveAllTodoItems,
+		setNetworkRequestPayload,
 		setTodoListColour,
 		setTodoListOrder,
 		toggleTodoSetting,
 		toggleShowApp,
 	} = useUserActions();
-	const { postUserData } = useAuthActions();
 
 	return (
 		<ContextMemo
@@ -411,7 +407,7 @@ const Todo = () => {
 				editTodoListTitle,
 				getTodoListItemsCount,
 				moveAllTodoItems,
-				postUserData,
+				setNetworkRequestPayload,
 				setTodoListColour,
 				setTodoListOrder,
 				toggleTodoSetting,

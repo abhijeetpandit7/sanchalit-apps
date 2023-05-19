@@ -22,7 +22,6 @@ import {
 	TODO_LIST_TODAY_ID,
 	isBuildTargetWeb,
 	TODO_SHOW_SETTING,
-	addOrMergeObjectProperties,
 	createCountdown,
 	createNote,
 	createTodo,
@@ -33,8 +32,6 @@ import {
 	getBookmarks,
 	getBrowserType,
 	getDaysDifference,
-	getDisplayNameSettingsKeyList,
-	getGeneralSettingsKeyList,
 	getNewOrderValue,
 	getPermissionAllowed,
 	getTopSites,
@@ -46,14 +43,14 @@ import {
 } from "../utils";
 
 export const useUserActions = () => {
-	const { debouncedPostUserData, deleteUserData, postUserData } =
-		useAuthActions();
+	const { deleteUserData } = useAuthActions();
 	const {
 		displayNameRef,
 		notesInputRef,
 		searchInputRef,
 		storageUserCustomization,
 		setStorageUserCustomization,
+		networkRequestDispatch,
 		widgetDispatch,
 	} = useUserCustomization();
 
@@ -190,12 +187,12 @@ export const useUserActions = () => {
 				order: newOrder,
 			};
 			const updatedObject = {
-				todoList: newTodoList,
+				todoLists: [newTodoList],
 				todoSettings: {
 					todosUpdatedDate: new Date().toISOString(),
 				},
 			};
-			postUserData("/todoList", updatedObject);
+			setNetworkRequestPayload(updatedObject);
 			setStorageUserCustomization((prevCustomization) => ({
 				...prevCustomization,
 				todoLists: [...prevCustomization.todoLists, newTodoList],
@@ -380,7 +377,7 @@ export const useUserActions = () => {
 					todos: updatedItems.map((item) => item.todo),
 					todoSettings: _.last(updatedItems).todoSettings,
 				};
-				postUserData("/todo", updatedObject);
+				setNetworkRequestPayload(updatedObject);
 			}
 		},
 		[storageUserCustomization.todos],
@@ -409,7 +406,7 @@ export const useUserActions = () => {
 					todos: updatedItems.map((item) => item.todo),
 					todoSettings: _.last(updatedItems).todoSettings,
 				};
-				postUserData("/todo", updatedObject);
+				setNetworkRequestPayload(updatedObject);
 			}
 		},
 		[storageUserCustomization.todos],
@@ -459,17 +456,20 @@ export const useUserActions = () => {
 				}
 				targetTodoItem.ts = instantDate.getTime();
 
+				const filteredTargetTodoItem = _.omit(targetTodoItem, [
+					"title",
+					"createdDate",
+					"viewSectionId",
+				]);
 				updatedObject = {
-					todo: _.omit(targetTodoItem, [
-						"title",
-						"createdDate",
-						"viewSectionId",
-					]),
+					[postData ? "todos" : "todo"]: postData
+						? [filteredTargetTodoItem]
+						: filteredTargetTodoItem,
 					todoSettings: {
 						todosUpdatedDate: instantDate.toISOString(),
 					},
 				};
-				if (postData) postUserData("/todo", updatedObject);
+				if (postData) setNetworkRequestPayload(updatedObject);
 
 				return {
 					...prevCustomization,
@@ -512,7 +512,7 @@ export const useUserActions = () => {
 				todoLists: updatedItems.map((item) => item.todoList),
 				todoSettings: _.last(updatedItems).todoSettings,
 			};
-			postUserData("/todoList", updatedObject);
+			setNetworkRequestPayload(updatedObject);
 		}
 	}, []);
 
@@ -562,13 +562,7 @@ export const useUserActions = () => {
 			else if (newName.trim().length)
 				setStorageUserCustomization((prevCustomization) => {
 					const updatedObject = { displayName: newName.trim() };
-					debouncedPostUserData(
-						"/customization",
-						_.extend(
-							_.pick(prevCustomization, getDisplayNameSettingsKeyList()),
-							updatedObject,
-						),
-					);
+					setNetworkRequestPayload(updatedObject);
 					return {
 						...prevCustomization,
 						...updatedObject,
@@ -634,16 +628,18 @@ export const useUserActions = () => {
 			else if (newTitle.trim().length) {
 				const instantDate = new Date();
 				const updatedObject = {
-					todoList: {
-						id,
-						title: newTitle,
-						ts: instantDate.getTime(),
-					},
+					todoLists: [
+						{
+							id,
+							title: newTitle,
+							ts: instantDate.getTime(),
+						},
+					],
 					todoSettings: {
 						todosUpdatedDate: instantDate.toISOString(),
 					},
 				};
-				postUserData("/todoList", updatedObject);
+				setNetworkRequestPayload(updatedObject);
 				setStorageUserCustomization((prevCustomization) => {
 					let targetTodoList = prevCustomization.todoLists.find(
 						(todoList) => todoList.id === id,
@@ -651,7 +647,7 @@ export const useUserActions = () => {
 
 					targetTodoList = {
 						...targetTodoList,
-						...updatedObject.todoList,
+						...updatedObject.todoLists[0],
 					};
 
 					return {
@@ -718,13 +714,7 @@ export const useUserActions = () => {
 						[setting.keyValue]: setting.newValue,
 					},
 				};
-				debouncedPostUserData(
-					"/customization",
-					addOrMergeObjectProperties(
-						_.pick(prevCustomization, ["bookmarksSettings"]),
-						updatedObject,
-					),
-				);
+				setNetworkRequestPayload(updatedObject);
 				return {
 					...prevCustomization,
 					bookmarksSettings: {
@@ -740,13 +730,7 @@ export const useUserActions = () => {
 		(setting) =>
 			setStorageUserCustomization((prevCustomization) => {
 				const updatedObject = { [setting.keyValue]: setting.newValue };
-				debouncedPostUserData(
-					"/customization",
-					_.extend(
-						_.pick(prevCustomization, getGeneralSettingsKeyList()),
-						updatedObject,
-					),
-				);
+				setNetworkRequestPayload(updatedObject);
 				return {
 					...prevCustomization,
 					...updatedObject,
@@ -782,6 +766,15 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const setNetworkRequestPayload = useCallback(
+		(data) =>
+			networkRequestDispatch({
+				type: "SET_PAYLOAD",
+				payload: { data },
+			}),
+		[],
+	);
+
 	const setSearchProvider = useCallback(
 		(searchProvider) => {
 			const updatedObject = {
@@ -789,7 +782,7 @@ export const useUserActions = () => {
 					provider: searchProvider,
 				},
 			};
-			debouncedPostUserData("/customization", updatedObject);
+			setNetworkRequestPayload(updatedObject);
 			setStorageUserCustomization((prevCustomization) => ({
 				...prevCustomization,
 				searchSettings: {
@@ -875,16 +868,18 @@ export const useUserActions = () => {
 	const setTodoListColour = useCallback((id, colour) => {
 		const instantDate = new Date();
 		const updatedObject = {
-			todoList: {
-				id,
-				colour,
-				ts: instantDate.getTime(),
-			},
+			todoLists: [
+				{
+					id,
+					colour,
+					ts: instantDate.getTime(),
+				},
+			],
 			todoSettings: {
 				todosUpdatedDate: instantDate.toISOString(),
 			},
 		};
-		postUserData("/todoList", updatedObject);
+		setNetworkRequestPayload(updatedObject);
 		setStorageUserCustomization((prevCustomization) => {
 			let targetTodoList = prevCustomization.todoLists.find(
 				(todoList) => todoList.id === id,
@@ -892,7 +887,7 @@ export const useUserActions = () => {
 
 			targetTodoList = {
 				...targetTodoList,
-				...updatedObject.todoList,
+				...updatedObject.todoLists[0],
 			};
 
 			return {
@@ -929,10 +924,10 @@ export const useUserActions = () => {
 				} else {
 					switch (setting.name) {
 						case START_IN_TOP_SITES:
-							return toggleTopSitesSetting(setting, true);
+							return toggleTopSitesSetting(setting);
 
 						case SHOW_TOP_SITES:
-							return toggleTopSitesSetting(setting, true);
+							return toggleTopSitesSetting(setting);
 
 						default:
 							return;
@@ -945,13 +940,7 @@ export const useUserActions = () => {
 							[setting.key]: !prevCustomization.bookmarksSettings[setting.key],
 						},
 					};
-					debouncedPostUserData(
-						"/customization",
-						addOrMergeObjectProperties(
-							_.pick(prevCustomization, ["bookmarksSettings"]),
-							updatedObject,
-						),
-					);
+					setNetworkRequestPayload(updatedObject);
 					return {
 						...prevCustomization,
 						bookmarksSettings: {
@@ -989,13 +978,7 @@ export const useUserActions = () => {
 				const updatedObject = {
 					displayNameVisible: !prevCustomization.displayNameVisible,
 				};
-				debouncedPostUserData(
-					"/customization",
-					_.extend(
-						_.pick(prevCustomization, getDisplayNameSettingsKeyList()),
-						updatedObject,
-					),
-				);
+				setNetworkRequestPayload(updatedObject);
 				return {
 					...prevCustomization,
 					...updatedObject,
@@ -1008,7 +991,7 @@ export const useUserActions = () => {
 		() =>
 			setStorageUserCustomization((prevCustomization) => {
 				const updatedObject = { hour12clock: !prevCustomization.hour12clock };
-				debouncedPostUserData("/customization", updatedObject);
+				setNetworkRequestPayload(updatedObject);
 				return {
 					...prevCustomization,
 					...updatedObject,
@@ -1042,13 +1025,7 @@ export const useUserActions = () => {
 					inCenter: !prevCustomization.searchSettings.inCenter,
 				},
 			};
-			debouncedPostUserData(
-				"/customization",
-				addOrMergeObjectProperties(
-					_.pick(prevCustomization, getGeneralSettingsKeyList()),
-					updatedObject,
-				),
-			);
+			setNetworkRequestPayload(updatedObject);
 			return {
 				...prevCustomization,
 				searchSettings: {
@@ -1099,13 +1076,7 @@ export const useUserActions = () => {
 			} else
 				setStorageUserCustomization((prevCustomization) => {
 					const updatedObject = { [app.key]: !prevCustomization[app.key] };
-					debouncedPostUserData(
-						"/customization",
-						_.extend(
-							_.pick(prevCustomization, getGeneralSettingsKeyList()),
-							updatedObject,
-						),
-					);
+					setNetworkRequestPayload(updatedObject);
 					return {
 						...prevCustomization,
 						...updatedObject,
@@ -1139,13 +1110,7 @@ export const useUserActions = () => {
 				const updatedObject = {
 					[app.key]: !prevCustomization[app.key],
 				};
-				debouncedPostUserData(
-					"/customization",
-					_.extend(
-						_.pick(prevCustomization, getGeneralSettingsKeyList()),
-						updatedObject,
-					),
-				);
+				setNetworkRequestPayload(updatedObject);
 				return {
 					...prevCustomization,
 					...updatedObject,
@@ -1169,6 +1134,15 @@ export const useUserActions = () => {
 					? instantDate.toISOString()
 					: null;
 				targetTodoItem.ts = instantDate.getTime();
+
+				let updatedObject = {
+					todos: [
+						_.pick(targetTodoItem, ["id", "done", "completedDate", "ts"]),
+					],
+					todoSettings: {
+						todosUpdatedDate: instantDate.toISOString(),
+					},
+				};
 
 				if (targetTodoItem.done === false) {
 					const targetTodoItemHomeListId = targetTodoItem.homeListId;
@@ -1194,7 +1168,17 @@ export const useUserActions = () => {
 							targetTodoItem.listId,
 						);
 					}
+					updatedObject.todos = [
+						_.omit(targetTodoItem, [
+							"title",
+							"createdDate",
+							"today",
+							"viewSectionId",
+						]),
+					];
 				}
+
+				setNetworkRequestPayload(updatedObject);
 
 				return {
 					...prevCustomization,
@@ -1203,7 +1187,7 @@ export const useUserActions = () => {
 					),
 					todoSettings: {
 						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate.toISOString(),
+						...updatedObject.todoSettings,
 					},
 				};
 			}),
@@ -1219,7 +1203,7 @@ export const useUserActions = () => {
 					},
 				};
 				if (setting.key !== "showTodoList")
-					postUserData("/customization", updatedObject);
+					setNetworkRequestPayload(updatedObject);
 				return {
 					...prevCustomization,
 					todoSettings: {
@@ -1232,7 +1216,7 @@ export const useUserActions = () => {
 	);
 
 	const toggleTopSitesSetting = useCallback(
-		async (setting, toggledFromBookmarks) => {
+		async (setting) => {
 			// Avoid checking permissionAllowed in firefox, to prevent user input handler error
 			const isFirefox = getBrowserType().name === FIREFOX;
 			const isPermissionAllowed = isFirefox
@@ -1255,15 +1239,7 @@ export const useUserActions = () => {
 						[setting.key]: !prevCustomization.bookmarksSettings[setting.key],
 					},
 				};
-				toggledFromBookmarks
-					? debouncedPostUserData(
-							"/customization",
-							addOrMergeObjectProperties(
-								_.pick(prevCustomization, ["bookmarksSettings"]),
-								updatedObject,
-							),
-					  )
-					: postUserData("/customization", updatedObject);
+				setNetworkRequestPayload(updatedObject);
 				return {
 					...prevCustomization,
 					topSites: fetchedTopSites || prevCustomization.topSites,
@@ -1351,6 +1327,7 @@ export const useUserActions = () => {
 		setDashAppStyles,
 		setSearchProvider,
 		setSettingsActiveNav,
+		setNetworkRequestPayload,
 		setTodoItemOrder,
 		setTodoListOrder,
 		setTodoListColour,
