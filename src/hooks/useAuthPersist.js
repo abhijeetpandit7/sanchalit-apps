@@ -59,6 +59,7 @@ export const useAuthPersist = () => {
 		showMainView,
 	} = useUserCustomization();
 	const { setWidgetReady } = useUserActions();
+	const userCustomizationRef = useRef(storageUserCustomization);
 	const isTokenFromCookie = useRef(false);
 
 	// Transits from overlay to main-view onReady widgetManager
@@ -209,7 +210,11 @@ export const useAuthPersist = () => {
 						if (key === AUTH) {
 							setStorageAuth(newValue);
 						} else if (key === CUSTOMIZATION) {
-							setStorageUserCustomization(newValue);
+							if (
+								isDeepEqual(userCustomizationRef.current, newValue) === false
+							) {
+								setStorageUserCustomization(newValue);
+							}
 						}
 					}
 				}
@@ -231,6 +236,14 @@ export const useAuthPersist = () => {
 			};
 		})();
 	}, []);
+
+	// Duplicate storageUserCustomization to access in extension storageChangeHandler
+	useEffect(() => {
+		(async () => {
+			if (isBuildTargetWeb) return;
+			userCustomizationRef.current = storageUserCustomization;
+		})();
+	}, [storageUserCustomization]);
 
 	// Updates Authorization, cookie and review subscriptionSummary onChange token
 	useEffect(() => {
