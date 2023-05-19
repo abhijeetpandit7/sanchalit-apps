@@ -108,6 +108,7 @@ export const ViewContainer = (props) => {
 		todos,
 		createTodoItem,
 		setActiveTodoListId,
+		setNetworkRequestPayload,
 		setTodoItemOrder,
 	} = props;
 	const [isCreatingTodo, setIsCreatingTodo] = useState(false);
@@ -181,7 +182,7 @@ export const ViewContainer = (props) => {
 		todoInput.focus();
 	};
 
-	const handleDragEnd = (result) => {
+	const handleDragEnd = async (result) => {
 		if (!result.destination) return;
 
 		const reorderedTodoItems = reorderListOnDrag(
@@ -189,11 +190,19 @@ export const ViewContainer = (props) => {
 			result.source.index,
 			result.destination.index,
 		);
-		reorderedTodoItems.forEach(
-			async (todoItem, index) =>
-				todoItem.order !== index &&
-				(await setTodoItemOrder(todoItem.id, index)),
-		);
+		let updatedItems = [];
+		await reorderedTodoItems.map(async (todoItem, index) => {
+			if (todoItem.order !== index)
+				updatedItems.push(await setTodoItemOrder(todoItem.id, index));
+		});
+		await Promise.all(updatedItems);
+		if (updatedItems.length) {
+			const updatedObject = {
+				todos: updatedItems.map((item) => item.todo),
+				todoSettings: _.last(updatedItems).todoSettings,
+			};
+			setNetworkRequestPayload(updatedObject);
+		}
 	};
 
 	const EmptyView = () => (

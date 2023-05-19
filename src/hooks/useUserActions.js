@@ -487,16 +487,23 @@ export const useUserActions = () => {
 		[],
 	);
 
-	const reorderAllTodoItems = useCallback(
-		(todoItems) =>
-			todoItems
-				.sort((a, b) => a.order - b.order)
-				.map(async (todoItem, index) => {
-					todoItem.order !== index &&
-						(await setTodoItemOrder(todoItem.id, index));
-				}),
-		[],
-	);
+	const reorderAllTodoItems = useCallback(async (todoItems) => {
+		let updatedItems = [];
+		await todoItems
+			.sort((a, b) => a.order - b.order)
+			.map(async (todoItem, index) => {
+				if (todoItem.order !== index)
+					updatedItems.push(await setTodoItemOrder(todoItem.id, index));
+			});
+		await Promise.all(updatedItems);
+		if (updatedItems.length) {
+			const updatedObject = {
+				todos: updatedItems.map((item) => item.todo),
+				todoSettings: _.last(updatedItems).todoSettings,
+			};
+			setNetworkRequestPayload(updatedObject);
+		}
+	}, []);
 
 	const reorderAllTodoLists = useCallback(async (todoLists) => {
 		let updatedItems = [];
@@ -804,30 +811,41 @@ export const useUserActions = () => {
 		[],
 	);
 
-	const setTodoItemOrder = useCallback(
-		(id, order) =>
-			setStorageUserCustomization((prevCustomization) => {
-				const instantDate = new Date();
-				const targetTodoItem = prevCustomization.todos.find(
-					(todo) => todo.id === id,
-				);
+	const setTodoItemOrder = useCallback(async (id, order) => {
+		const instantDate = new Date();
+		const updatedObject = {
+			todo: {
+				id,
+				order,
+				ts: instantDate.getTime(),
+			},
+			todoSettings: {
+				todosUpdatedDate: instantDate.toISOString(),
+			},
+		};
+		await setStorageUserCustomization((prevCustomization) => {
+			let targetTodoItem = prevCustomization.todos.find(
+				(todo) => todo.id === id,
+			);
 
-				targetTodoItem.order = order;
-				targetTodoItem.ts = instantDate.getTime();
+			targetTodoItem = {
+				...targetTodoItem,
+				...updatedObject.todo,
+			};
 
-				return {
-					...prevCustomization,
-					todos: prevCustomization.todos.map((todo) =>
-						todo.id === id ? targetTodoItem : todo,
-					),
-					todoSettings: {
-						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate.toISOString(),
-					},
-				};
-			}),
-		[],
-	);
+			return {
+				...prevCustomization,
+				todos: prevCustomization.todos.map((todo) =>
+					todo.id === id ? targetTodoItem : todo,
+				),
+				todoSettings: {
+					...prevCustomization.todoSettings,
+					...updatedObject.todoSettings,
+				},
+			};
+		});
+		return updatedObject;
+	}, []);
 
 	const setTodoListOrder = useCallback(async (id, order) => {
 		const instantDate = new Date();
