@@ -139,7 +139,7 @@ export const useUserActions = () => {
 									getDaysDifference(updatedDate) <=
 										-toDays(NOTE_DELETE_TIMEOUT)),
 						)
-						.map((note) => note.id),
+						.map((note) => _.pick(note, ["id"])),
 				};
 				if (updatedObject.notes.length) deleteUserData("/note", updatedObject);
 				return {
