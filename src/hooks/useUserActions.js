@@ -129,15 +129,29 @@ export const useUserActions = () => {
 
 	const cleanupNotes = useCallback(
 		() =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				notes: prevCustomization.notes.filter(
-					({ deleted, empty, updatedDate }) =>
-						empty !== true &&
-						(deleted === false ||
-							getDaysDifference(updatedDate) > -toDays(NOTE_DELETE_TIMEOUT)),
-				),
-			})),
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					notes: _.cloneDeep(prevCustomization.notes)
+						.filter(
+							({ deleted, empty, updatedDate }) =>
+								empty === true ||
+								(deleted === true &&
+									getDaysDifference(updatedDate) <=
+										-toDays(NOTE_DELETE_TIMEOUT)),
+						)
+						.map((note) => note.id),
+				};
+				if (updatedObject.notes.length) deleteUserData("/note", updatedObject);
+				return {
+					...prevCustomization,
+					notes: prevCustomization.notes.filter(
+						(note) =>
+							updatedObject.notes
+								.map((deletedNote) => deletedNote.id)
+								.includes(note.id) === false,
+					),
+				};
+			}),
 		[],
 	);
 
@@ -251,18 +265,26 @@ export const useUserActions = () => {
 		[],
 	);
 
-	const deleteNote = useCallback(
-		(targetNote) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				notes: prevCustomization.notes.map((note) =>
-					note.id === targetNote.id
-						? { ...note, deleted: true, updatedDate: new Date().getTime() }
-						: note,
-				),
-			})),
-		[],
-	);
+	const deleteNote = useCallback((targetNote) => {
+		const updatedObject = {
+			notes: [
+				{
+					id: targetNote.id,
+					deleted: true,
+					updatedDate: new Date().getTime(),
+				},
+			],
+		};
+		setNetworkRequestPayload(updatedObject);
+		setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			notes: prevCustomization.notes.map((note) =>
+				note.id === targetNote.id
+					? { ...note, ...updatedObject.notes[0] }
+					: note,
+			),
+		}));
+	}, []);
 
 	const deleteTodoItem = useCallback((id) => {
 		const updatedObject = {
@@ -562,11 +584,21 @@ export const useUserActions = () => {
 	}, []);
 
 	const restoreNote = useCallback((targetNote) => {
+		const updatedObject = {
+			notes: [
+				{
+					id: targetNote.id,
+					deleted: false,
+					updatedDate: new Date().getTime(),
+				},
+			],
+		};
+		setNetworkRequestPayload(updatedObject);
 		setStorageUserCustomization((prevCustomization) => ({
 			...prevCustomization,
 			notes: prevCustomization.notes.map((note) =>
 				note.id === targetNote.id
-					? { ...note, deleted: false, updatedDate: new Date().getTime() }
+					? { ...note, ...updatedObject.notes[0] }
 					: note,
 			),
 		}));
@@ -735,6 +767,9 @@ export const useUserActions = () => {
 			targetNote.body = body;
 			targetNote.updatedDate = new Date().getTime();
 			delete targetNote["empty"];
+
+			let updatedObject = { notes: [targetNote] };
+			setNetworkRequestPayload(updatedObject);
 
 			return {
 				...prevCustomization,
