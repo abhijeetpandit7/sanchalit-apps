@@ -165,6 +165,9 @@ export const useUserActions = () => {
 			pinned,
 		};
 
+		const updatedObject = { countdowns: [newCountdown] };
+		setNetworkRequestPayload(updatedObject);
+
 		setStorageUserCustomization((prevCustomization) => ({
 			...prevCustomization,
 			countdowns: [...prevCustomization.countdowns, newCountdown],
@@ -254,16 +257,15 @@ export const useUserActions = () => {
 		[storageUserCustomization.todoLists],
 	);
 
-	const deleteCountdown = useCallback(
-		(targetCountdownId) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				countdowns: prevCustomization.countdowns.filter(
-					(countdown) => countdown.id !== targetCountdownId,
-				),
-			})),
-		[],
-	);
+	const deleteCountdown = useCallback((targetCountdownId) => {
+		deleteUserData(`/countdown/${targetCountdownId}`);
+		setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			countdowns: prevCustomization.countdowns.filter(
+				(countdown) => countdown.id !== targetCountdownId,
+			),
+		}));
+	}, []);
 
 	const deleteNote = useCallback((targetNote) => {
 		const updatedObject = {
@@ -614,6 +616,9 @@ export const useUserActions = () => {
 			targetCountdown.name = name;
 			targetCountdown.pinned = pinned;
 			targetCountdown.updatedDate = new Date().getTime();
+
+			const updatedObject = { countdowns: [targetCountdown] };
+			setNetworkRequestPayload(updatedObject);
 
 			return {
 				...prevCustomization,
@@ -1068,6 +1073,13 @@ export const useUserActions = () => {
 				targetCountdown.pinned = !pinned;
 				targetCountdown.updatedDate = new Date().getTime();
 
+				const updatedObject = {
+					countdowns: [
+						_.pick(targetCountdown, ["id", "pinned", "updatedDate"]),
+					],
+				};
+				setNetworkRequestPayload(updatedObject);
+
 				return {
 					...prevCustomization,
 					countdowns: prevCustomization.countdowns.map((countdown) =>
@@ -1108,10 +1120,17 @@ export const useUserActions = () => {
 
 	const toggleRandomMetricCountdown = useCallback(
 		() =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				showRandomMetricCountdown: !prevCustomization.showRandomMetricCountdown,
-			})),
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					showRandomMetricCountdown:
+						!prevCustomization.showRandomMetricCountdown,
+				};
+				setNetworkRequestPayload(updatedObject);
+				return {
+					...prevCustomization,
+					...updatedObject,
+				};
+			}),
 		[],
 	);
 
@@ -1364,18 +1383,31 @@ export const useUserActions = () => {
 
 	const toggleArchiveCountdown = useCallback(
 		(targetCountdownId) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				countdowns: prevCustomization.countdowns.map((countdown) =>
-					countdown.id === targetCountdownId
-						? {
-								...countdown,
-								archived: !countdown.archived,
-								updatedDate: new Date().getTime(),
-						  }
-						: countdown,
-				),
-			})),
+			setStorageUserCustomization((prevCustomization) => {
+				let targetCountdown = prevCustomization.countdowns.find(
+					(countdown) => countdown.id === targetCountdownId,
+				);
+
+				targetCountdown = {
+					...targetCountdown,
+					archived: !targetCountdown.archived,
+					updatedDate: new Date().getTime(),
+				};
+
+				const updatedObject = {
+					countdowns: [
+						_.pick(targetCountdown, ["id", "archived", "updatedDate"]),
+					],
+				};
+				setNetworkRequestPayload(updatedObject);
+
+				return {
+					...prevCustomization,
+					countdowns: prevCustomization.countdowns.map((countdown) =>
+						countdown.id === targetCountdownId ? targetCountdown : countdown,
+					),
+				};
+			}),
 		[],
 	);
 
@@ -1431,9 +1463,9 @@ export const useUserActions = () => {
 		setCurrentCountdownId,
 		setDashApp,
 		setDashAppStyles,
+		setNetworkRequestPayload,
 		setSearchProvider,
 		setSettingsActiveNav,
-		setNetworkRequestPayload,
 		setTodoItemOrder,
 		setTodoListOrder,
 		setTodoListColour,
