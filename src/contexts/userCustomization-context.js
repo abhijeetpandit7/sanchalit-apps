@@ -3,6 +3,7 @@ import { networkRequestReducer, widgetReducer } from "../reducers";
 import {
 	BACKGROUND,
 	PHOTO_INFO,
+	SERVER,
 	STORAGE,
 	DASH_APP_STYLES,
 	GENERAL_SETTING_APP_LIST,
@@ -37,6 +38,9 @@ export const UserCustomizationProvider = ({ children }) => {
 			},
 		),
 		data: {
+			[SERVER]: {
+				ready: false,
+			},
 			[STORAGE]: {
 				ready: false,
 			},

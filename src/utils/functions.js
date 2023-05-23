@@ -66,13 +66,33 @@ import {
 	bookmarksManagerBase64Source,
 } from "../utils";
 
-const addOrMergeArrayElements = (array, newElements, identifier) => {
+const addOrMergeArrayElements = (
+	array,
+	newElements,
+	identifier,
+	ignorePreviousArrayItems,
+) => {
 	if (array.length === 0) return newElements;
 
 	const elementMap = array.reduce((map, element) => {
 		map.set(element[identifier], element);
 		return map;
 	}, new Map());
+
+	if (ignorePreviousArrayItems) {
+		const newElementMap = newElements.reduce((map, element) => {
+			map.set(element[identifier], element);
+			return map;
+		}, new Map());
+		newElements.forEach((element) => {
+			newElementMap.set(element[identifier], {
+				...elementMap.get(element[identifier]),
+				...newElementMap.get(element[identifier]),
+			});
+		});
+		return Array.from(newElementMap.values());
+	}
+
 	newElements.forEach((element) => {
 		elementMap.set(element[identifier], {
 			...elementMap.get(element[identifier]),
@@ -82,13 +102,23 @@ const addOrMergeArrayElements = (array, newElements, identifier) => {
 	return Array.from(elementMap.values());
 };
 
-export const addOrMergeObjectProperties = (object, newProperties) => {
+export const addOrMergeObjectProperties = (
+	object,
+	newProperties,
+	ignorePreviousArrayItems = false,
+) => {
 	const mergedObject = { ...object };
 
 	for (const [key, newValue] of Object.entries(newProperties)) {
 		const oldValue = object[key];
 		if (_.isArray(oldValue) && _.isArray(newValue)) {
-			mergedObject[key] = addOrMergeArrayElements(oldValue, newValue, "id");
+			const customKeys = ["countdowns", "notes", "todoLists", "todos"];
+			mergedObject[key] = addOrMergeArrayElements(
+				oldValue,
+				newValue,
+				"id",
+				ignorePreviousArrayItems && customKeys.includes(key),
+			);
 		} else if (_.isObject(oldValue) && _.isObject(newValue)) {
 			mergedObject[key] = addOrMergeObjectProperties(oldValue, newValue);
 		} else {

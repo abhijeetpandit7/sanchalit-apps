@@ -13,8 +13,10 @@ import {
 	CUSTOMIZATION,
 	DEFAULT_AUTHENTICATION,
 	DEFAULT_CUSTOMIZATION,
+	SERVER,
 	STORAGE,
 	TOKEN,
+	addOrMergeObjectProperties,
 	getBookmarks,
 	getBrowserCookieItem,
 	getExtensionStorageItem,
@@ -33,6 +35,7 @@ import {
 
 const DEBOUNCE_TIME = 1;
 const MAX_DEBOUNCE_TIME = 10;
+const SERVER_TIMEOUT = 1;
 
 const getStorageItem = isBuildTargetWeb
 	? getLocalStorageItem
@@ -49,11 +52,17 @@ const setCookieItem = isBuildTargetWeb
 
 export const useAuthPersist = () => {
 	const { storageAuth, setStorageAuth } = useAuth();
-	const { setSubscriptionSummary, signUpUser } = useAuthActions();
+	const {
+		debouncedPostUserData,
+		getUserSettings,
+		setSubscriptionSummary,
+		signUpUser,
+	} = useAuthActions();
 	const { setAxiosAuthHeader, setAxiosBaseURL, setAxiosIntercept } = useAxios();
 	const {
 		storageUserCustomization,
 		setStorageUserCustomization,
+		networkRequestManager,
 		widgetManager,
 		showApps,
 		showMainView,
@@ -78,9 +87,36 @@ export const useAuthPersist = () => {
 		})();
 	}, [widgetManager]);
 
+	// Syncs auth and customization with server onReady storage
 	useEffect(() => {
-		(async () => {})();
-	}, [storageUserCustomization]);
+		let serverTimeout;
+		(async () => {
+			if (widgetManager.data[SERVER].ready) return;
+			if (widgetManager.data[STORAGE].ready) {
+				const setServerReady = () =>
+					setWidgetReady({ widget: SERVER, type: "data" });
+				if (!!storageAuth.token === false) return setServerReady();
+
+				serverTimeout = setTimeout(setServerReady, SERVER_TIMEOUT * 1000);
+				const response = await getUserSettings(!!isTokenFromCookie.current);
+				if (response?.success) {
+					const { auth, customization } = response;
+					await setStorageAuth((prevAuth) => ({ ...prevAuth, ...auth }));
+					if (!!customization)
+						await setStorageUserCustomization((prevCustomization) =>
+							addOrMergeObjectProperties(
+								prevCustomization,
+								customization,
+								true,
+							),
+						);
+				}
+				setServerReady();
+			}
+		})();
+
+		return () => clearTimeout(serverTimeout);
+	}, [widgetManager.data]);
 
 	// Initializes storageAuth and storageUserCustomization
 	useEffect(() => {
@@ -266,6 +302,14 @@ export const useAuthPersist = () => {
 			}
 		})();
 	}, [storageAuth.token]);
+
+	// Publishes customization to server onChange payload
+	useEffect(() => {
+		(async () => {
+			if (isObjectEmpty(networkRequestManager.payload)) return;
+			debouncedPostUserData("/userData", networkRequestManager.payload);
+		})();
+	}, [networkRequestManager.payload]);
 };
 
 // TODO: Hotkey for toggling bookmars

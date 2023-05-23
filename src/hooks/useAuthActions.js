@@ -22,6 +22,17 @@ export const useAuthActions = () => {
 		[storageAuth.token],
 	);
 
+	const getUserSettings = useCallback(async (isProfileDetailsRequested) => {
+		try {
+			const response = await axios.get(
+				`/userData/settings${
+					isProfileDetailsRequested ? "?profileDetails=1" : ""
+				}`,
+			);
+			return response.data;
+		} catch (error) {}
+	}, []);
+
 	const logOutUser = useCallback(async () => {
 		setStorageAuth(DEFAULT_AUTHENTICATION);
 		setStorageUserCustomization(DEFAULT_CUSTOMIZATION);
@@ -75,6 +86,7 @@ export const useAuthActions = () => {
 	return {
 		debouncedPostUserData,
 		deleteUserData,
+		getUserSettings,
 		logOutUser,
 		setSubscriptionSummary,
 		signUpUser,

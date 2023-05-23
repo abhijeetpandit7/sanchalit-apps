@@ -150,6 +150,7 @@ export const SAFARI = "Safari";
 export const SEARCH = "Search";
 const SEARCH_VISIBLE = "searchVisible";
 export const SEARCH_IN_CENTER = "Search in Center";
+export const SERVER = "server";
 export const SHIFT_TO_LEFT = "shift-to-left";
 export const SHOW = "show";
 export const SHOW_ANYWAY = "show-anyway";
