@@ -5,14 +5,17 @@ import {
 	useAuth,
 	useAuthActions,
 	useAxios,
+	useNetworkQueue,
 	useUserActions,
 	useUserCustomization,
 } from "../hooks";
 import {
 	AUTH,
 	CUSTOMIZATION,
+	NETWORK_QUEUE,
 	DEFAULT_AUTHENTICATION,
 	DEFAULT_CUSTOMIZATION,
+	DEFAULT_NETWORK_QUEUE,
 	SERVER,
 	STORAGE,
 	TOKEN,
@@ -59,6 +62,7 @@ export const useAuthPersist = () => {
 		signUpUser,
 	} = useAuthActions();
 	const { setAxiosAuthHeader, setAxiosBaseURL, setAxiosIntercept } = useAxios();
+	const { storageNetworkQueue, setStorageNetworkQueue } = useNetworkQueue();
 	const {
 		storageUserCustomization,
 		setStorageUserCustomization,
@@ -118,15 +122,17 @@ export const useAuthPersist = () => {
 		return () => clearTimeout(serverTimeout);
 	}, [widgetManager.data]);
 
-	// Initializes storageAuth and storageUserCustomization
+	// Initializes storageAuth, storageUserCustomization and storageNetworkQueue
 	useEffect(() => {
 		(async () => {
 			let auth = await getStorageItem(AUTH);
 			let userCustomization = await getStorageItem(CUSTOMIZATION);
+			let networkQueue = await getStorageItem(NETWORK_QUEUE);
 
 			if (isObjectEmpty(auth)) auth = DEFAULT_AUTHENTICATION;
 			if (isObjectEmpty(userCustomization))
 				userCustomization = DEFAULT_CUSTOMIZATION;
+			if (isObjectEmpty(networkQueue)) networkQueue = DEFAULT_NETWORK_QUEUE;
 
 			setAxiosBaseURL();
 			setAxiosIntercept();
@@ -173,6 +179,7 @@ export const useAuthPersist = () => {
 
 			setStorageAuth(auth);
 			setStorageUserCustomization(userCustomization);
+			setStorageNetworkQueue(networkQueue);
 			setWidgetReady({ widget: STORAGE, type: "data" });
 		})();
 	}, []);
@@ -203,6 +210,19 @@ export const useAuthPersist = () => {
 		})();
 	}, [storageUserCustomization]);
 
+	// Updates networkQueue in storage onChange storageNetworkQueue
+	useEffect(() => {
+		(async () => {
+			if (isObjectEmpty(storageNetworkQueue)) return;
+			const localStorageNetworkQueue = await getStorageItem(NETWORK_QUEUE);
+			if (
+				isDeepEqual(storageNetworkQueue, localStorageNetworkQueue) === false
+			) {
+				await setStorageItem(NETWORK_QUEUE, storageNetworkQueue);
+			}
+		})();
+	}, [storageNetworkQueue]);
+
 	// storageChangeListener for web
 	useEffect(() => {
 		(async () => {
@@ -210,12 +230,14 @@ export const useAuthPersist = () => {
 
 			const storageChangeHandler = (event) => {
 				const { key, newValue } = event;
-				if ([AUTH, CUSTOMIZATION].includes(key)) {
+				if ([AUTH, CUSTOMIZATION, NETWORK_QUEUE].includes(key)) {
 					const parsedValue = JSON.parse(newValue);
 					if (key === AUTH) {
 						setStorageAuth(parsedValue);
 					} else if (key === CUSTOMIZATION) {
 						setStorageUserCustomization(parsedValue);
+					} else if (key === NETWORK_QUEUE) {
+						setStorageNetworkQueue(parsedValue);
 					}
 				}
 			};
@@ -243,7 +265,7 @@ export const useAuthPersist = () => {
 			const storageChangeHandler = (changes, namespace) => {
 				if (namespace !== "local") return;
 				for (let [key, { newValue }] of Object.entries(changes)) {
-					if ([AUTH, CUSTOMIZATION].includes(key)) {
+					if ([AUTH, CUSTOMIZATION, NETWORK_QUEUE].includes(key)) {
 						if (key === AUTH) {
 							setStorageAuth(newValue);
 						} else if (key === CUSTOMIZATION) {
@@ -251,6 +273,8 @@ export const useAuthPersist = () => {
 								isDeepEqual(userCustomizationRef.current, newValue) === false
 							) {
 								setStorageUserCustomization(newValue);
+							} else if (key === NETWORK_QUEUE) {
+								setStorageNetworkQueue(parsedValue);
 							}
 						}
 					}

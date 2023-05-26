@@ -119,6 +119,7 @@ export const MANTRAS = "Mantras";
 const MODERN = "modern";
 export const MOZ_EXTENSION = "moz-extension";
 export const NAV_ACTIVE = "nav-active";
+export const NETWORK_QUEUE = "networkQueue";
 export const NIPPLE = "nipple";
 export const NIPPLE_BOTTOM_RIGHT = "nipple-bottom-right";
 export const NIPPLE_TOP_LEFT = "nipple-top-left";
@@ -845,4 +846,16 @@ export const DEFAULT_CUSTOMIZATION = {
 	topSites: [],
 	[THEME_COLOUR]: SYSTEM,
 	[THEME_FONT]: CLASSIC,
+};
+
+export const DEFAULT_NETWORK_QUEUE = {
+	post: {
+		userData: {},
+	},
+	delete: {
+		countdown: {},
+		note: {},
+		todoList: {},
+		todo: {},
+	},
 };

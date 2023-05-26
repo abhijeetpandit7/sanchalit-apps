@@ -1,8 +1,10 @@
 import {
 	AUTH,
 	CUSTOMIZATION,
+	NETWORK_QUEUE,
 	DEFAULT_AUTHENTICATION,
 	DEFAULT_CUSTOMIZATION,
+	DEFAULT_NETWORK_QUEUE,
 	URL_ROOT_API,
 	URL_ROOT_DOMAIN,
 	addOrMergeObjectProperties,
@@ -106,6 +108,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 												response.customization,
 										  )
 										: DEFAULT_CUSTOMIZATION,
+									[NETWORK_QUEUE]: DEFAULT_NETWORK_QUEUE,
 								});
 								resolve();
 							}
@@ -130,6 +133,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			chrome.storage.local.set({
 				[AUTH]: DEFAULT_AUTHENTICATION,
 				[CUSTOMIZATION]: DEFAULT_CUSTOMIZATION,
+				[NETWORK_QUEUE]: DEFAULT_NETWORK_QUEUE,
 			});
 			break;
 		}
