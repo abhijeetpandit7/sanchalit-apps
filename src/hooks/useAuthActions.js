@@ -4,6 +4,7 @@ import { debounce } from "lodash";
 import {
 	useAuth,
 	useNetworkQueue,
+	useNetworkQueueActions,
 	useUserCustomization,
 } from "../hooks";
 import {
@@ -20,13 +21,20 @@ export const useAuthActions = () => {
 	const { setStorageUserCustomization, networkRequestDispatch } =
 		useUserCustomization();
 	const { setStorageNetworkQueue } = useNetworkQueue();
+	const { setDeleteUserData, setPostUserData } = useNetworkQueueActions();
 
 	const deleteUserData = useCallback(
 		async (endpoint, payload) => {
 			if (!!storageAuth?.token === false) return;
 			try {
-				await axios.delete(endpoint, { data: payload });
-			} catch (error) {}
+				const response = await axios.delete(endpoint, { data: payload });
+				return response.data;
+			} catch (error) {
+				setDeleteUserData(
+					endpoint,
+					error.config.data && JSON.parse(error.config.data),
+				);
+			}
 		},
 		[storageAuth.token],
 	);
@@ -52,8 +60,11 @@ export const useAuthActions = () => {
 		async (endpoint, payload) => {
 			if (!!storageAuth?.token === false) return;
 			try {
-				await axios.post(endpoint, { data: payload });
-			} catch (error) {}
+				const response = await axios.post(endpoint, { data: payload });
+				return response.data;
+			} catch (error) {
+				setPostUserData(endpoint, JSON.parse(error.config.data));
+			}
 		},
 		[storageAuth.token],
 	);
@@ -94,6 +105,7 @@ export const useAuthActions = () => {
 	}, []);
 
 	return {
+		postUserData,
 		debouncedPostUserData,
 		deleteUserData,
 		getUserSettings,

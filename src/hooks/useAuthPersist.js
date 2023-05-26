@@ -56,7 +56,9 @@ const setCookieItem = isBuildTargetWeb
 export const useAuthPersist = () => {
 	const { storageAuth, setStorageAuth } = useAuth();
 	const {
+		postUserData,
 		debouncedPostUserData,
+		deleteUserData,
 		getUserSettings,
 		setSubscriptionSummary,
 		signUpUser,
@@ -102,6 +104,20 @@ export const useAuthPersist = () => {
 				if (!!storageAuth.token === false) return setServerReady();
 
 				serverTimeout = setTimeout(setServerReady, SERVER_TIMEOUT * 1000);
+				let networkQueue = { ...storageNetworkQueue };
+				if (navigator.onLine) {
+					const processNetworkQueue = async (method, callback) => {
+						for (const [key, object] of Object.entries(networkQueue[method])) {
+							if (isObjectEmpty(object) === false) {
+								const response = await callback(`/${key}`, object);
+								if (response?.success) networkQueue[method][key] = {};
+							}
+						}
+					};
+					await processNetworkQueue("post", postUserData);
+					await processNetworkQueue("delete", deleteUserData);
+					setStorageNetworkQueue(networkQueue);
+				}
 				const response = await getUserSettings(!!isTokenFromCookie.current);
 				if (response?.success) {
 					const { auth, customization } = response;
