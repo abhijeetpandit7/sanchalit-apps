@@ -1,29 +1,83 @@
-import { useEffect } from "react";
-import { useAuth, useUserActions, useUserCustomization } from "../hooks";
+import { useEffect, useRef } from "react";
+import { debounce } from "lodash";
+import jwt_decode from "jwt-decode";
 import {
-	API,
+	useAuth,
+	useAuthActions,
+	useAxios,
+	useNetworkQueue,
+	useUserActions,
+	useUserCustomization,
+} from "../hooks";
+import {
 	AUTH,
 	CUSTOMIZATION,
+	NETWORK_QUEUE,
 	DEFAULT_AUTHENTICATION,
 	DEFAULT_CUSTOMIZATION,
+	DEFAULT_NETWORK_QUEUE,
+	SERVER,
+	STORAGE,
+	TOKEN,
+	addOrMergeObjectProperties,
 	getBookmarks,
+	getBrowserCookieItem,
+	getExtensionStorageItem,
+	getLocalCookieItem,
 	getLocalStorageItem,
 	getTopSites,
+	isActiveSubscription,
+	isBuildTargetWeb,
+	isDeepEqual,
 	isObjectEmpty,
+	setBrowserCookieItem,
+	setExtensionStorageItem,
+	setLocalCookieItem,
 	setLocalStorageItem,
 } from "../utils";
+
+const DEBOUNCE_TIME = 1;
+const MAX_DEBOUNCE_TIME = 10;
+const SERVER_TIMEOUT = 1;
+
+const getStorageItem = isBuildTargetWeb
+	? getLocalStorageItem
+	: getExtensionStorageItem;
+const setStorageItem = isBuildTargetWeb
+	? setLocalStorageItem
+	: setExtensionStorageItem;
+const getCookieItem = isBuildTargetWeb
+	? getLocalCookieItem
+	: getBrowserCookieItem;
+const setCookieItem = isBuildTargetWeb
+	? setLocalCookieItem
+	: setBrowserCookieItem;
 
 export const useAuthPersist = () => {
 	const { storageAuth, setStorageAuth } = useAuth();
 	const {
+		postUserData,
+		debouncedPostUserData,
+		deleteUserData,
+		getUserSettings,
+		setSubscriptionSummary,
+		signUpUser,
+	} = useAuthActions();
+	const { setAxiosAuthHeader, setAxiosBaseURL, setAxiosIntercept } = useAxios();
+	const { storageNetworkQueue, setStorageNetworkQueue } = useNetworkQueue();
+	const {
 		storageUserCustomization,
 		setStorageUserCustomization,
+		networkRequestManager,
 		widgetManager,
 		showApps,
 		showMainView,
 	} = useUserCustomization();
 	const { setWidgetReady } = useUserActions();
+	const userCustomizationRef = useRef(storageUserCustomization);
+	const isTokenFromCookie = useRef(false);
 
+	// Transits from overlay to main-view onReady widgetManager
 	useEffect(() => {
 		(async () => {
 			if (
@@ -39,20 +93,92 @@ export const useAuthPersist = () => {
 		})();
 	}, [widgetManager]);
 
+	// Syncs auth and customization with server onReady storage
 	useEffect(() => {
-		(async () => {})();
-	}, [storageUserCustomization]);
+		let serverTimeout;
+		(async () => {
+			if (widgetManager.data[SERVER].ready) return;
+			if (widgetManager.data[STORAGE].ready) {
+				const setServerReady = () =>
+					setWidgetReady({ widget: SERVER, type: "data" });
+				if (!!storageAuth.token === false) return setServerReady();
 
+				serverTimeout = setTimeout(setServerReady, SERVER_TIMEOUT * 1000);
+				let networkQueue = { ...storageNetworkQueue };
+				if (navigator.onLine) {
+					const processNetworkQueue = async (method, callback) => {
+						for (const [key, object] of Object.entries(networkQueue[method])) {
+							if (isObjectEmpty(object) === false) {
+								const response = await callback(`/${key}`, object);
+								if (response?.success) networkQueue[method][key] = {};
+							}
+						}
+					};
+					await processNetworkQueue("post", postUserData);
+					await processNetworkQueue("delete", deleteUserData);
+					setStorageNetworkQueue(networkQueue);
+				}
+				const response = await getUserSettings(!!isTokenFromCookie.current);
+				if (response?.success) {
+					const { auth, customization } = response;
+					await setStorageAuth((prevAuth) => ({ ...prevAuth, ...auth }));
+					if (!!customization)
+						await setStorageUserCustomization((prevCustomization) =>
+							addOrMergeObjectProperties(
+								prevCustomization,
+								customization,
+								true,
+							),
+						);
+				}
+				setServerReady();
+			}
+		})();
+
+		return () => clearTimeout(serverTimeout);
+	}, [widgetManager.data]);
+
+	// Initializes storageAuth, storageUserCustomization and storageNetworkQueue
 	useEffect(() => {
 		(async () => {
-			let auth = await JSON.parse(getLocalStorageItem(AUTH));
-			let userCustomization = await JSON.parse(
-				getLocalStorageItem(CUSTOMIZATION),
-			);
+			let auth = await getStorageItem(AUTH);
+			let userCustomization = await getStorageItem(CUSTOMIZATION);
+			let networkQueue = await getStorageItem(NETWORK_QUEUE);
 
 			if (isObjectEmpty(auth)) auth = DEFAULT_AUTHENTICATION;
 			if (isObjectEmpty(userCustomization))
 				userCustomization = DEFAULT_CUSTOMIZATION;
+			if (isObjectEmpty(networkQueue)) networkQueue = DEFAULT_NETWORK_QUEUE;
+
+			setAxiosBaseURL();
+			setAxiosIntercept();
+
+			/*
+				For extension, if token doesn't exist in storage
+					if tokenFromCookie exists, reset storage and set isTokenFromCookie which fetches profileDetails
+					else signUpUser
+				For web, even if token exists in storage
+						if tokenFromCookie exists, comapre both tokens
+							if different, reset storage and set isTokenFromCookie which fetches profileDetails
+			*/
+			if (!!auth?.token === false || isBuildTargetWeb) {
+				const tokenFromCookie = await getCookieItem(TOKEN);
+				if (tokenFromCookie) {
+					const isWebAndMismatchedToken =
+						isBuildTargetWeb && auth?.token !== tokenFromCookie;
+					if (isBuildTargetWeb === false || isWebAndMismatchedToken) {
+						isTokenFromCookie.current = true;
+						auth = DEFAULT_AUTHENTICATION;
+						auth.token = tokenFromCookie;
+						userCustomization = DEFAULT_CUSTOMIZATION;
+					}
+				} else if (isBuildTargetWeb === false) {
+					const response = await signUpUser();
+					if (response?.success) {
+						auth = { ...auth, ...response.auth };
+					}
+				}
+			}
 
 			const {
 				bookmarksVisible,
@@ -69,24 +195,161 @@ export const useAuthPersist = () => {
 
 			setStorageAuth(auth);
 			setStorageUserCustomization(userCustomization);
-			setWidgetReady({ widget: API, type: "data" });
+			setStorageNetworkQueue(networkQueue);
+			setWidgetReady({ widget: STORAGE, type: "data" });
 		})();
 	}, []);
 
+	// Updates auth in storage onChange storageAuth
 	useEffect(() => {
 		(async () => {
-			if (
-				isObjectEmpty(storageAuth) === false &&
-				isObjectEmpty(storageUserCustomization) === false
-			) {
-				await setLocalStorageItem(AUTH, JSON.stringify(storageAuth));
-				await setLocalStorageItem(
-					CUSTOMIZATION,
-					JSON.stringify(storageUserCustomization),
-				);
+			if (isObjectEmpty(storageAuth)) return;
+			const localStorageAuth = await getStorageItem(AUTH);
+			if (isDeepEqual(storageAuth, localStorageAuth) === false) {
+				await setStorageItem(AUTH, storageAuth);
 			}
 		})();
-	}, [storageAuth, storageUserCustomization]);
+	}, [storageAuth]);
+
+	// Updates customization in storage onChange storageUserCustomization
+	useEffect(() => {
+		(async () => {
+			if (isObjectEmpty(storageUserCustomization)) return;
+			userCustomizationRef.current = storageUserCustomization;
+			const localStorageUserCustomization = await getStorageItem(CUSTOMIZATION);
+			if (
+				isDeepEqual(storageUserCustomization, localStorageUserCustomization) ===
+				false
+			) {
+				await setStorageItem(CUSTOMIZATION, storageUserCustomization);
+			}
+		})();
+	}, [storageUserCustomization]);
+
+	// Updates networkQueue in storage onChange storageNetworkQueue
+	useEffect(() => {
+		(async () => {
+			if (isObjectEmpty(storageNetworkQueue)) return;
+			const localStorageNetworkQueue = await getStorageItem(NETWORK_QUEUE);
+			if (
+				isDeepEqual(storageNetworkQueue, localStorageNetworkQueue) === false
+			) {
+				await setStorageItem(NETWORK_QUEUE, storageNetworkQueue);
+			}
+		})();
+	}, [storageNetworkQueue]);
+
+	// storageChangeListener for web
+	useEffect(() => {
+		(async () => {
+			if (isBuildTargetWeb === false) return;
+
+			const storageChangeHandler = (event) => {
+				const { key, newValue } = event;
+				if ([AUTH, CUSTOMIZATION, NETWORK_QUEUE].includes(key)) {
+					const parsedValue = JSON.parse(newValue);
+					if (key === AUTH) {
+						setStorageAuth(parsedValue);
+					} else if (key === CUSTOMIZATION) {
+						setStorageUserCustomization(parsedValue);
+					} else if (key === NETWORK_QUEUE) {
+						setStorageNetworkQueue(parsedValue);
+					}
+				}
+			};
+			const debouncedStorageChangeHandler = debounce(
+				storageChangeHandler,
+				DEBOUNCE_TIME * 1000,
+				{
+					maxWait: MAX_DEBOUNCE_TIME * 1000,
+				},
+			);
+			window.addEventListener("storage", debouncedStorageChangeHandler);
+
+			return () => {
+				window.removeEventListener("storage", debouncedStorageChangeHandler);
+				debouncedStorageChangeHandler.cancel();
+			};
+		})();
+	}, []);
+
+	// storageChangeListener for extension
+	useEffect(() => {
+		(async () => {
+			if (isBuildTargetWeb) return;
+
+			const storageChangeHandler = (changes, namespace) => {
+				if (namespace !== "local") return;
+				for (let [key, { newValue }] of Object.entries(changes)) {
+					if ([AUTH, CUSTOMIZATION, NETWORK_QUEUE].includes(key)) {
+						if (key === AUTH) {
+							setStorageAuth(newValue);
+						} else if (key === CUSTOMIZATION) {
+							if (
+								isDeepEqual(userCustomizationRef.current, newValue) === false
+							) {
+								setStorageUserCustomization(newValue);
+							} else if (key === NETWORK_QUEUE) {
+								setStorageNetworkQueue(parsedValue);
+							}
+						}
+					}
+				}
+			};
+
+			const debouncedStorageChangeHandler = debounce(
+				storageChangeHandler,
+				DEBOUNCE_TIME * 1000,
+				{
+					maxWait: MAX_DEBOUNCE_TIME * 1000,
+				},
+			);
+
+			chrome.storage.onChanged.addListener(debouncedStorageChangeHandler);
+
+			return () => {
+				chrome.storage.onChanged.removeListener(debouncedStorageChangeHandler);
+				debouncedStorageChangeHandler.cancel();
+			};
+		})();
+	}, []);
+
+	// Updates Authorization, cookie and review subscriptionSummary onChange token
+	useEffect(() => {
+		(async () => {
+			if (isObjectEmpty(storageAuth)) return;
+
+			setAxiosAuthHeader(storageAuth.token);
+			setCookieItem(TOKEN, storageAuth?.token ? storageAuth.token : "");
+
+			let decodedPayload;
+			try {
+				decodedPayload = jwt_decode(storageAuth.token);
+			} catch (error) {
+				decodedPayload = { subscriptionSummary: {} };
+			}
+			const { subscriptionSummary } = decodedPayload;
+			const subscriptionPlanFromStorage = storageAuth.subscriptionSummary.plan;
+			const subscriptionPlanFromToken = subscriptionSummary.plan;
+			const isActiveSubscriptionFromToken =
+				isActiveSubscription(subscriptionSummary);
+			if (subscriptionPlanFromStorage) {
+				if (isActiveSubscriptionFromToken === false) {
+					setSubscriptionSummary({ plan: null });
+				}
+			} else if (subscriptionPlanFromToken && isActiveSubscriptionFromToken) {
+				setSubscriptionSummary(subscriptionSummary);
+			}
+		})();
+	}, [storageAuth.token]);
+
+	// Publishes customization to server onChange payload
+	useEffect(() => {
+		(async () => {
+			if (isObjectEmpty(networkRequestManager.payload)) return;
+			debouncedPostUserData("/userData", networkRequestManager.payload);
+		})();
+	}, [networkRequestManager.payload]);
 };
 
 // TODO: Hotkey for toggling bookmars

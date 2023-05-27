@@ -1,11 +1,13 @@
 import { useCallback } from "react";
-import { useUserCustomization } from "../hooks";
+import _ from "lodash";
+import { useAuthActions, useUserCustomization } from "../hooks";
 import {
 	BOOKMARKS,
 	BOOKMARKS_PERMISSION,
 	DATE_ROLLOVER_HOUR,
 	EDITING,
 	EMPTY_NAME,
+	FIREFOX,
 	GENERAL_SETTING_APP_LIST,
 	INPUT_WRAPPER,
 	NOTE_DELETE_TIMEOUT,
@@ -28,6 +30,7 @@ import {
 	focusDisplayName,
 	focusNotesInput,
 	getBookmarks,
+	getBrowserType,
 	getDaysDifference,
 	getNewOrderValue,
 	getPermissionAllowed,
@@ -40,18 +43,21 @@ import {
 } from "../utils";
 
 export const useUserActions = () => {
+	const { deleteUserData } = useAuthActions();
 	const {
 		displayNameRef,
 		notesInputRef,
 		searchInputRef,
 		storageUserCustomization,
 		setStorageUserCustomization,
+		networkRequestDispatch,
 		widgetDispatch,
 	} = useUserCustomization();
 
 	const archiveAllDoneTodoItemsFrom = useCallback(
-		({ listId = false, onNewDay = true } = {}) =>
-			storageUserCustomization.todos
+		async ({ listId = false, onNewDay = true } = {}) => {
+			let updatedItems = [];
+			await storageUserCustomization.todos
 				.filter((todo) =>
 					listId ? todo.listId === listId : todo.listId !== TODO_LIST_DONE_ID,
 				)
@@ -64,47 +70,88 @@ export const useUserActions = () => {
 						return todoItemCompletedDate.getTime() < today.getTime();
 					} else return true;
 				})
-				.map(async (todo) => await archiveTodoItem(todo.id)),
+				.map(async (todo) =>
+					updatedItems.push(await archiveTodoItem(todo.id, false)),
+				);
+			await Promise.all(updatedItems);
+			if (updatedItems.length) {
+				const updatedObject = {
+					todos: updatedItems.map((item) => item.todo),
+					todoSettings: _.last(updatedItems).todoSettings,
+				};
+				setNetworkRequestPayload(updatedObject);
+			}
+		},
 		[storageUserCustomization.todos],
 	);
 
-	const archiveTodoItem = useCallback(
-		(id) =>
-			setStorageUserCustomization((prevCustomization) => {
-				const instantDate = new Date();
-				const targetTodoItem = prevCustomization.todos.find(
-					(todo) => todo.id === id,
-				);
+	const archiveTodoItem = useCallback(async (id, postData = true) => {
+		let updatedObject;
+		await setStorageUserCustomization((prevCustomization) => {
+			const instantDate = new Date();
+			const targetTodoItem = prevCustomization.todos.find(
+				(todo) => todo.id === id,
+			);
 
-				targetTodoItem.today = false;
-				targetTodoItem.listId = TODO_LIST_DONE_ID;
-				targetTodoItem.ts = instantDate.getTime();
+			targetTodoItem.today = false;
+			targetTodoItem.listId = TODO_LIST_DONE_ID;
+			targetTodoItem.ts = instantDate.getTime();
 
-				return {
-					...prevCustomization,
-					todos: prevCustomization.todos.map((todo) =>
-						todo.id === id ? targetTodoItem : todo,
-					),
-					todoSettings: {
-						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate,
-					},
-				};
-			}),
-		[],
-	);
+			const filteredTargetTodoItem = _.pick(targetTodoItem, [
+				"id",
+				"today",
+				"listId",
+				"ts",
+			]);
+			updatedObject = {
+				[postData ? "todos" : "todo"]: postData
+					? [filteredTargetTodoItem]
+					: filteredTargetTodoItem,
+				todoSettings: {
+					todosUpdatedDate: instantDate.toISOString(),
+				},
+			};
+			if (postData) setNetworkRequestPayload(updatedObject);
+
+			return {
+				...prevCustomization,
+				todos: prevCustomization.todos.map((todo) =>
+					todo.id === id ? targetTodoItem : todo,
+				),
+				todoSettings: {
+					...prevCustomization.todoSettings,
+					...updatedObject.todoSettings,
+				},
+			};
+		});
+		return updatedObject;
+	}, []);
 
 	const cleanupNotes = useCallback(
 		() =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				notes: prevCustomization.notes.filter(
-					({ deleted, empty, updatedDate }) =>
-						empty !== true &&
-						(deleted === false ||
-							getDaysDifference(updatedDate) > -toDays(NOTE_DELETE_TIMEOUT)),
-				),
-			})),
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					notes: _.cloneDeep(prevCustomization.notes)
+						.filter(
+							({ deleted, empty, updatedDate }) =>
+								empty === true ||
+								(deleted === true &&
+									getDaysDifference(updatedDate) <=
+										-toDays(NOTE_DELETE_TIMEOUT)),
+						)
+						.map((note) => _.pick(note, ["id"])),
+				};
+				if (updatedObject.notes.length) deleteUserData("/note", updatedObject);
+				return {
+					...prevCustomization,
+					notes: prevCustomization.notes.filter(
+						(note) =>
+							updatedObject.notes
+								.map((deletedNote) => deletedNote.id)
+								.includes(note.id) === false,
+					),
+				};
+			}),
 		[],
 	);
 
@@ -112,11 +159,14 @@ export const useUserActions = () => {
 		let newCountdown = createCountdown();
 		newCountdown = {
 			...newCountdown,
-			dueDate: date,
+			dueDate: date.toISOString(),
 			hasHours: showTime,
 			name,
 			pinned,
 		};
+
+		const updatedObject = { countdowns: [newCountdown] };
+		setNetworkRequestPayload(updatedObject);
 
 		setStorageUserCustomization((prevCustomization) => ({
 			...prevCustomization,
@@ -148,20 +198,28 @@ export const useUserActions = () => {
 			newTodo = {
 				...newTodo,
 				title,
-				completedDate: isActiveTodoListDoneList ? instantDate : null,
+				completedDate: isActiveTodoListDoneList
+					? instantDate.toISOString()
+					: null,
 				homeListId: activeTodoListId,
 				listId: activeTodoListId,
 				order: newOrder,
 				done: isActiveTodoListDoneList,
 				today: activeTodoListId === TODO_LIST_TODAY_ID,
 			};
-
+			const updatedObject = {
+				todos: [newTodo],
+				todoSettings: {
+					todosUpdatedDate: instantDate.toISOString(),
+				},
+			};
+			setNetworkRequestPayload(updatedObject);
 			setStorageUserCustomization((prevCustomization) => ({
 				...prevCustomization,
 				todos: [...prevCustomization.todos, newTodo],
 				todoSettings: {
 					...prevCustomization.todoSettings,
-					todosUpdatedDate: instantDate,
+					...updatedObject.todoSettings,
 				},
 			}));
 		},
@@ -171,8 +229,6 @@ export const useUserActions = () => {
 	const createTodoList = useCallback(
 		(title) => {
 			let newTodoList = createNewTodoList();
-			const instantDate = new Date();
-
 			const { todoLists } = storageUserCustomization;
 			const newOrder = getNewOrderValue(todoLists);
 
@@ -181,71 +237,92 @@ export const useUserActions = () => {
 				title,
 				order: newOrder,
 			};
-
+			const updatedObject = {
+				todoLists: [newTodoList],
+				todoSettings: {
+					todosUpdatedDate: new Date().toISOString(),
+				},
+			};
+			setNetworkRequestPayload(updatedObject);
 			setStorageUserCustomization((prevCustomization) => ({
 				...prevCustomization,
 				todoLists: [...prevCustomization.todoLists, newTodoList],
 				todoSettings: {
 					...prevCustomization.todoSettings,
 					activeTodoListId: newTodoList.id,
-					todosUpdatedDate: instantDate,
+					...updatedObject.todoSettings,
 				},
 			}));
 		},
 		[storageUserCustomization.todoLists],
 	);
 
-	const deleteCountdown = useCallback(
-		(targetCountdownId) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				countdowns: prevCustomization.countdowns.filter(
-					(countdown) => countdown.id !== targetCountdownId,
-				),
-			})),
-		[],
-	);
+	const deleteCountdown = useCallback((targetCountdownId) => {
+		deleteUserData(`/countdown/${targetCountdownId}`);
+		setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			countdowns: prevCustomization.countdowns.filter(
+				(countdown) => countdown.id !== targetCountdownId,
+			),
+		}));
+	}, []);
 
-	const deleteNote = useCallback(
-		(targetNote) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				notes: prevCustomization.notes.map((note) =>
-					note.id === targetNote.id
-						? { ...note, deleted: true, updatedDate: new Date().getTime() }
-						: note,
-				),
-			})),
-		[],
-	);
-
-	const deleteTodoItem = useCallback(
-		(id) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				todos: prevCustomization.todos.filter((todo) => todo.id !== id),
-				todoSettings: {
-					...prevCustomization.todoSettings,
-					todosUpdatedDate: new Date(),
+	const deleteNote = useCallback((targetNote) => {
+		const updatedObject = {
+			notes: [
+				{
+					id: targetNote.id,
+					deleted: true,
+					updatedDate: new Date().getTime(),
 				},
-			})),
-		[],
-	);
+			],
+		};
+		setNetworkRequestPayload(updatedObject);
+		setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			notes: prevCustomization.notes.map((note) =>
+				note.id === targetNote.id
+					? { ...note, ...updatedObject.notes[0] }
+					: note,
+			),
+		}));
+	}, []);
 
-	const deleteTodoList = useCallback(
-		(id) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				todoLists: prevCustomization.todoLists.filter(
-					(todoList) => todoList.id !== id,
-				),
-				todoSettings: {
-					...prevCustomization.todoSettings,
-					todosUpdatedDate: new Date(),
-				},
-			})),
-		[],
-	);
+	const deleteTodoItem = useCallback((id) => {
+		const updatedObject = {
+			todoSettings: {
+				todosUpdatedDate: new Date().toISOString(),
+			},
+		};
+		deleteUserData(`/todo/${id}`, updatedObject);
+		setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			todos: prevCustomization.todos.filter((todo) => todo.id !== id),
+			todoSettings: {
+				...prevCustomization.todoSettings,
+				...updatedObject.todoSettings,
+			},
+		}));
+	}, []);
+
+	const deleteTodoList = useCallback((id) => {
+		const updatedObject = {
+			todoSettings: {
+				todosUpdatedDate: new Date().toISOString(),
+			},
+		};
+		deleteUserData(`/todoList/${id}`, updatedObject);
+		setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			todoLists: prevCustomization.todoLists.filter(
+				(todoList) => todoList.id !== id,
+			),
+			todoSettings: {
+				...prevCustomization.todoSettings,
+				...updatedObject.todoSettings,
+			},
+		}));
+	}, []);
 
 	const editDisplayName = useCallback(async () => {
 		const { displayName, displayNameVisible } = storageUserCustomization;
@@ -347,32 +424,60 @@ export const useUserActions = () => {
 	]);
 
 	const moveAllTodoItems = useCallback(
-		(fromListId, toListId) =>
-			storageUserCustomization.todos
+		async (fromListId, toListId) => {
+			let updatedItems = [];
+			await storageUserCustomization.todos
 				.filter((todo) => todo.listId === fromListId)
-				.map(async (todo) => await moveTodoItemTo(todo.id, toListId)),
+				.map(async (todo) =>
+					updatedItems.push(
+						await moveTodoItemTo(todo.id, toListId, null, false),
+					),
+				);
+			await Promise.all(updatedItems);
+			if (updatedItems.length) {
+				const updatedObject = {
+					todos: updatedItems.map((item) => item.todo),
+					todoSettings: _.last(updatedItems).todoSettings,
+				};
+				setNetworkRequestPayload(updatedObject);
+			}
+		},
 		[storageUserCustomization.todos],
 	);
 
 	const moveAllTodoItemsToOriginalList = useCallback(
-		(fromListId) =>
-			storageUserCustomization.todos
+		async (fromListId) => {
+			let updatedItems = [];
+			await storageUserCustomization.todos
 				.filter((todo) => todo.listId === fromListId)
-				.map(
-					async (todo) =>
+				.map(async (todo) =>
+					updatedItems.push(
 						await moveTodoItemTo(
 							todo.id,
 							todo.homeListId === TODO_LIST_TODAY_ID
 								? TODO_LIST_INBOX_ID
 								: todo.homeListId,
+							null,
+							false,
 						),
-				),
+					),
+				);
+			await Promise.all(updatedItems);
+			if (updatedItems.length) {
+				const updatedObject = {
+					todos: updatedItems.map((item) => item.todo),
+					todoSettings: _.last(updatedItems).todoSettings,
+				};
+				setNetworkRequestPayload(updatedObject);
+			}
+		},
 		[storageUserCustomization.todos],
 	);
 
 	const moveTodoItemTo = useCallback(
-		(itemId, listId, fromDoneList) =>
-			setStorageUserCustomization((prevCustomization) => {
+		async (itemId, listId, fromDoneList, postData = true) => {
+			let updatedObject;
+			await setStorageUserCustomization((prevCustomization) => {
 				const instantDate = new Date();
 				const targetTodoItem = prevCustomization.todos.find(
 					(todo) => todo.id === itemId,
@@ -393,7 +498,7 @@ export const useUserActions = () => {
 				}
 				if (isTargetDoneList) {
 					if (targetTodoItem.done === false)
-						targetTodoItem.completedDate = instantDate;
+						targetTodoItem.completedDate = instantDate.toISOString();
 					targetTodoItem.done = true;
 				} else if (isTargetTodayList) {
 					targetTodoItem.today = true;
@@ -413,6 +518,21 @@ export const useUserActions = () => {
 				}
 				targetTodoItem.ts = instantDate.getTime();
 
+				const filteredTargetTodoItem = _.omit(targetTodoItem, [
+					"title",
+					"createdDate",
+					"viewSectionId",
+				]);
+				updatedObject = {
+					[postData ? "todos" : "todo"]: postData
+						? [filteredTargetTodoItem]
+						: filteredTargetTodoItem,
+					todoSettings: {
+						todosUpdatedDate: instantDate.toISOString(),
+					},
+				};
+				if (postData) setNetworkRequestPayload(updatedObject);
+
 				return {
 					...prevCustomization,
 					todos: prevCustomization.todos.map((todo) =>
@@ -420,41 +540,67 @@ export const useUserActions = () => {
 					),
 					todoSettings: {
 						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate,
+						...updatedObject.todoSettings,
 					},
 				};
-			}),
+			});
+			return updatedObject;
+		},
 		[],
 	);
 
-	const reorderAllTodoItems = useCallback(
-		(todoItems) =>
-			todoItems
-				.sort((a, b) => a.order - b.order)
-				.map(async (todoItem, index) => {
-					todoItem.order !== index &&
-						(await setTodoItemOrder(todoItem.id, index));
-				}),
-		[],
-	);
+	const reorderAllTodoItems = useCallback(async (todoItems) => {
+		let updatedItems = [];
+		await todoItems
+			.sort((a, b) => a.order - b.order)
+			.map(async (todoItem, index) => {
+				if (todoItem.order !== index)
+					updatedItems.push(await setTodoItemOrder(todoItem.id, index));
+			});
+		await Promise.all(updatedItems);
+		if (updatedItems.length) {
+			const updatedObject = {
+				todos: updatedItems.map((item) => item.todo),
+				todoSettings: _.last(updatedItems).todoSettings,
+			};
+			setNetworkRequestPayload(updatedObject);
+		}
+	}, []);
 
-	const reorderAllTodoLists = useCallback(
-		(todoLists) =>
-			todoLists
-				.sort((a, b) => a.order - b.order)
-				.map(async (todoList, index) => {
-					todoList.order !== index &&
-						(await setTodoListOrder(todoList.id, index));
-				}),
-		[],
-	);
+	const reorderAllTodoLists = useCallback(async (todoLists) => {
+		let updatedItems = [];
+		await todoLists
+			.sort((a, b) => a.order - b.order)
+			.map(async (todoList, index) => {
+				if (todoList.order !== index)
+					updatedItems.push(await setTodoListOrder(todoList.id, index));
+			});
+		await Promise.all(updatedItems);
+		if (updatedItems.length) {
+			const updatedObject = {
+				todoLists: updatedItems.map((item) => item.todoList),
+				todoSettings: _.last(updatedItems).todoSettings,
+			};
+			setNetworkRequestPayload(updatedObject);
+		}
+	}, []);
 
 	const restoreNote = useCallback((targetNote) => {
+		const updatedObject = {
+			notes: [
+				{
+					id: targetNote.id,
+					deleted: false,
+					updatedDate: new Date().getTime(),
+				},
+			],
+		};
+		setNetworkRequestPayload(updatedObject);
 		setStorageUserCustomization((prevCustomization) => ({
 			...prevCustomization,
 			notes: prevCustomization.notes.map((note) =>
 				note.id === targetNote.id
-					? { ...note, deleted: false, updatedDate: new Date().getTime() }
+					? { ...note, ...updatedObject.notes[0] }
 					: note,
 			),
 		}));
@@ -465,11 +611,14 @@ export const useUserActions = () => {
 			const targetCountdown = prevCustomization.countdowns.find(
 				(countdown) => countdown.id === id,
 			);
-			targetCountdown.dueDate = date;
+			targetCountdown.dueDate = date.toISOString();
 			targetCountdown.hasHours = showTime;
 			targetCountdown.name = name;
 			targetCountdown.pinned = pinned;
 			targetCountdown.updatedDate = new Date().getTime();
+
+			const updatedObject = { countdowns: [targetCountdown] };
+			setNetworkRequestPayload(updatedObject);
 
 			return {
 				...prevCustomization,
@@ -493,10 +642,14 @@ export const useUserActions = () => {
 			const oldName = storageUserCustomization.displayName;
 			if (newName === oldName) return;
 			else if (newName.trim().length)
-				setStorageUserCustomization((prevCustomization) => ({
-					...prevCustomization,
-					displayName: newName.trim(),
-				}));
+				setStorageUserCustomization((prevCustomization) => {
+					const updatedObject = { displayName: newName.trim() };
+					setNetworkRequestPayload(updatedObject);
+					return {
+						...prevCustomization,
+						...updatedObject,
+					};
+				});
 			else if (isDisplayNameEmpty)
 				setStorageUserCustomization((prevCustomization) => ({
 					...prevCustomization,
@@ -518,15 +671,30 @@ export const useUserActions = () => {
 				(todo) => todo.id === id,
 			).title;
 			if (newTitle === oldTitle) return;
-			else if (newTitle.trim().length)
+			else if (newTitle.trim().length) {
+				const instantDate = new Date();
+				const updatedObject = {
+					todos: [
+						{
+							id,
+							title: newTitle.trim(),
+							ts: instantDate.getTime(),
+						},
+					],
+					todoSettings: {
+						todosUpdatedDate: instantDate.toISOString(),
+					},
+				};
+				setNetworkRequestPayload(updatedObject);
 				setStorageUserCustomization((prevCustomization) => {
-					const instantDate = new Date();
-					const targetTodoItem = prevCustomization.todos.find(
+					let targetTodoItem = prevCustomization.todos.find(
 						(todo) => todo.id === id,
 					);
 
-					targetTodoItem.title = newTitle.trim();
-					targetTodoItem.ts = instantDate.getTime();
+					targetTodoItem = {
+						...targetTodoItem,
+						...updatedObject.todos[0],
+					};
 
 					return {
 						...prevCustomization,
@@ -535,11 +703,11 @@ export const useUserActions = () => {
 						),
 						todoSettings: {
 							...prevCustomization.todoSettings,
-							todosUpdatedDate: instantDate,
+							...updatedObject.todoSettings,
 						},
 					};
 				});
-			else element.innerText = oldTitle;
+			} else element.innerText = oldTitle;
 		},
 		[storageUserCustomization.todos],
 	);
@@ -554,15 +722,30 @@ export const useUserActions = () => {
 			).title;
 
 			if (newTitle === oldTilte) return;
-			else if (newTitle.trim().length)
+			else if (newTitle.trim().length) {
+				const instantDate = new Date();
+				const updatedObject = {
+					todoLists: [
+						{
+							id,
+							title: newTitle,
+							ts: instantDate.getTime(),
+						},
+					],
+					todoSettings: {
+						todosUpdatedDate: instantDate.toISOString(),
+					},
+				};
+				setNetworkRequestPayload(updatedObject);
 				setStorageUserCustomization((prevCustomization) => {
-					const instantDate = new Date();
-					const targetTodoList = prevCustomization.todoLists.find(
+					let targetTodoList = prevCustomization.todoLists.find(
 						(todoList) => todoList.id === id,
 					);
 
-					targetTodoList.title = newTitle;
-					targetTodoList.ts = instantDate.getTime();
+					targetTodoList = {
+						...targetTodoList,
+						...updatedObject.todoLists[0],
+					};
 
 					return {
 						...prevCustomization,
@@ -571,11 +754,11 @@ export const useUserActions = () => {
 						),
 						todoSettings: {
 							...prevCustomization.todoSettings,
-							todosUpdatedDate: instantDate,
+							...updatedObject.todoSettings,
 						},
 					};
 				});
-			else element.innerText = oldTilte;
+			} else element.innerText = oldTilte;
 		},
 		[storageUserCustomization.todoLists],
 	);
@@ -589,6 +772,9 @@ export const useUserActions = () => {
 			targetNote.body = body;
 			targetNote.updatedDate = new Date().getTime();
 			delete targetNote["empty"];
+
+			let updatedObject = { notes: [targetNote] };
+			setNetworkRequestPayload(updatedObject);
 
 			return {
 				...prevCustomization,
@@ -622,22 +808,34 @@ export const useUserActions = () => {
 
 	const selectBookmarksSetting = useCallback(
 		(setting) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				bookmarksSettings: {
-					...prevCustomization.bookmarksSettings,
-					[setting.keyValue]: setting.newValue,
-				},
-			})),
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					bookmarksSettings: {
+						[setting.keyValue]: setting.newValue,
+					},
+				};
+				setNetworkRequestPayload(updatedObject);
+				return {
+					...prevCustomization,
+					bookmarksSettings: {
+						...prevCustomization.bookmarksSettings,
+						...updatedObject.bookmarksSettings,
+					},
+				};
+			}),
 		[storageUserCustomization.bookmarksSettings],
 	);
 
 	const selectGeneralSetting = useCallback(
 		(setting) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				[setting.keyValue]: setting.newValue,
-			})),
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = { [setting.keyValue]: setting.newValue };
+				setNetworkRequestPayload(updatedObject);
+				return {
+					...prevCustomization,
+					...updatedObject,
+				};
+			}),
 		[],
 	);
 
@@ -668,13 +866,28 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const setNetworkRequestPayload = useCallback(
+		(data) =>
+			networkRequestDispatch({
+				type: "SET_PAYLOAD",
+				payload: { data },
+			}),
+		[],
+	);
+
 	const setSearchProvider = useCallback(
 		(searchProvider) => {
+			const updatedObject = {
+				searchSettings: {
+					provider: searchProvider,
+				},
+			};
+			setNetworkRequestPayload(updatedObject);
 			setStorageUserCustomization((prevCustomization) => ({
 				...prevCustomization,
 				searchSettings: {
 					...prevCustomization.searchSettings,
-					provider: searchProvider,
+					...updatedObject.searchSettings,
 				},
 			}));
 			searchInputRef.current.focus();
@@ -691,80 +904,115 @@ export const useUserActions = () => {
 		[],
 	);
 
-	const setTodoItemOrder = useCallback(
-		(id, order) =>
-			setStorageUserCustomization((prevCustomization) => {
-				const instantDate = new Date();
-				const targetTodoItem = prevCustomization.todos.find(
-					(todo) => todo.id === id,
-				);
+	const setTodoItemOrder = useCallback(async (id, order) => {
+		const instantDate = new Date();
+		const updatedObject = {
+			todo: {
+				id,
+				order,
+				ts: instantDate.getTime(),
+			},
+			todoSettings: {
+				todosUpdatedDate: instantDate.toISOString(),
+			},
+		};
+		await setStorageUserCustomization((prevCustomization) => {
+			let targetTodoItem = prevCustomization.todos.find(
+				(todo) => todo.id === id,
+			);
 
-				targetTodoItem.order = order;
-				targetTodoItem.ts = instantDate.getTime();
+			targetTodoItem = {
+				...targetTodoItem,
+				...updatedObject.todo,
+			};
 
-				return {
-					...prevCustomization,
-					todos: prevCustomization.todos.map((todo) =>
-						todo.id === id ? targetTodoItem : todo,
-					),
-					todoSettings: {
-						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate,
-					},
-				};
-			}),
-		[],
-	);
+			return {
+				...prevCustomization,
+				todos: prevCustomization.todos.map((todo) =>
+					todo.id === id ? targetTodoItem : todo,
+				),
+				todoSettings: {
+					...prevCustomization.todoSettings,
+					...updatedObject.todoSettings,
+				},
+			};
+		});
+		return updatedObject;
+	}, []);
 
-	const setTodoListOrder = useCallback(
-		(id, order) =>
-			setStorageUserCustomization((prevCustomization) => {
-				const instantDate = new Date();
-				const targetTodoList = prevCustomization.todoLists.find(
-					(todoList) => todoList.id === id,
-				);
+	const setTodoListOrder = useCallback(async (id, order) => {
+		const instantDate = new Date();
+		const updatedObject = {
+			todoList: {
+				id,
+				order,
+				ts: instantDate.getTime(),
+			},
+			todoSettings: {
+				todosUpdatedDate: instantDate.toISOString(),
+			},
+		};
+		await setStorageUserCustomization((prevCustomization) => {
+			let targetTodoList = prevCustomization.todoLists.find(
+				(todoList) => todoList.id === id,
+			);
 
-				targetTodoList.order = order;
-				targetTodoList.ts = instantDate.getTime();
+			targetTodoList = {
+				...targetTodoList,
+				...updatedObject.todoList,
+			};
 
-				return {
-					...prevCustomization,
-					todoLists: prevCustomization.todoLists.map((todoList) =>
-						todoList.id === id ? targetTodoList : todoList,
-					),
-					todoSettings: {
-						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate,
-					},
-				};
-			}),
-		[],
-	);
+			return {
+				...prevCustomization,
+				todoLists: prevCustomization.todoLists.map((todoList) =>
+					todoList.id === id ? targetTodoList : todoList,
+				),
+				todoSettings: {
+					...prevCustomization.todoSettings,
+					...updatedObject.todoSettings,
+				},
+			};
+		});
+		return updatedObject;
+	}, []);
 
-	const setTodoListColour = useCallback(
-		(id, colour) =>
-			setStorageUserCustomization((prevCustomization) => {
-				const instantDate = new Date();
-				const targetTodoList = prevCustomization.todoLists.find(
-					(todoList) => todoList.id === id,
-				);
+	const setTodoListColour = useCallback((id, colour) => {
+		const instantDate = new Date();
+		const updatedObject = {
+			todoLists: [
+				{
+					id,
+					colour,
+					ts: instantDate.getTime(),
+				},
+			],
+			todoSettings: {
+				todosUpdatedDate: instantDate.toISOString(),
+			},
+		};
+		setNetworkRequestPayload(updatedObject);
+		setStorageUserCustomization((prevCustomization) => {
+			let targetTodoList = prevCustomization.todoLists.find(
+				(todoList) => todoList.id === id,
+			);
 
-				targetTodoList.colour = colour;
-				targetTodoList.ts = instantDate.getTime();
+			targetTodoList = {
+				...targetTodoList,
+				...updatedObject.todoLists[0],
+			};
 
-				return {
-					...prevCustomization,
-					todoLists: prevCustomization.todoLists.map((todoList) =>
-						todoList.id === id ? targetTodoList : todoList,
-					),
-					todoSettings: {
-						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate,
-					},
-				};
-			}),
-		[],
-	);
+			return {
+				...prevCustomization,
+				todoLists: prevCustomization.todoLists.map((todoList) =>
+					todoList.id === id ? targetTodoList : todoList,
+				),
+				todoSettings: {
+					...prevCustomization.todoSettings,
+					...updatedObject.todoSettings,
+				},
+			};
+		});
+	}, []);
 
 	const setWidgetReady = useCallback(
 		({ widget, type = "app" } = {}) =>
@@ -797,13 +1045,21 @@ export const useUserActions = () => {
 					}
 				}
 			} else
-				setStorageUserCustomization((prevCustomization) => ({
-					...prevCustomization,
-					bookmarksSettings: {
-						...prevCustomization.bookmarksSettings,
-						[setting.key]: !prevCustomization.bookmarksSettings[setting.key],
-					},
-				}));
+				setStorageUserCustomization((prevCustomization) => {
+					const updatedObject = {
+						bookmarksSettings: {
+							[setting.key]: !prevCustomization.bookmarksSettings[setting.key],
+						},
+					};
+					setNetworkRequestPayload(updatedObject);
+					return {
+						...prevCustomization,
+						bookmarksSettings: {
+							...prevCustomization.bookmarksSettings,
+							[setting.key]: !prevCustomization.bookmarksSettings[setting.key],
+						},
+					};
+				});
 		},
 		[storageUserCustomization.bookmarksSettings],
 	);
@@ -817,6 +1073,13 @@ export const useUserActions = () => {
 				targetCountdown.pinned = !pinned;
 				targetCountdown.updatedDate = new Date().getTime();
 
+				const updatedObject = {
+					countdowns: [
+						_.pick(targetCountdown, ["id", "pinned", "updatedDate"]),
+					],
+				};
+				setNetworkRequestPayload(updatedObject);
+
 				return {
 					...prevCustomization,
 					countdowns: prevCustomization.countdowns.map((countdown) =>
@@ -829,28 +1092,45 @@ export const useUserActions = () => {
 
 	const toggleDisplayNameVisible = useCallback(
 		() =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				displayNameVisible: !prevCustomization.displayNameVisible,
-			})),
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					displayNameVisible: !prevCustomization.displayNameVisible,
+				};
+				setNetworkRequestPayload(updatedObject);
+				return {
+					...prevCustomization,
+					...updatedObject,
+				};
+			}),
 		[],
 	);
 
 	const toggleHour12Clock = useCallback(
 		() =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				hour12clock: !prevCustomization.hour12clock,
-			})),
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = { hour12clock: !prevCustomization.hour12clock };
+				setNetworkRequestPayload(updatedObject);
+				return {
+					...prevCustomization,
+					...updatedObject,
+				};
+			}),
 		[],
 	);
 
 	const toggleRandomMetricCountdown = useCallback(
 		() =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				showRandomMetricCountdown: !prevCustomization.showRandomMetricCountdown,
-			})),
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					showRandomMetricCountdown:
+						!prevCustomization.showRandomMetricCountdown,
+				};
+				setNetworkRequestPayload(updatedObject);
+				return {
+					...prevCustomization,
+					...updatedObject,
+				};
+			}),
 		[],
 	);
 
@@ -864,13 +1144,21 @@ export const useUserActions = () => {
 			toggleShowApp(
 				GENERAL_SETTING_APP_LIST.find((app) => app.name === SEARCH),
 			);
-		setStorageUserCustomization((prevCustomization) => ({
-			...prevCustomization,
-			searchSettings: {
-				...prevCustomization.searchSettings,
-				inCenter: !prevCustomization.searchSettings.inCenter,
-			},
-		}));
+		setStorageUserCustomization((prevCustomization) => {
+			const updatedObject = {
+				searchSettings: {
+					inCenter: !prevCustomization.searchSettings.inCenter,
+				},
+			};
+			setNetworkRequestPayload(updatedObject);
+			return {
+				...prevCustomization,
+				searchSettings: {
+					...prevCustomization.searchSettings,
+					...updatedObject.searchSettings,
+				},
+			};
+		});
 	}, [
 		storageUserCustomization.searchSettings,
 		storageUserCustomization.searchVisible,
@@ -898,10 +1186,11 @@ export const useUserActions = () => {
 								defaultMostVisited === false &&
 								bookmarksVisible === false
 							)
-								toggleShowApp(
+								toggleShowBookmarksApp(
 									GENERAL_SETTING_APP_LIST.find(
 										(app) => app.name === BOOKMARKS,
 									),
+									true,
 								);
 							return;
 
@@ -910,10 +1199,14 @@ export const useUserActions = () => {
 					}
 				}
 			} else
-				setStorageUserCustomization((prevCustomization) => ({
-					...prevCustomization,
-					[app.key]: !prevCustomization[app.key],
-				}));
+				setStorageUserCustomization((prevCustomization) => {
+					const updatedObject = { [app.key]: !prevCustomization[app.key] };
+					setNetworkRequestPayload(updatedObject);
+					return {
+						...prevCustomization,
+						...updatedObject,
+					};
+				});
 		},
 		[
 			storageUserCustomization.bookmarksVisible,
@@ -922,10 +1215,12 @@ export const useUserActions = () => {
 	);
 
 	const toggleShowBookmarksApp = useCallback(
-		async (app) => {
-			const isPermissionAllowed = await getPermissionAllowed(
-				BOOKMARKS_PERMISSION,
-			);
+		async (app, alreadyRequestedPermission) => {
+			// Avoid checking permissionAllowed in firefox, to prevent user input handler error
+			const isFirefox = getBrowserType().name === FIREFOX;
+			const isPermissionAllowed = isFirefox
+				? !!alreadyRequestedPermission
+				: await getPermissionAllowed(BOOKMARKS_PERMISSION);
 			if (isPermissionAllowed === false) {
 				const isPermissionGranted = await requestPermissions([
 					BOOKMARKS_PERMISSION,
@@ -936,11 +1231,17 @@ export const useUserActions = () => {
 			let fetchedBookmarks;
 			if (bookmarks.length === 0) fetchedBookmarks = await getBookmarks();
 
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				[app.key]: !prevCustomization[app.key],
-				bookmarks: fetchedBookmarks || prevCustomization.bookmarks,
-			}));
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					[app.key]: !prevCustomization[app.key],
+				};
+				setNetworkRequestPayload(updatedObject);
+				return {
+					...prevCustomization,
+					...updatedObject,
+					bookmarks: fetchedBookmarks || prevCustomization.bookmarks,
+				};
+			});
 		},
 		[storageUserCustomization.bookmarks],
 	);
@@ -954,8 +1255,19 @@ export const useUserActions = () => {
 				);
 
 				targetTodoItem.done = !done;
-				targetTodoItem.completedDate = targetTodoItem.done ? instantDate : null;
+				targetTodoItem.completedDate = targetTodoItem.done
+					? instantDate.toISOString()
+					: null;
 				targetTodoItem.ts = instantDate.getTime();
+
+				let updatedObject = {
+					todos: [
+						_.pick(targetTodoItem, ["id", "done", "completedDate", "ts"]),
+					],
+					todoSettings: {
+						todosUpdatedDate: instantDate.toISOString(),
+					},
+				};
 
 				if (targetTodoItem.done === false) {
 					const targetTodoItemHomeListId = targetTodoItem.homeListId;
@@ -981,7 +1293,17 @@ export const useUserActions = () => {
 							targetTodoItem.listId,
 						);
 					}
+					updatedObject.todos = [
+						_.omit(targetTodoItem, [
+							"title",
+							"createdDate",
+							"today",
+							"viewSectionId",
+						]),
+					];
 				}
+
+				setNetworkRequestPayload(updatedObject);
 
 				return {
 					...prevCustomization,
@@ -990,7 +1312,7 @@ export const useUserActions = () => {
 					),
 					todoSettings: {
 						...prevCustomization.todoSettings,
-						todosUpdatedDate: instantDate,
+						...updatedObject.todoSettings,
 					},
 				};
 			}),
@@ -999,21 +1321,32 @@ export const useUserActions = () => {
 
 	const toggleTodoSetting = useCallback(
 		(setting) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				todoSettings: {
-					...prevCustomization.todoSettings,
-					[setting.key]: !prevCustomization.todoSettings[setting.key],
-				},
-			})),
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					todoSettings: {
+						[setting.key]: !prevCustomization.todoSettings[setting.key],
+					},
+				};
+				if (setting.key !== "showTodoList")
+					setNetworkRequestPayload(updatedObject);
+				return {
+					...prevCustomization,
+					todoSettings: {
+						...prevCustomization.todoSettings,
+						...updatedObject.todoSettings,
+					},
+				};
+			}),
 		[storageUserCustomization.todoSettings],
 	);
 
 	const toggleTopSitesSetting = useCallback(
 		async (setting) => {
-			const isPermissionAllowed = await getPermissionAllowed(
-				TOP_SITES_PERMISSION,
-			);
+			// Avoid checking permissionAllowed in firefox, to prevent user input handler error
+			const isFirefox = getBrowserType().name === FIREFOX;
+			const isPermissionAllowed = isFirefox
+				? false
+				: await getPermissionAllowed(TOP_SITES_PERMISSION);
 			if (isPermissionAllowed === false) {
 				const isPermissionGranted = await requestPermissions([
 					TOP_SITES_PERMISSION,
@@ -1025,14 +1358,22 @@ export const useUserActions = () => {
 			let fetchedTopSites;
 			if (topSites.length === 0) fetchedTopSites = await getTopSites();
 
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				topSites: fetchedTopSites || prevCustomization.topSites,
-				bookmarksSettings: {
-					...prevCustomization.bookmarksSettings,
-					[setting.key]: !prevCustomization.bookmarksSettings[setting.key],
-				},
-			}));
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					bookmarksSettings: {
+						[setting.key]: !prevCustomization.bookmarksSettings[setting.key],
+					},
+				};
+				setNetworkRequestPayload(updatedObject);
+				return {
+					...prevCustomization,
+					topSites: fetchedTopSites || prevCustomization.topSites,
+					bookmarksSettings: {
+						...prevCustomization.bookmarksSettings,
+						...updatedObject.bookmarksSettings,
+					},
+				};
+			});
 		},
 		[
 			storageUserCustomization.topSites,
@@ -1042,18 +1383,31 @@ export const useUserActions = () => {
 
 	const toggleArchiveCountdown = useCallback(
 		(targetCountdownId) =>
-			setStorageUserCustomization((prevCustomization) => ({
-				...prevCustomization,
-				countdowns: prevCustomization.countdowns.map((countdown) =>
-					countdown.id === targetCountdownId
-						? {
-								...countdown,
-								archived: !countdown.archived,
-								updatedDate: new Date().getTime(),
-						  }
-						: countdown,
-				),
-			})),
+			setStorageUserCustomization((prevCustomization) => {
+				let targetCountdown = prevCustomization.countdowns.find(
+					(countdown) => countdown.id === targetCountdownId,
+				);
+
+				targetCountdown = {
+					...targetCountdown,
+					archived: !targetCountdown.archived,
+					updatedDate: new Date().getTime(),
+				};
+
+				const updatedObject = {
+					countdowns: [
+						_.pick(targetCountdown, ["id", "archived", "updatedDate"]),
+					],
+				};
+				setNetworkRequestPayload(updatedObject);
+
+				return {
+					...prevCustomization,
+					countdowns: prevCustomization.countdowns.map((countdown) =>
+						countdown.id === targetCountdownId ? targetCountdown : countdown,
+					),
+				};
+			}),
 		[],
 	);
 
@@ -1109,6 +1463,7 @@ export const useUserActions = () => {
 		setCurrentCountdownId,
 		setDashApp,
 		setDashAppStyles,
+		setNetworkRequestPayload,
 		setSearchProvider,
 		setSettingsActiveNav,
 		setTodoItemOrder,

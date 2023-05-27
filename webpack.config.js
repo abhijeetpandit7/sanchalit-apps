@@ -1,6 +1,6 @@
 require("dotenv/config");
 
-const API_ENDPOINT = "https://sanchalit-api.herokuapp.com";
+const CHROMIUM = "chromium";
 const DEVELOPMENT = "development";
 const PRODUCTION = "production";
 const WEB = "web";
@@ -12,12 +12,16 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const workbox = require("workbox-webpack-plugin");
 const webpack = require("webpack");
-const ExtensionReloader = require("webpack-extension-reloader");
 
 const buildTarget = process.env.BUILD_TARGET || WEB;
 const isProduction = process.env.NODE_ENV === PRODUCTION;
 const isWeb = buildTarget === WEB;
-const version = require("./package.json").version;
+const manifestVersion = isWeb
+	? null
+	: require(`./target/${buildTarget}/manifest.json`).manifest_version;
+const version = isWeb
+	? require(`./target/${CHROMIUM}/manifest.json`).version
+	: require(`./target/${buildTarget}/manifest.json`).version;
 
 const config = {
 	entry: {
@@ -83,13 +87,14 @@ const config = {
 		}),
 		new HtmlWebpackPlugin({
 			template: `./target/${buildTarget}/index.html`,
+			excludeChunks: ["background", "content_script"],
 		}),
 		new MiniCssExtractPlugin({
 			filename: isWeb ? "[name].[contenthash:12].css" : "[name].css",
 		}),
 		new webpack.EnvironmentPlugin({
-			BUILD_TARGET: WEB,
-			API_ENDPOINT: API_ENDPOINT,
+			BUILD_TARGET: JSON.stringify(buildTarget),
+			MANIFEST_VERSION: JSON.stringify(manifestVersion),
 			VERSION: version,
 		}),
 	],
@@ -117,18 +122,7 @@ if (isProduction) {
 
 if (!isWeb) {
 	config.entry.background = "./src/background.js";
-}
-
-if (!isWeb && !isProduction) {
-	config.plugins.push(
-		new ExtensionReloader({
-			reloadPage: true,
-			entries: {
-				background: "background",
-				extensionPage: "main",
-			},
-		}),
-	);
+	config.entry.content_script = "./src/content.js";
 }
 
 module.exports = config;

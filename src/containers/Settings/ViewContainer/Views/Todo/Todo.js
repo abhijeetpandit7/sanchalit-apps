@@ -1,11 +1,12 @@
 import React, { memo, useRef, useState } from "react";
+import _ from "lodash";
 import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
+import { useUserActions, useUserCustomization } from "../../../../../hooks";
 import {
 	CollapsibleHeaderWrapper,
 	ColourPaletteWrapper,
 	ToggleSlider,
 } from "../../../../../components";
-import { useUserActions, useUserCustomization } from "../../../../../hooks";
 import {
 	cancelIcon,
 	trashIcon,
@@ -277,7 +278,7 @@ const ContextMemo = memo((props) => {
 
 	const processedTodoLists = processTodoLists(props.todoLists);
 
-	const handleDragEnd = (result) => {
+	const handleDragEnd = async (result) => {
 		if (!result.destination) return;
 
 		const reorderedTodoLists = reorderListOnDrag(
@@ -285,11 +286,19 @@ const ContextMemo = memo((props) => {
 			result.source.index,
 			result.destination.index,
 		);
-		reorderedTodoLists.forEach(
-			async (todoList, index) =>
-				todoList.order !== index &&
-				(await props.setTodoListOrder(todoList.id, index)),
-		);
+		let updatedItems = [];
+		await reorderedTodoLists.map(async (todoList, index) => {
+			if (todoList.order !== index)
+				updatedItems.push(await props.setTodoListOrder(todoList.id, index));
+		});
+		await Promise.all(updatedItems);
+		if (updatedItems.length) {
+			const updatedObject = {
+				todoLists: updatedItems.map((item) => item.todoList),
+				todoSettings: _.last(updatedItems).todoSettings,
+			};
+			props.setNetworkRequestPayload(updatedObject);
+		}
 	};
 
 	return (
@@ -379,6 +388,7 @@ const Todo = () => {
 		editTodoListTitle,
 		getTodoListItemsCount,
 		moveAllTodoItems,
+		setNetworkRequestPayload,
 		setTodoListColour,
 		setTodoListOrder,
 		toggleTodoSetting,
@@ -397,6 +407,7 @@ const Todo = () => {
 				editTodoListTitle,
 				getTodoListItemsCount,
 				moveAllTodoItems,
+				setNetworkRequestPayload,
 				setTodoListColour,
 				setTodoListOrder,
 				toggleTodoSetting,

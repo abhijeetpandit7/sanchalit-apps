@@ -1,4 +1,5 @@
 import React from "react";
+import Cookies from "universal-cookie";
 import moment from "moment";
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
@@ -35,13 +36,17 @@ import {
 	OVERFLOW,
 	PM,
 	POPUP,
+	PRODUCTION,
 	SHOW_ANYWAY,
 	SAFARI,
 	SHIFT_TO_LEFT,
 	SHOW,
 	SHOW_FADE_IN,
 	TODO_LIST_DONE_ID,
+	URL_ROOT_DOMAIN,
 	BROWSER_LIST,
+	GENERAL_SETTING_APP_LIST,
+	GENERAL_SETTING_APPEARANCE_LIST,
 	NOTE_DELIGHTER_LIST,
 	THEME_COLOUR_OPTIONS,
 	THEME_FONT_OPTIONS,
@@ -61,6 +66,69 @@ import {
 	bookmarksManagerBase64Source,
 } from "../utils";
 
+const addOrMergeArrayElements = (
+	array,
+	newElements,
+	identifier,
+	ignorePreviousArrayItems,
+) => {
+	if (array.length === 0) return newElements;
+
+	const elementMap = array.reduce((map, element) => {
+		map.set(element[identifier], element);
+		return map;
+	}, new Map());
+
+	if (ignorePreviousArrayItems) {
+		const newElementMap = newElements.reduce((map, element) => {
+			map.set(element[identifier], element);
+			return map;
+		}, new Map());
+		newElements.forEach((element) => {
+			newElementMap.set(element[identifier], {
+				...elementMap.get(element[identifier]),
+				...newElementMap.get(element[identifier]),
+			});
+		});
+		return Array.from(newElementMap.values());
+	}
+
+	newElements.forEach((element) => {
+		elementMap.set(element[identifier], {
+			...elementMap.get(element[identifier]),
+			...element,
+		});
+	});
+	return Array.from(elementMap.values());
+};
+
+export const addOrMergeObjectProperties = (
+	object,
+	newProperties,
+	ignorePreviousArrayItems = false,
+) => {
+	const mergedObject = { ...object };
+
+	for (const [key, newValue] of Object.entries(newProperties)) {
+		const oldValue = object[key];
+		if (_.isArray(oldValue) && _.isArray(newValue)) {
+			const customKeys = ["countdowns", "notes", "todoLists", "todos"];
+			mergedObject[key] = addOrMergeArrayElements(
+				oldValue,
+				newValue,
+				"id",
+				ignorePreviousArrayItems && customKeys.includes(key),
+			);
+		} else if (_.isObject(oldValue) && _.isObject(newValue)) {
+			mergedObject[key] = addOrMergeObjectProperties(oldValue, newValue);
+		} else {
+			mergedObject[key] = newValue;
+		}
+	}
+
+	return mergedObject;
+};
+
 export const addRefClassName = (ref, className) =>
 	ref.current.classList.add(className);
 
@@ -77,7 +145,7 @@ export const createCountdown = () => {
 	const newCountdown = _.cloneDeep(DEFAULT_COUNTDOWN_OBJ);
 	newCountdown.id = uuidv4();
 	const instantDate = new Date();
-	newCountdown.createdDate = instantDate;
+	newCountdown.createdDate = instantDate.toISOString();
 	newCountdown.updatedDate = instantDate.getTime();
 	return newCountdown;
 };
@@ -86,7 +154,7 @@ export const createNote = () => {
 	const newNote = _.cloneDeep(DEFAULT_NOTE_OBJ);
 	newNote.id = uuidv4();
 	const instantDate = new Date();
-	newNote.createdDate = instantDate;
+	newNote.createdDate = instantDate.toISOString();
 	newNote.updatedDate = instantDate.getTime();
 	return newNote;
 };
@@ -95,7 +163,7 @@ export const createTodo = () => {
 	const newTodo = _.cloneDeep(DEFAULT_TODO_ITEM_OBJ);
 	newTodo.id = uuidv4();
 	const instantDate = new Date();
-	newTodo.createdDate = instantDate;
+	newTodo.createdDate = instantDate.toISOString();
 	newTodo.ts = instantDate.getTime();
 	return newTodo;
 };
@@ -104,7 +172,7 @@ export const createNewTodoList = () => {
 	const newTodoList = _.cloneDeep(DEFAULT_TODO_LIST_OBJ);
 	newTodoList.id = uuidv4();
 	const instantDate = new Date();
-	newTodoList.createdDate = instantDate;
+	newTodoList.createdDate = instantDate.toISOString();
 	newTodoList.ts = instantDate.getTime();
 	return newTodoList;
 };
@@ -149,6 +217,15 @@ export const ensureTodoItemDropdownVisible = (
 	if (isOverflowing) return offset;
 	else return true;
 };
+
+export const getExtensionStorageItem = (key) =>
+	new Promise((resolve, reject) =>
+		chrome.storage.local.get(key, (result) =>
+			chrome.runtime.lastError
+				? reject(Error(chrome.runtime.lastError.message))
+				: resolve(result[key]),
+		),
+	);
 
 export const focusCursorAtEnd = (element) => {
 	const setpos = document.createRange();
@@ -276,6 +353,15 @@ export const getBodyTitle = (body) => {
 	);
 };
 
+export const getBrowserCookieItem = (key) =>
+	new Promise((resolve, reject) =>
+		chrome.cookies.get({ url: URL_ROOT_DOMAIN, name: key }, (result) =>
+			chrome.runtime.lastError
+				? reject(Error(chrome.runtime.lastError.message))
+				: resolve(result?.value),
+		),
+	);
+
 export const getDaysInMonth = (month, year) => {
 	const date = moment([year, month]);
 	const daysInMonth = date.daysInMonth();
@@ -290,6 +376,8 @@ export const getDateFromToday = (numberOfDays) => {
 
 export const getDateFullFormat = (timestamp) =>
 	moment(timestamp).format("ddd MMM D, YYYY");
+
+const getDateInUnix = (date) => moment(date).unix();
 
 export const getMonthNames = () => moment.monthsShort();
 
@@ -315,7 +403,8 @@ export const getGreetingMessage = (userNameVisible, userName) => {
 	else return `Good ${dayPeriod}`;
 };
 
-export const getLocalStorageItem = (key) => localStorage.getItem(key);
+export const getLocalStorageItem = (key) =>
+	JSON.parse(localStorage.getItem(key));
 
 export const getBookmarks = () =>
 	new Promise((resolve, reject) =>
@@ -353,6 +442,8 @@ export const getBrowserType = () => {
 
 export const getDaysDifference = (timestamp) =>
 	moment(timestamp).diff(moment(), "days");
+
+export const getLocalCookieItem = (key) => new Cookies().get(key);
 
 export const getPermissionAllowed = (permission) =>
 	new Promise((resolve, reject) =>
@@ -525,7 +616,29 @@ const isAppPopupOverflowing = (metricRef) => {
 	return isOverflowing;
 };
 
+export const isActiveSubscription = (subscriptionSummary) => {
+	const { startDate, endDate } = subscriptionSummary;
+	const isActive = moment().isBetween(moment(startDate), moment(endDate));
+	return isActive;
+};
+
 export const isBoolean = (value) => typeof value === "boolean";
+
+/*
+ * This recursively compares two objects' properties.
+ * The customizer function handles cases where properties are arrays or objects,
+ * sorting them before comparison using isEqual.
+ * Extra properties will cause isEqualWith to return false.
+ */
+export const isDeepEqual = (obj1, obj2) =>
+	_.isEqualWith(obj1, obj2, (val1, val2) => {
+		if (_.isArray(val1) && _.isArray(val2)) {
+			return _.isEqual(_.sortBy(val1), _.sortBy(val2));
+		}
+		if (_.isObject(val1) && _.isObject(val2)) {
+			return isDeepEqual(_.sortBy(_.values(val1)), _.sortBy(_.values(val2)));
+		}
+	});
 
 export const isObjectEmpty = (obj) => (_.isObject(obj) ? _.isEmpty(obj) : true);
 
@@ -818,8 +931,43 @@ export const setBodyFont = (themeFont) => {
 	document.body.classList.add(toFontClassName(themeFont));
 };
 
+export const setBrowserCookieItem = (key, value) =>
+	new Promise((resolve, reject) =>
+		chrome.cookies.set(
+			{
+				domain: `.${URL_ROOT_DOMAIN.split("https://")[1]}`,
+				url: URL_ROOT_DOMAIN,
+				name: key,
+				value: value,
+				expirationDate: getDateInUnix(getDateFromToday(365)),
+			},
+			() =>
+				chrome.runtime.lastError
+					? reject(Error(chrome.runtime.lastError.message))
+					: resolve(),
+		),
+	);
+
+export const setExtensionStorageItem = (key, value) =>
+	new Promise((resolve, reject) =>
+		chrome.storage.local.set({ [key]: value }, (result) =>
+			chrome.runtime.lastError
+				? reject(Error(chrome.runtime.lastError.message))
+				: resolve(result),
+		),
+	);
+
+export const setLocalCookieItem = (key, value) =>
+	new Cookies().set(key, value, {
+		domain:
+			process.env.NODE_ENV === PRODUCTION
+				? `.${URL_ROOT_DOMAIN.split("https://")[1]}`
+				: "",
+		expires: getDateFromToday(365),
+	});
+
 export const setLocalStorageItem = (key, value) =>
-	localStorage.setItem(key, value);
+	localStorage.setItem(key, JSON.stringify(value));
 
 export const toCSSUrl = (link) => `url("${link}")`;
 

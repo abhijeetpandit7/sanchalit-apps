@@ -1,9 +1,10 @@
 import React, { createContext, useReducer, useRef, useState } from "react";
-import { widgetReducer } from "../reducers";
+import { networkRequestReducer, widgetReducer } from "../reducers";
 import {
-	API,
 	BACKGROUND,
 	PHOTO_INFO,
+	SERVER,
+	STORAGE,
 	DASH_APP_STYLES,
 	GENERAL_SETTING_APP_LIST,
 } from "../utils";
@@ -21,8 +22,8 @@ export const UserCustomizationProvider = ({ children }) => {
 	const notesInputRef = useRef(null);
 	const searchInputRef = useRef(null);
 	const settingsRef = useRef(null);
-	const todoAppRef = useRef(null);	
-	const todoInputRef = useRef(null);	
+	const todoAppRef = useRef(null);
+	const todoInputRef = useRef(null);
 
 	const [widgetManager, widgetDispatch] = useReducer(widgetReducer, {
 		app: GENERAL_SETTING_APP_LIST.reduce(
@@ -37,7 +38,10 @@ export const UserCustomizationProvider = ({ children }) => {
 			},
 		),
 		data: {
-			[API]: {
+			[SERVER]: {
+				ready: false,
+			},
+			[STORAGE]: {
 				ready: false,
 			},
 			[BACKGROUND]: {
@@ -54,6 +58,13 @@ export const UserCustomizationProvider = ({ children }) => {
 		settingsActiveNav: null,
 	});
 
+	const [networkRequestManager, networkRequestDispatch] = useReducer(
+		networkRequestReducer,
+		{
+			payload: {},
+		},
+	);
+
 	return (
 		<UserCustomizationContext.Provider
 			value={{
@@ -69,6 +80,8 @@ export const UserCustomizationProvider = ({ children }) => {
 				todoInputRef,
 				storageUserCustomization,
 				setStorageUserCustomization,
+				networkRequestManager,
+				networkRequestDispatch,
 				widgetManager,
 				widgetDispatch,
 			}}

@@ -5,11 +5,11 @@ import {
 	cafeIcon,
 	campfireIcon,
 	chimesIcon,
+	coWorkersIcon,
 	coffeeMakerIcon,
 	copierIcon,
-	coWorkersIcon,
-	cricketsIcon,
 	creekIcon,
+	cricketsIcon,
 	cupIcon,
 	customIcon,
 	fireIcon,
@@ -44,7 +44,6 @@ export const ACTIVE = "active";
 export const AM = "AM";
 export const ADD = "Add";
 export const ADD_SHADOW = "add-shadow";
-export const API = "api";
 const APPS = "Apps";
 const APPS_URL = "chrome://apps";
 const APPS_LOCATION = "appsLocation";
@@ -64,6 +63,7 @@ export const BOOKMARKS_PERMISSION = "bookmarks";
 const BOOKMARKS_VISIBLE = "bookmarksVisible";
 export const BROWSER_TYPE = "browserType";
 export const CHROME = "Chrome";
+export const CHROME_EXTENSION = "chrome-extension";
 const CHROMIUM = "chromium";
 const CHROMIUM_TAB_URL = "chrome-search://local-ntp/local-ntp.html";
 const CLASSIC = "classic";
@@ -117,7 +117,9 @@ export const LIGHT = "light";
 export const LINKS_AND_BOOKMARKS = "Links & Bookmarks";
 export const MANTRAS = "Mantras";
 const MODERN = "modern";
+export const MOZ_EXTENSION = "moz-extension";
 export const NAV_ACTIVE = "nav-active";
+export const NETWORK_QUEUE = "networkQueue";
 export const NIPPLE = "nipple";
 export const NIPPLE_BOTTOM_RIGHT = "nipple-bottom-right";
 export const NIPPLE_TOP_LEFT = "nipple-top-left";
@@ -149,6 +151,7 @@ export const SAFARI = "Safari";
 export const SEARCH = "Search";
 const SEARCH_VISIBLE = "searchVisible";
 export const SEARCH_IN_CENTER = "Search in Center";
+export const SERVER = "server";
 export const SHIFT_TO_LEFT = "shift-to-left";
 export const SHOW = "show";
 export const SHOW_ANYWAY = "show-anyway";
@@ -161,6 +164,7 @@ const SOUNDSCAPES_VISIBLE = "soundscapesVisible";
 export const START_IN_TOP_SITES = "Start in Top Sites";
 const STARTUP = "startup";
 export const STATIC_RESOURCES = "static-resources";
+export const STORAGE = "storage";
 export const SYSTEM = "system";
 const THEME_COLOUR = "themeColour";
 const THEME_FONT = "themeFont";
@@ -171,11 +175,14 @@ export const TODO_LIST_DONE_ID = "done";
 export const TODO_LIST_INBOX_ID = "inbox";
 export const TODO_LIST_TODAY_ID = "today";
 const TODO_VISIBLE = "todoVisible";
+export const TOKEN = "token";
 export const TOP_SITES = "Top Sites";
 const TOP_SITES_DESCRIPTION =
 	"Show most visited websites by default in Bookmarks Bar";
 export const TOP_SITES_PERMISSION = "topSites";
 export const TRANSPARENT_COLOUR = "rgba(0, 0, 0, 0)";
+export const URL_ROOT_API = "https://api.sanchalit.live";
+export const URL_ROOT_DOMAIN = "https://sanchalit.live";
 const WAREHOUSE = "warehouse";
 const WEB = "web";
 
@@ -739,7 +746,7 @@ export const DEFAULT_TODO_LIST_OBJ = {
 	id: "",
 	title: "",
 	colour: TRANSPARENT_COLOUR,
-	createdDate: new Date(),
+	createdDate: new Date().toISOString(),
 	order: null,
 	itemType: TODO_LIST,
 	reorder: true,
@@ -784,47 +791,19 @@ export const TODO_SHOW_SETTING = {
 };
 
 export const DEFAULT_AUTHENTICATION = {
-	activeSubscription: false,
-	birthDate: null,
-	created: null,
-	displayName: null,
-	email: {
-		created: null,
-		address: null,
-		isValidated: false,
-	},
+	email: null,
 	fullName: null,
+	profilePictureUrl: null,
 	subscriptionSummary: {
-		active: false,
-		firstSubscriptionStart: null,
-		subscriptionEnd: null,
-		trialing: false,
-		trialEnd: null,
+		startDate: null,
+		endDate: null,
+		plan: null,
 	},
-	token_uuid: null,
-	user_id: null,
+	[TOKEN]: null,
+	userId: null,
 };
 
 export const DEFAULT_CUSTOMIZATION = {
-	backgroundSettings: {
-		data: [
-			{
-				_id: null,
-				destinationName: null,
-				fileName: null,
-				forDate: null,
-				isFavourite: false,
-				source: null,
-				sourceUrl: null,
-				title: null,
-				widgetColor: {
-					hsla: null,
-					bodyTextColor: null,
-				},
-			},
-		],
-		ts: null,
-	},
 	bookmarks: [],
 	bookmarksSettings: {
 		[ICONS_ONLY]: false,
@@ -848,19 +827,6 @@ export const DEFAULT_CUSTOMIZATION = {
 	currentNoteId: null,
 	[NOTES_VISIBLE]: true,
 	[QUOTES_VISIBLE]: true,
-	quoteSettings: {
-		data: [
-			{
-				_id: null,
-				body: null,
-				forDate: null,
-				isCustom: false,
-				isFavourite: false,
-				source: null,
-			},
-		],
-		ts: null,
-	},
 	[SEARCH_VISIBLE]: true,
 	searchSettings: {
 		inCenter: true,
@@ -880,4 +846,16 @@ export const DEFAULT_CUSTOMIZATION = {
 	topSites: [],
 	[THEME_COLOUR]: SYSTEM,
 	[THEME_FONT]: CLASSIC,
+};
+
+export const DEFAULT_NETWORK_QUEUE = {
+	post: {
+		userData: {},
+	},
+	delete: {
+		countdown: {},
+		note: {},
+		todoList: {},
+		todo: {},
+	},
 };
