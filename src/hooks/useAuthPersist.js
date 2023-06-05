@@ -184,7 +184,7 @@ export const useAuthPersist = () => {
 				bookmarksVisible,
 				bookmarksSettings: { includeMostVisited },
 			} = userCustomization;
-			if (bookmarksVisible)
+			if (bookmarksVisible && isBuildTargetWeb === false)
 				userCustomization = {
 					...userCustomization,
 					bookmarks: await getBookmarks(),
