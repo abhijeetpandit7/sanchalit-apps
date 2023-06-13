@@ -95,6 +95,7 @@ const config = {
 		new webpack.EnvironmentPlugin({
 			BUILD_TARGET: JSON.stringify(buildTarget),
 			MANIFEST_VERSION: JSON.stringify(manifestVersion),
+			AMPLITUDE_API_KEY: process.env.AMPLITUDE_API_KEY,
 			VERSION: version,
 		}),
 	],

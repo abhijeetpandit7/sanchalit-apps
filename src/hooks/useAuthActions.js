@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import axios from "axios";
 import { debounce } from "lodash";
+import * as amplitude from "@amplitude/analytics-browser";
 import {
 	useAuth,
 	useNetworkQueue,
@@ -54,6 +55,7 @@ export const useAuthActions = () => {
 		setStorageAuth(DEFAULT_AUTHENTICATION);
 		setStorageUserCustomization(DEFAULT_CUSTOMIZATION);
 		setStorageNetworkQueue(DEFAULT_NETWORK_QUEUE);
+		amplitude.reset();
 	}, []);
 
 	const postUserData = useCallback(

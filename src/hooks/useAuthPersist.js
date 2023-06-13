@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { debounce } from "lodash";
 import jwt_decode from "jwt-decode";
+import * as amplitude from "@amplitude/analytics-browser";
 import {
 	useAuth,
 	useAuthActions,
@@ -26,6 +27,7 @@ import {
 	getLocalCookieItem,
 	getLocalStorageItem,
 	getTopSites,
+	initAmplitude,
 	isActiveSubscription,
 	isBuildTargetWeb,
 	isDeepEqual,
@@ -197,6 +199,7 @@ export const useAuthPersist = () => {
 			setStorageUserCustomization(userCustomization);
 			setStorageNetworkQueue(networkQueue);
 			setWidgetReady({ widget: STORAGE, type: "data" });
+			initAmplitude(auth);
 		})();
 	}, []);
 
@@ -321,6 +324,7 @@ export const useAuthPersist = () => {
 
 			setAxiosAuthHeader(storageAuth.token);
 			setCookieItem(TOKEN, storageAuth?.token ? storageAuth.token : "");
+			amplitude.setUserId(storageAuth.userId);
 
 			let decodedPayload;
 			try {

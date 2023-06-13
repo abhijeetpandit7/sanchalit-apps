@@ -3,6 +3,7 @@ import Cookies from "universal-cookie";
 import moment from "moment";
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
+import * as amplitude from "@amplitude/analytics-browser";
 import {
 	_LEFT,
 	_NIPPLE_DISPLACEMENT,
@@ -11,6 +12,7 @@ import {
 	_WIDTH,
 	ACTIVE,
 	AM,
+	AUTH,
 	BOOKMARKS,
 	BOOKMARK_ACTION_WIDTH,
 	BOOKMARKS_BAR_ID,
@@ -592,6 +594,20 @@ export const hideRefClassName = (appRef, classNames) => {
 export const hideUserNav = (ref) =>
 	ref.current.classList.contains(OPEN) && toggleRefClassName(ref, OPEN);
 
+export const initAmplitude = (auth) => {
+	amplitude.init(process.env.AMPLITUDE_API_KEY, auth.userId, {
+		defaultTracking: true,
+	});
+	amplitude.identify(
+		new amplitude.Identify().set(
+			AUTH,
+			replaceNullObjectProperties(
+				_.pick(auth, ["email", "subscriptionSummary"]),
+			),
+		),
+	);
+};
+
 const isBookmarkDropdownOverflowing = (bookmarksListRef) => {
 	const folderDropdown = bookmarksListRef.current.querySelector(
 		`.${FOLDER_DROPDOWN}`,
@@ -904,6 +920,16 @@ export const reorderListOnDrag = (list, startIndex, endIndex) => {
 	const [movedItem] = reorderedList.splice(startIndex, 1);
 	reorderedList.splice(endIndex, 0, movedItem);
 	return reorderedList;
+};
+
+const replaceNullObjectProperties = (object) => {
+	const newObject = { ...object };
+	for (const [key, value] of Object.entries(newObject)) {
+		if (value === null) newObject[key] = 0;
+		else if (_.isObject(value))
+			newObject[key] = replaceNullObjectProperties(value);
+	}
+	return newObject;
 };
 
 export const requestPermissions = (permssions) =>
