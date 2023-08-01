@@ -47,9 +47,8 @@ import {
 	TODO_LIST_DONE_ID,
 	URL_ROOT_DOMAIN,
 	BROWSER_LIST,
-	GENERAL_SETTING_APP_LIST,
-	GENERAL_SETTING_APPEARANCE_LIST,
 	NOTE_DELIGHTER_LIST,
+	SUBSCRIPTION_STATUS_LIST,
 	THEME_COLOUR_OPTIONS,
 	THEME_FONT_OPTIONS,
 	APPS_OBJ,
@@ -634,8 +633,14 @@ const isAppPopupOverflowing = (metricRef) => {
 
 export const isActiveSubscription = (subscriptionSummary) => {
 	const { startDate, endDate } = subscriptionSummary;
-	const isActive = moment().isBetween(moment(startDate), moment(endDate));
-	return isActive;
+	const isPlusAccessibleStatus = SUBSCRIPTION_STATUS_LIST.find(
+		({ name }) => name === subscriptionSummary.status,
+	)?.plus;
+	const isDateWithinValidity = moment().isBetween(
+		moment(startDate),
+		moment(endDate),
+	);
+	return isPlusAccessibleStatus && isDateWithinValidity;
 };
 
 export const isBoolean = (value) => typeof value === "boolean";

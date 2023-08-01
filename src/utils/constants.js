@@ -62,6 +62,7 @@ const BOOKMARKS_MANAGER_URL = "chrome://bookmarks";
 export const BOOKMARKS_PERMISSION = "bookmarks";
 const BOOKMARKS_VISIBLE = "bookmarksVisible";
 export const BROWSER_TYPE = "browserType";
+const CANCELLED = "cancelled";
 export const CHROME = "Chrome";
 export const CHROME_EXTENSION = "chrome-extension";
 const CHROMIUM = "chromium";
@@ -88,6 +89,7 @@ export const EDIT = "Edit";
 export const ECOSIA = "Ecosia";
 export const EDITING = "editing";
 export const EMPTY_NAME = "empty-name";
+const EXPIRED = "expired";
 export const FADEIN = "fadein";
 export const FIREFOX = "Firefox";
 export const FOLDER_DROPDOWN = "folder-dropdown";
@@ -129,9 +131,11 @@ export const NOTES = "Notes";
 const NOTES_VISIBLE = "notesVisible";
 const NOTES_DESCRIPTION = "Take quick notes and store wisdom to review";
 export const ON = "on";
+const ON_TRIAL = "on_trial";
 export const OPEN = "open";
 const OPEN_IN_NEW_TAB = "openInNewTab";
 export const OVERFLOW = "overflow";
+const PAST_DUE = "past_due";
 export const PHOTOS = "Photos";
 export const PHOTO_INFO = "Photo Info";
 export const PM = "PM";
@@ -181,6 +185,7 @@ const TOP_SITES_DESCRIPTION =
 	"Show most visited websites by default in Bookmarks Bar";
 export const TOP_SITES_PERMISSION = "topSites";
 export const TRANSPARENT_COLOUR = "rgba(0, 0, 0, 0)";
+const UNPAID = "unpaid";
 export const URL_ROOT_API = "https://api.sanchalit.live";
 export const URL_ROOT_DOMAIN = "https://sanchalit.live";
 const WAREHOUSE = "warehouse";
@@ -315,6 +320,14 @@ const APP_LOCATION_OPTIONS = [
 	{ name: BOOKMARKS, key: BOOKMARKS },
 	{ name: DASH, key: DASH },
 	{ name: NONE, key: NONE },
+];
+export const SUBSCRIPTION_STATUS_LIST = [
+	{ name: ACTIVE, key: ACTIVE, plus: true },
+	{ name: CANCELLED, key: CANCELLED, plus: true },
+	{ name: EXPIRED, key: EXPIRED, plus: false },
+	{ name: PAST_DUE, key: PAST_DUE, plus: true },
+	{ name: UNPAID, key: UNPAID, plus: false },
+	{ name: ON_TRIAL, key: ON_TRIAL, plus: true },
 ];
 export const THEME_COLOUR_OPTIONS = [
 	{ name: DARK, key: DARK },
@@ -798,6 +811,7 @@ export const DEFAULT_AUTHENTICATION = {
 		startDate: null,
 		endDate: null,
 		plan: null,
+		status: null,
 	},
 	[TOKEN]: null,
 	userId: null,
