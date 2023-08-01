@@ -123,7 +123,15 @@ export const useAuthPersist = () => {
 				const response = await getUserSettings(!!isTokenFromCookie.current);
 				if (response?.success) {
 					const { auth, customization } = response;
-					await setStorageAuth((prevAuth) => ({ ...prevAuth, ...auth }));
+					await setStorageAuth((prevAuth) => ({
+						...prevAuth,
+						...auth,
+						subscriptionSummary: {
+							...prevAuth.subscriptionSummary,
+							...auth.subscriptionSummary,
+							plan: prevAuth.subscriptionSummary.plan,
+						},
+					}));
 					if (!!customization)
 						await setStorageUserCustomization((prevCustomization) =>
 							addOrMergeObjectProperties(
@@ -340,6 +348,8 @@ export const useAuthPersist = () => {
 			if (subscriptionPlanFromStorage) {
 				if (isActiveSubscriptionFromToken === false) {
 					setSubscriptionSummary({ plan: null });
+				} else if (subscriptionPlanFromStorage !== subscriptionPlanFromToken) {
+					setSubscriptionSummary({ plan: subscriptionPlanFromToken });
 				}
 			} else if (subscriptionPlanFromToken && isActiveSubscriptionFromToken) {
 				setSubscriptionSummary(subscriptionSummary);
