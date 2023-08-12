@@ -1,4 +1,5 @@
-import React from "react";
+import React, { memo } from "react";
+import { useUserActions, useUserCustomization } from "../../hooks";
 import {
 	diamondsIcon,
 	hideIcon1,
@@ -7,7 +8,7 @@ import {
 	UPSELL_LIST,
 } from "../../utils";
 
-const Header = ({ upsellKey }) => (
+const Header = ({ upsellKey, closeUpsell }) => (
 	<header className="header" data-v-8fea4e86>
 		<div className="header-left" data-v-8fea4e86></div>
 		<div className="header-title" data-v-8fea4e86>
@@ -16,7 +17,7 @@ const Header = ({ upsellKey }) => (
 				: "Available on Sanchalit Plus"}
 		</div>
 		<div className="header-right" data-v-8fea4e86>
-			<span className="icon-wrapper hide" data-v-8fea4e86>
+			<span className="icon-wrapper hide" data-v-8fea4e86 onClick={closeUpsell}>
 				{hideIcon1}
 			</span>
 		</div>
@@ -65,8 +66,10 @@ const Footer = () => (
 	</footer>
 );
 
-const ContextMemo = ({ app }) => {
+const ContextMemo = memo(({ app, setUpsellApp }) => {
 	const currentUpsell = UPSELL_LIST.find(({ key }) => key === app);
+
+	const closeUpsell = () => setUpsellApp(null);
 
 	return (
 		<div
@@ -76,7 +79,7 @@ const ContextMemo = ({ app }) => {
 			data-v-6e1d3a80
 		>
 			<div className="app new-upsell" data-v-8fea4e86>
-				<Header upsellKey={currentUpsell.key} />
+				<Header {...{ upsellKey: currentUpsell.key, closeUpsell }} />
 				<main className="body" data-v-8fea4e86>
 					<BodyHeader {...currentUpsell.header} />
 					<div className="content" data-v-40063032>
@@ -87,10 +90,12 @@ const ContextMemo = ({ app }) => {
 			</div>
 		</div>
 	);
-};
+});
 
 export const Upsell = () => {
-	const app = UPSELL_PLUS_GATE;
+	const { setUpsellApp } = useUserActions();
+	const { widgetManager } = useUserCustomization();
+	const { app } = widgetManager.upsell;
 
-	return app !== null && <ContextMemo {...{ app }} />;
+	return app !== null && <ContextMemo {...{ app, setUpsellApp }} />;
 };

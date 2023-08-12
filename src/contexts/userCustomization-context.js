@@ -56,6 +56,9 @@ export const UserCustomizationProvider = ({ children }) => {
 			},
 		},
 		settingsActiveNav: null,
+		upsell: {
+			app: null,
+		}
 	});
 
 	const [networkRequestManager, networkRequestDispatch] = useReducer(

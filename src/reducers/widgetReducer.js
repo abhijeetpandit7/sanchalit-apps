@@ -55,6 +55,17 @@ export const widgetReducer = (state, action) => {
 			};
 		}
 
+		case "SET_UPSELL_APP": {
+			const { app } = action.payload;
+			return {
+				...state,
+				upsell: {
+					...state.upsell,
+					app: app,
+				},
+			};
+		}
+
 		default:
 			return state;
 	}

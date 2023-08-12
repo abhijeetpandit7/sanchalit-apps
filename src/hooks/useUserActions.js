@@ -1014,6 +1014,15 @@ export const useUserActions = () => {
 		});
 	}, []);
 
+	const setUpsellApp = useCallback(
+		(app) =>
+			widgetDispatch({
+				type: "SET_UPSELL_APP",
+				payload: { app },
+			}),
+		[],
+	);
+
 	const setWidgetReady = useCallback(
 		({ widget, type = "app" } = {}) =>
 			widgetDispatch({
@@ -1469,6 +1478,7 @@ export const useUserActions = () => {
 		setTodoItemOrder,
 		setTodoListOrder,
 		setTodoListColour,
+		setUpsellApp,
 		setWidgetReady,
 		toggleArchiveCountdown,
 		toggleBookmarksSetting,
