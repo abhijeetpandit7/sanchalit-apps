@@ -193,6 +193,7 @@ export const TOP_SITES_PERMISSION = "topSites";
 export const TRANSPARENT_COLOUR = "rgba(0, 0, 0, 0)";
 const UNPAID = "unpaid";
 export const UPSELL_PLUS_GATE = "upsellPlusGate";
+export const UPSELL_UPGRADE = "upsell.upgrade";
 export const URL_ROOT_API = "https://api.sanchalit.live";
 export const URL_ROOT_DOMAIN = "https://sanchalit.live";
 const WAREHOUSE = "warehouse";
@@ -507,6 +508,13 @@ export const SETTINGS_NAV_LIST = [
 	{ value: BOOKMARKS },
 	{ value: HELP, secondary: true },
 	{ value: ABOUT, secondary: true },
+	{
+		value: "Upgrade to Plus",
+		secondary: true,
+		nonPlusOnly: true,
+		clickOnly: true,
+		command: UPSELL_UPGRADE,
+	},
 ];
 export const TODO_FEED_SETTING_LIST = [
 	{
