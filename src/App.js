@@ -1,9 +1,10 @@
 import React, { memo } from "react";
 import "./App.css";
 import { LogoOverlay } from "./components";
-import { Backgrounds, ModalBase } from "./containers";
+import { Backgrounds } from "./containers";
 import { useAuthPersist, useUserCustomization } from "./hooks";
 import {
+	FullRegion,
 	TopBar,
 	TopRow,
 	CenterRegion,
@@ -22,7 +23,7 @@ const ContextMemo = memo(({ appsRef, mainViewRef }) => (
 		>
 			<Backgrounds />
 			<div className={`apps ${HIDE_APPS}`} ref={appsRef}>
-				<ModalBase />
+				<FullRegion />
 				<TopBar />
 				<TopRow />
 				<div className="region center-above"></div>

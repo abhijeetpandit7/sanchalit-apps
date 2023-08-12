@@ -1,12 +1,16 @@
 import {
 	airConditionerIcon,
+	arrowRightIcon,
 	beachIcon,
 	birdsIcon,
 	cafeIcon,
 	campfireIcon,
+	checklistIcon,
 	chimesIcon,
+	cloudIcon,
 	coWorkersIcon,
 	coffeeMakerIcon,
+	colourPaletteIcon,
 	copierIcon,
 	creekIcon,
 	cricketsIcon,
@@ -14,7 +18,9 @@ import {
 	customIcon,
 	fireIcon,
 	fluorescentHumIcon,
+	folderIcon1,
 	forestIcon,
+	galleryIcon,
 	gardenIcon,
 	insectsIcon,
 	loudRainIcon,
@@ -186,6 +192,7 @@ const TOP_SITES_DESCRIPTION =
 export const TOP_SITES_PERMISSION = "topSites";
 export const TRANSPARENT_COLOUR = "rgba(0, 0, 0, 0)";
 const UNPAID = "unpaid";
+export const UPSELL_PLUS_GATE = "upsellPlusGate";
 export const URL_ROOT_API = "https://api.sanchalit.live";
 export const URL_ROOT_DOMAIN = "https://sanchalit.live";
 const WAREHOUSE = "warehouse";
@@ -703,6 +710,55 @@ export const NOTE_DELIGHTER_LIST = [
 	"Type a tidbit",
 	"Type something cool!",
 	"Use your words",
+];
+
+export const UPSELL_LIST = [
+	{
+		name: "Plus",
+		key: UPSELL_PLUS_GATE,
+		header: {
+			title: "Do more with Plus",
+			description: "Add integrations, customization, and new apps.",
+		},
+		features: [
+			{
+				title: "Sync with other task managers",
+				description:
+					"Level up your productivity by syncing your tasks with Asana, Basecamp, Bitbucket, ClickUp, GitHub, Google Tasks, Microsoft To Do, Todoist and Trello.",
+				icon: cloudIcon,
+			},
+			{
+				title: "See the photos that inspire you the most",
+				description:
+					"Light yourself up every time you open a new tab. Add your own images or choose from your Sanchalit favorites.",
+				icon: galleryIcon,
+			},
+			{
+				title: "Personalize your experience",
+				description:
+					"Make Sanchalit your own by choosing a font and color that suits your personality.",
+				icon: colourPaletteIcon,
+			},
+			{
+				title: "Focus on your top task",
+				description:
+					"Auto-set your focus to your top task. Set your priorities at the start of day and work through them one by one.",
+				icon: checklistIcon,
+			},
+			{
+				title: "More daily photos and quotes",
+				description:
+					"Not feeling the photo or quote of the day? Ready for something fresh? A new one is just a click away.",
+				icon: arrowRightIcon,
+			},
+			{
+				title: "Improve your task organization",
+				description:
+					"Add custom to-do lists to better manage your personal productivity and focus.",
+				icon: folderIcon1,
+			},
+		],
+	},
 ];
 
 export const APPS_OBJ = {
