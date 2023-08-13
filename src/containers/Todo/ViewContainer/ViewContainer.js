@@ -103,6 +103,7 @@ const TodoItem = (props) => {
 export const ViewContainer = (props) => {
 	const {
 		todoInputRef,
+		hasPlus,
 		activeTodoList,
 		processedTodos,
 		todos,
@@ -110,6 +111,7 @@ export const ViewContainer = (props) => {
 		setActiveTodoListId,
 		setNetworkRequestPayload,
 		setTodoItemOrder,
+		showUpsell,
 	} = props;
 	const [isCreatingTodo, setIsCreatingTodo] = useState(false);
 
@@ -172,6 +174,9 @@ export const ViewContainer = (props) => {
 		const todoInput = todoInputRef.current;
 		if (todoInput.value.trim() === "") {
 			return;
+		}
+		if (isCustomList && hasPlus === false) {
+			return showUpsell();
 		}
 		todoInput.disabled = true;
 		await createTodoItem(todoInput.value, activeTodoList.id, isCtrlEnter);
