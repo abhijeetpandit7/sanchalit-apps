@@ -9,12 +9,14 @@ import {
 } from "../../../../utils";
 
 const Dropdown = ({
+	hasPlus,
 	isFocus,
 	processedTodos,
 	activeTodoList,
 	archiveAllDoneTodoItemsFrom,
 	moveAllTodoItems,
 	moveAllTodoItemsToOriginalList,
+	showUpsell,
 	toggleHeaderControl,
 	toggleSettingsTodo,
 	updateAppHeight,
@@ -38,12 +40,13 @@ const Dropdown = ({
 	return (
 		<div className="dropdown todo-actions-dropdown">
 			<ul className="dropdown-list">
-				{/* TODO: Show these options only for plus user */}
 				{isNeitherTodayNorDoneListAndIsAnyTodo && (
 					<li
 						className="dropdown-list-item"
 						onClick={() => {
-							moveAllTodoItems(activeTodoListId, TODO_LIST_TODAY_ID);
+							hasPlus
+								? moveAllTodoItems(activeTodoListId, TODO_LIST_TODAY_ID)
+								: showUpsell();
 							toggleHeaderControl();
 						}}
 						title={`Move all tasks from this list to ${TODAY}`}
@@ -52,34 +55,47 @@ const Dropdown = ({
 							{moveToTodayIcon}
 						</span>
 						<span className="dropdown-list-label">Send tasks to {TODAY}</span>
+						{hasPlus === false && (
+							<span className="badge badge-plus">Plus</span>
+						)}
 					</li>
 				)}
 				{isTodayListAndIsAnyTodo && (
 					<li
 						className="dropdown-list-item"
 						onClick={() => {
-							moveAllTodoItemsToOriginalList(activeTodoListId);
+							hasPlus
+								? moveAllTodoItemsToOriginalList(activeTodoListId)
+								: showUpsell();
 							toggleHeaderControl();
 						}}
 						title={`Send tasks to ${INBOX}/original lists`}
 					>
 						<span className="dropdown-list-icon-wrapper">{clearTasksIcon}</span>
 						<span className="dropdown-list-label">Clear the day</span>
+						{hasPlus === false && (
+							<span className="badge badge-plus">Plus</span>
+						)}
 					</li>
 				)}
 				{isNotDoneListAndIsAnyCompletedTodo && (
 					<li
 						className="dropdown-list-item"
 						onClick={() => {
-							archiveAllDoneTodoItemsFrom({
-								listId: activeTodoListId,
-								onNewDay: false,
-							});
+							hasPlus
+								? archiveAllDoneTodoItemsFrom({
+										listId: activeTodoListId,
+										onNewDay: false,
+								  })
+								: showUpsell();
 							toggleHeaderControl();
 						}}
 					>
 						<span className="dropdown-list-icon-wrapper">{clearTasksIcon}</span>
 						<span className="dropdown-list-label">Clear completed tasks</span>
+						{hasPlus === false && (
+							<span className="badge badge-plus">Plus</span>
+						)}
 					</li>
 				)}
 				{(isNeitherTodayNorDoneListAndIsAnyTodo ||

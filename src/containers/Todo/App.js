@@ -91,11 +91,13 @@ const ContextMemo = memo((props) => {
 			>
 				<HeaderControls
 					{...{
+						hasPlus,
 						processedTodos,
 						activeTodoList,
 						archiveAllDoneTodoItemsFrom,
 						moveAllTodoItems,
 						moveAllTodoItemsToOriginalList,
+						showUpsell,
 						toggleSettingsTodo,
 						updateAppHeight,
 					}}
