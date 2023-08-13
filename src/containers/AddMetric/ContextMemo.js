@@ -10,7 +10,15 @@ import {
 } from "../../utils";
 
 const ContextMemo = memo(
-	({ countdownsRef, dashAppRef, app, setDashApp, setDashAppStyles }) => {
+	({
+		countdownsRef,
+		dashAppRef,
+		app,
+		hasPlus,
+		setDashApp,
+		setDashAppStyles,
+		setUpsellApp,
+	}) => {
 		const addMetricRef = useRef(null);
 
 		const [componentDidMount, setComponentDidMount] = useState(false);
@@ -76,7 +84,9 @@ const ContextMemo = memo(
 						</span>
 					</div>
 				</div>
-				{componentDidMount && notShowingDashApp && <App {...{ setDashApp }} />}
+				{componentDidMount && notShowingDashApp && (
+					<App {...{ hasPlus, setDashApp, setUpsellApp }} />
+				)}
 			</div>
 		);
 	},

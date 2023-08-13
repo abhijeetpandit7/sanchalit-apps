@@ -7,7 +7,7 @@ export const AddMetric = () => {
 	const {
 		storageAuth: { subscriptionSummary },
 	} = useAuth();
-	const { setDashApp, setDashAppStyles } = useUserActions();
+	const { setDashApp, setDashAppStyles, setUpsellApp } = useUserActions();
 	const {
 		countdownsRef,
 		dashAppRef,
@@ -28,8 +28,10 @@ export const AddMetric = () => {
 							countdownsRef,
 							dashAppRef,
 							app,
+							hasPlus,
 							setDashApp,
 							setDashAppStyles,
+							setUpsellApp,
 						}}
 					/>
 				</Suspense>
