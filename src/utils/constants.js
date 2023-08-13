@@ -330,12 +330,12 @@ const APP_LOCATION_OPTIONS = [
 	{ name: NONE, key: NONE },
 ];
 export const SUBSCRIPTION_STATUS_LIST = [
-	{ name: ACTIVE, key: ACTIVE, plus: true },
-	{ name: CANCELLED, key: CANCELLED, plus: true },
-	{ name: EXPIRED, key: EXPIRED, plus: false },
-	{ name: PAST_DUE, key: PAST_DUE, plus: true },
-	{ name: UNPAID, key: UNPAID, plus: false },
-	{ name: ON_TRIAL, key: ON_TRIAL, plus: true },
+	{ name: ACTIVE, key: ACTIVE, hasPlus: true },
+	{ name: CANCELLED, key: CANCELLED, hasPlus: true },
+	{ name: EXPIRED, key: EXPIRED, hasPlus: false },
+	{ name: PAST_DUE, key: PAST_DUE, hasPlus: true },
+	{ name: UNPAID, key: UNPAID, hasPlus: false },
+	{ name: ON_TRIAL, key: ON_TRIAL, hasPlus: true },
 ];
 export const THEME_COLOUR_OPTIONS = [
 	{ name: DARK, key: DARK },
@@ -422,7 +422,7 @@ export const DASH_APP_LIST = [
 	{
 		name: COUNTDOWNS,
 		key: COUNTDOWN_VISIBLE,
-		plus: true,
+		plusOnly: true,
 		description: COUNTDOWN_DESCRIPTION,
 	},
 ];
@@ -450,13 +450,13 @@ export const GENERAL_SETTING_APP_LIST = [
 	{
 		name: NOTES,
 		key: NOTES_VISIBLE,
-		plus: true,
+		plusOnly: true,
 		description: NOTES_DESCRIPTION,
 	},
 	{
 		name: SOUNDSCAPES,
 		key: SOUNDSCAPES_VISIBLE,
-		plus: true,
+		plusOnly: true,
 		preview: true,
 		description: SOUNDSCAPES_DESCRIPTION,
 	},
@@ -471,7 +471,7 @@ export const GENERAL_SETTING_APPEARANCE_LIST = [
 	{
 		name: "Font",
 		key: THEME_FONT,
-		plus: true,
+		plusOnly: true,
 		toggleOptions: true,
 		options: THEME_FONT_OPTIONS,
 	},

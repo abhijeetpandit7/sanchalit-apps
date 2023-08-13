@@ -635,7 +635,7 @@ export const isActiveSubscription = (subscriptionSummary) => {
 	const { startDate, endDate } = subscriptionSummary;
 	const isPlusAccessibleStatus = SUBSCRIPTION_STATUS_LIST.find(
 		({ name }) => name === subscriptionSummary.status,
-	)?.plus;
+	)?.hasPlus;
 	const isDateWithinValidity = moment().isBetween(
 		moment(startDate),
 		moment(endDate),

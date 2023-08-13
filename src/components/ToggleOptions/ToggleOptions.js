@@ -3,7 +3,7 @@ import { ACTIVE } from "../../utils";
 
 export const ToggleOptions = (props) => {
 	const Plus = () =>
-		props.plus ? <span className="badge badge-plus">PLUS</span> : null;
+		props.plusOnly ? <span className="badge badge-plus">PLUS</span> : null;
 	const Divider = () => <span className="toggle-divider">|</span>;
 
 	const optionBreakCount = 3;

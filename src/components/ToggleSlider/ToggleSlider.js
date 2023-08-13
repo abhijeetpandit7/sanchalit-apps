@@ -3,7 +3,7 @@ import { DISABLED, ON, toggleSwitch } from "../../utils";
 
 export const ToggleSlider = (props) => {
 	const Plus = () =>
-		props.plus ? <span className="badge badge-plus">PLUS</span> : null;
+		props.plusOnly ? <span className="badge badge-plus">PLUS</span> : null;
 	const Preview = () =>
 		props.preview ? <span className="badge badge-plus">PREVIEW</span> : null;
 	const Description = () =>
