@@ -107,6 +107,7 @@ const ContextMemo = memo((props) => {
 				{...{
 					todoAppRef,
 					todoInputRef,
+					hasPlus,
 					activeTodoList,
 					processedTodos,
 					processedTodoLists,
@@ -119,6 +120,7 @@ const ContextMemo = memo((props) => {
 					setActiveTodoListId,
 					setNetworkRequestPayload,
 					setTodoItemOrder,
+					showUpsell,
 					toggleTodoItemDone,
 					updateAppHeight,
 				}}

@@ -13,6 +13,7 @@ const SHOW_DETAIL = "show-detail";
 
 const Dropdown = ({
 	todoAppRef,
+	hasPlus,
 	isParentFocus,
 	activeTodoList,
 	item,
@@ -21,6 +22,7 @@ const Dropdown = ({
 	editTodoItemTitle,
 	moveTodoItemTo,
 	processedTodoLists,
+	showUpsell,
 	toggleMore,
 	updateAppHeight,
 }) => {
@@ -153,9 +155,16 @@ const Dropdown = ({
 				</li>
 				<li
 					className="dropdown-list-item no-icon"
-					onClick={toggleDropdownDetail}
+					onClick={() => {
+						if (hasPlus) toggleDropdownDetail();
+						else {
+							showUpsell();
+							toggleMore();
+						}
+					}}
 				>
 					<span className="dropdown-list-label">Move to...</span>
+					{hasPlus === false && <span className="badge badge-plus">Plus</span>}
 				</li>
 				{isTodoItemDone && isDoneList === false && (
 					<li
