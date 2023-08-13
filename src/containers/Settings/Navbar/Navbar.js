@@ -3,7 +3,7 @@ import { useAuth, useUserActions } from "../../../hooks";
 import {
 	ACTIVE,
 	UPSELL_PLUS_GATE,
-	UPSELL_UPGRADE,
+	UPSELL_UPGRADE_PLUS,
 	SETTINGS_NAV_LIST,
 } from "../../../utils";
 
@@ -13,7 +13,7 @@ const ContextMemo = memo((props) => {
 	const handleClick = (navItem) => {
 		if (navItem.clickOnly) {
 			switch (navItem.command) {
-				case UPSELL_UPGRADE: {
+				case UPSELL_UPGRADE_PLUS: {
 					props.setUpsellApp(UPSELL_PLUS_GATE);
 					break;
 				}

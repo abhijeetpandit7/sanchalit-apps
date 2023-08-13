@@ -1,11 +1,13 @@
 import React, { lazy, Suspense } from "react";
-import { useUserActions, useUserCustomization } from "../../hooks";
+import { useAuth, useUserActions, useUserCustomization } from "../../hooks";
 
 const ContextMemo = lazy(() => import("./ContextMemo"));
 
 export const AddMetric = () => {
+	const {
+		storageAuth: { subscriptionSummary },
+	} = useAuth();
 	const { setDashApp, setDashAppStyles } = useUserActions();
-	// TODO: Show if not plus user
 	const {
 		countdownsRef,
 		dashAppRef,
@@ -14,10 +16,12 @@ export const AddMetric = () => {
 	} = useUserCustomization();
 
 	const { app } = widgetManager.dashApp;
+	const hasPlus = !!subscriptionSummary?.plan;
+	const shouldRender = countdownVisible || hasPlus === false;
 
 	return (
 		<>
-			{countdownVisible && (
+			{shouldRender && (
 				<Suspense fallback={null}>
 					<ContextMemo
 						{...{
