@@ -1,8 +1,9 @@
 import React, { memo, useEffect, useRef } from "react";
 import { HeaderControls, Navbar, ViewContainer } from "../Todo";
-import { useUserActions, useUserCustomization } from "../../hooks";
+import { useAuth, useUserActions, useUserCustomization } from "../../hooks";
 import {
 	TODO_LIST_TODAY_ID,
+	UPSELL_PLUS_GATE,
 	SETTINGS_NAV_LIST,
 	processTodoLists,
 	processTodos,
@@ -13,6 +14,7 @@ const ContextMemo = memo((props) => {
 	const {
 		todoInputRef,
 		activeTodoListId,
+		plan,
 		todoLists,
 		todos,
 		archiveAllDoneTodoItemsFrom,
@@ -28,12 +30,14 @@ const ContextMemo = memo((props) => {
 		setSettingsActiveNav,
 		setNetworkRequestPayload,
 		setTodoItemOrder,
+		setUpsellApp,
 		toggleTodoItemDone,
 		validateTodoListsOrder,
 		validateTodoListTodoItemsOrder,
 	} = props;
 
 	const todoAppRef = useRef(null);
+	const hasPlus = !!plan;
 
 	const processedTodoLists = processTodoLists(todoLists);
 
@@ -58,6 +62,8 @@ const ContextMemo = memo((props) => {
 		await setSettingsActiveNav(null);
 	};
 
+	const showUpsell = () => setUpsellApp(UPSELL_PLUS_GATE);
+
 	return (
 		<div className="app todo-app calculates-own-max-height" ref={todoAppRef}>
 			<div className="drop-zone drop-left-zone">
@@ -73,11 +79,13 @@ const ContextMemo = memo((props) => {
 			<Navbar
 				{...{
 					todoAppRef,
+					hasPlus,
 					processedTodoLists,
 					todos,
 					activeTodoList,
 					createTodoList,
 					setActiveTodoListId,
+					showUpsell,
 					updateAppHeight,
 				}}
 			>
@@ -119,6 +127,11 @@ const ContextMemo = memo((props) => {
 
 const App = () => {
 	const {
+		storageAuth: {
+			subscriptionSummary: { plan },
+		},
+	} = useAuth();
+	const {
 		todoInputRef,
 		storageUserCustomization: {
 			todoLists,
@@ -140,6 +153,7 @@ const App = () => {
 		setSettingsActiveNav,
 		setNetworkRequestPayload,
 		setTodoItemOrder,
+		setUpsellApp,
 		toggleTodoItemDone,
 		validateTodoListsOrder,
 		validateTodoListTodoItemsOrder,
@@ -150,6 +164,7 @@ const App = () => {
 			{...{
 				activeTodoListId,
 				todoInputRef,
+				plan,
 				todoLists,
 				todos,
 				archiveAllDoneTodoItemsFrom,
@@ -165,6 +180,7 @@ const App = () => {
 				setSettingsActiveNav,
 				setNetworkRequestPayload,
 				setTodoItemOrder,
+				setUpsellApp,
 				toggleTodoItemDone,
 				validateTodoListsOrder,
 				validateTodoListTodoItemsOrder,

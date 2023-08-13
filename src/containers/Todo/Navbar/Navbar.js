@@ -60,11 +60,13 @@ export const Navbar = (props) => {
 								{...{
 									todoAppRef: props.todoAppRef,
 									activeTodoListId,
+									hasPlus: props.hasPlus,
 									isParentFocus: isFocus,
 									processedTodoLists: props.processedTodoLists,
 									todos: props.todos,
 									createTodoList: props.createTodoList,
 									setActiveTodoListId: props.setActiveTodoListId,
+									showUpsell: props.showUpsell,
 									toggleActiveListContainer,
 									updateAppHeight: props.updateAppHeight,
 								}}

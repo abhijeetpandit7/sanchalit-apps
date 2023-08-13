@@ -5,11 +5,13 @@ import { TODO_LIST_DONE_ID, hideRefClassName } from "../../../../utils";
 const Dropdown = ({
 	todoAppRef,
 	activeTodoListId,
+	hasPlus,
 	isParentFocus,
 	processedTodoLists,
 	todos,
 	createTodoList,
 	setActiveTodoListId,
+	showUpsell,
 	toggleActiveListContainer,
 	updateAppHeight,
 }) => {
@@ -70,32 +72,39 @@ const Dropdown = ({
 	));
 
 	const TodoListAddRow = (
-		// TODO: Disable new list if not plus user
 		<ul
 			className={`todo-list-add-row ${isFocus ? "input-mode" : ""}`}
 			onClick={(event) => event.stopPropagation()}
 		>
-			<li>
-				<span
-					id="add-icon"
-					className="todo-list-add-icon"
-					style={{
-						display: isFocus || listInputRef.current?.value ? "none" : "block",
-					}}
-				>
-					<i className="icon icon-plus"></i>
-				</span>
-				<input
-					id="list-new"
-					className="todo-input todo-list-add-input"
-					ref={listInputRef}
-					onClick={() => setIsFocus(true)}
-					onKeyDown={newListEnterHandler}
-					type="text"
-					placeholder={isFocus ? "" : "    New List"}
-					autoComplete="off"
-				/>
-			</li>
+			{hasPlus ? (
+				<li>
+					<span
+						id="add-icon"
+						className="todo-list-add-icon"
+						style={{
+							display:
+								isFocus || listInputRef.current?.value ? "none" : "block",
+						}}
+					>
+						<i className="icon icon-plus"></i>
+					</span>
+					<input
+						id="list-new"
+						className="todo-input todo-list-add-input"
+						ref={listInputRef}
+						onClick={() => setIsFocus(true)}
+						onKeyDown={newListEnterHandler}
+						type="text"
+						placeholder={isFocus ? "" : "    New List"}
+						autoComplete="off"
+					/>
+				</li>
+			) : (
+				<div className="upsell-row" onClick={showUpsell}>
+					<div className="copy">+ New List</div>
+					<span className="badge badge-plus">Plus</span>
+				</div>
+			)}
 		</ul>
 	);
 

@@ -1,11 +1,4 @@
-import React, {
-	lazy,
-	memo,
-	Suspense,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
+import React, { lazy, memo, Suspense, useEffect, useState } from "react";
 import {
 	FocusOutHandler,
 	useUserActions,
