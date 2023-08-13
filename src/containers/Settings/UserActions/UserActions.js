@@ -7,7 +7,7 @@ import {
 } from "../../../hooks";
 import {
 	OPEN,
-	URL_ROOT_DOMAIN,
+	URL_ACCOUNT_PAGE,
 	isBuildTargetWeb,
 	angleDownIcon,
 	caretLeft,
@@ -18,18 +18,16 @@ import {
 	hideUserNav,
 } from "../../../utils";
 
-const accountPageUrl = `${URL_ROOT_DOMAIN}/account`;
-
 const loginButtonClickHander = () => {
 	if (isBuildTargetWeb) {
-		window.location.href = accountPageUrl;
+		window.location.href = URL_ACCOUNT_PAGE;
 	} else {
 		const width = 500;
 		const height = 550;
 		const left = window.screen.width / 2 - width / 2;
 		const top = window.screen.height / 2 - height / 2;
 		window.open(
-			`${accountPageUrl}?oneTimeLogin`,
+			`${URL_ACCOUNT_PAGE}?oneTimeLogin`,
 			"_blank",
 			`width=${width}, height=${height}, left=${left}, top=${top}`,
 		);
@@ -38,9 +36,9 @@ const loginButtonClickHander = () => {
 
 const redirectToAccountPage = () => {
 	if (isBuildTargetWeb) {
-		window.location.href = accountPageUrl;
+		window.location.href = URL_ACCOUNT_PAGE;
 	} else {
-		window.open(accountPageUrl, "_blank");
+		window.open(URL_ACCOUNT_PAGE, "_blank");
 	}
 };
 

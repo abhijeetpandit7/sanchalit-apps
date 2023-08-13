@@ -4,7 +4,7 @@ import {
 	diamondsIcon,
 	hideIcon1,
 	UPSELL_PLUS_GATE,
-	URL_ROOT_DOMAIN,
+	URL_ACCOUNT_PAGE,
 	UPSELL_LIST,
 } from "../../utils";
 
@@ -53,13 +53,19 @@ const Features = ({ features }) => (
 
 const Footer = () => (
 	<footer className="footer" data-v-8fea4e86>
-		<a className="button" data-v-8fea4e86>
+		<a
+			href={URL_ACCOUNT_PAGE}
+			target="_blank"
+			rel="noopener noreferrer"
+			className="button"
+			data-v-8fea4e86
+		>
 			{diamondsIcon}
 			Get Sanchalit Plus
 		</a>
 		<div className="button-desc" data-v-8fea4e86>
 			Only $1.99/month.
-			<a href={URL_ROOT_DOMAIN} target="_blank">
+			<a href={URL_ACCOUNT_PAGE} target="_blank" rel="noopener noreferrer">
 				<strong> Learn more</strong>
 			</a>
 		</div>

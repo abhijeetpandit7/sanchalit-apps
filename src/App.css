@@ -8118,7 +8118,7 @@ input[type="number"].hide-controls {
 	display: block;
 }
 .light .settings-about .logo-white {
-	display: none;
+	/* display: none; */
 }
 .settings-about h3 {
 	margin: 6px 0;
