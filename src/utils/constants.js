@@ -927,6 +927,13 @@ export const DEFAULT_CUSTOMIZATION = {
 	[THEME_FONT]: CLASSIC,
 };
 
+export const CUSTOMIZATION_FREEMIUM_CONFIGURATION = {
+	[COUNTDOWN_VISIBLE]: false,
+	[NOTES_VISIBLE]: false,
+	[SOUNDSCAPES_VISIBLE]: false,
+	[THEME_FONT]: CLASSIC,
+};
+
 export const DEFAULT_NETWORK_QUEUE = {
 	post: {
 		userData: {},

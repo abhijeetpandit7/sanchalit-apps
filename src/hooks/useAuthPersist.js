@@ -13,6 +13,7 @@ import {
 import {
 	AUTH,
 	CUSTOMIZATION,
+	CUSTOMIZATION_FREEMIUM_CONFIGURATION,
 	NETWORK_QUEUE,
 	DEFAULT_AUTHENTICATION,
 	DEFAULT_CUSTOMIZATION,
@@ -32,6 +33,7 @@ import {
 	isBuildTargetWeb,
 	isDeepEqual,
 	isObjectEmpty,
+	omitObjectProperties,
 	setBrowserCookieItem,
 	setExtensionStorageItem,
 	setLocalCookieItem,
@@ -75,9 +77,10 @@ export const useAuthPersist = () => {
 		showApps,
 		showMainView,
 	} = useUserCustomization();
-	const { setWidgetReady } = useUserActions();
+	const { setWidgetReady, toggleOffPlusAddOns } = useUserActions();
 	const userCustomizationRef = useRef(storageUserCustomization);
 	const isTokenFromCookie = useRef(false);
+	let customizationPlusConfiguration = useRef({});
 
 	// Transits from overlay to main-view onReady widgetManager
 	useEffect(() => {
@@ -122,17 +125,23 @@ export const useAuthPersist = () => {
 				}
 				const response = await getUserSettings(!!isTokenFromCookie.current);
 				if (response?.success) {
-					const { auth, customization } = response;
-					await setStorageAuth((prevAuth) => ({
-						...prevAuth,
-						...auth,
-						subscriptionSummary: {
-							...prevAuth.subscriptionSummary,
-							...auth.subscriptionSummary,
-							plan: prevAuth.subscriptionSummary.plan,
-						},
-					}));
-					if (!!customization)
+					let { auth, customization } = response;
+					auth = omitObjectProperties(auth, ["subscriptionSummary.plan"]);
+					await setStorageAuth((prevAuth) =>
+						addOrMergeObjectProperties(prevAuth, auth),
+					);
+					if (!!customization) {
+						const hasPlus = !!storageAuth.subscriptionSummary.plan;
+						if (hasPlus === false) {
+							const properties = Object.keys(
+								CUSTOMIZATION_FREEMIUM_CONFIGURATION,
+							);
+							customizationPlusConfiguration.current = _.pick(
+								customization,
+								properties,
+							);
+							customization = omitObjectProperties(customization, properties);
+						}
 						await setStorageUserCustomization((prevCustomization) =>
 							addOrMergeObjectProperties(
 								prevCustomization,
@@ -140,6 +149,7 @@ export const useAuthPersist = () => {
 								true,
 							),
 						);
+					}
 				}
 				setServerReady();
 			}
@@ -348,11 +358,19 @@ export const useAuthPersist = () => {
 			if (subscriptionPlanFromStorage) {
 				if (isActiveSubscriptionFromToken === false) {
 					setSubscriptionSummary({ plan: null });
+					toggleOffPlusAddOns();
 				} else if (subscriptionPlanFromStorage !== subscriptionPlanFromToken) {
 					setSubscriptionSummary({ plan: subscriptionPlanFromToken });
 				}
 			} else if (subscriptionPlanFromToken && isActiveSubscriptionFromToken) {
 				setSubscriptionSummary(subscriptionSummary);
+				if (isObjectEmpty(customizationPlusConfiguration.current) === false)
+					setStorageUserCustomization((prevCustomization) => ({
+						...prevCustomization,
+						...customizationPlusConfiguration.current,
+					}));
+			} else {
+				toggleOffPlusAddOns();
 			}
 		})();
 	}, [storageAuth.token]);

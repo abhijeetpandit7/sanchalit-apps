@@ -681,6 +681,9 @@ const isTouchDevice = () =>
 	/iPhone|iPod|iPad|Android/.test(navigator.userAgent) ||
 	(navigator.userAgent.includes("Mac") && "ontouchend" in document);
 
+export const omitObjectProperties = (object, properties) =>
+	_.omit(object, properties);
+
 export const parseAppPopupOverflow = (metricRef, topRight) => {
 	const isOverflowing = isAppPopupOverflowing(metricRef);
 	const appPopup = metricRef.current.querySelector(`.${POPUP}`);

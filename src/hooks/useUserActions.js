@@ -21,6 +21,7 @@ import {
 	TODO_LIST_INBOX_ID,
 	TODO_LIST_TODAY_ID,
 	isBuildTargetWeb,
+	CUSTOMIZATION_FREEMIUM_CONFIGURATION,
 	TODO_SHOW_SETTING,
 	createCountdown,
 	createNote,
@@ -1127,6 +1128,15 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const toggleOffPlusAddOns = useCallback(
+		() =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				...CUSTOMIZATION_FREEMIUM_CONFIGURATION,
+			})),
+		[],
+	);
+
 	const toggleRandomMetricCountdown = useCallback(
 		() =>
 			setStorageUserCustomization((prevCustomization) => {
@@ -1485,6 +1495,7 @@ export const useUserActions = () => {
 		toggleCountdownPin,
 		toggleDisplayNameVisible,
 		toggleHour12Clock,
+		toggleOffPlusAddOns,
 		toggleRandomMetricCountdown,
 		toggleSearchInCenter,
 		toggleShowApp,
