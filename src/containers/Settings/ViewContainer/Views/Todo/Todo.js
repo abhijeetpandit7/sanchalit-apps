@@ -1,7 +1,11 @@
 import React, { memo, useRef, useState } from "react";
 import _ from "lodash";
 import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
-import { useUserActions, useUserCustomization } from "../../../../../hooks";
+import {
+	useAuth,
+	useUserActions,
+	useUserCustomization,
+} from "../../../../../hooks";
 import {
 	CollapsibleHeaderWrapper,
 	ColourPaletteWrapper,
@@ -15,6 +19,7 @@ import {
 	TODO_LIST_DONE_ID,
 	TODO_LIST_INBOX_ID,
 	TODO_LIST_TODAY_ID,
+	UPSELL_PLUS_GATE,
 	TODO_FEED_SETTING_LIST,
 	GENERAL_SETTING_APP_LIST,
 	TODO_SHOW_SETTING,
@@ -26,11 +31,13 @@ const TodoList = ({
 	id,
 	title,
 	colour,
+	hasPlus,
 	deleteTodoList,
 	editTodoListTitle,
 	getTodoListItemsCount,
 	moveAllTodoItems,
 	setTodoListColour,
+	showUpsell,
 	provided,
 }) => {
 	const defaultTodoListIds = [
@@ -48,11 +55,19 @@ const TodoList = ({
 	const todoListTitleClickHandler = (event) => {
 		if (isDefaultTodoList) return;
 		switch (event.detail) {
-			case 2:
-				editTodoListTitle(event, id);
+			case 2: {
+				if (hasPlus) editTodoListTitle(event, id);
+				else showUpsell();
+				break;
+			}
 			default:
 				return;
 		}
+	};
+
+	const todoListRenameClickHandler = (event, id) => {
+		if (hasPlus) editTodoListTitle(event, id);
+		else showUpsell();
 	};
 
 	const todoListTrashClickHandler = (event) => {
@@ -156,7 +171,13 @@ const TodoList = ({
 		>
 			<span className="settings-todo-list-color">
 				<ColourPaletteWrapper
-					{...{ todoListColour: colour, todoListId: id, setTodoListColour }}
+					{...{
+						hasPlus,
+						todoListColour: colour,
+						todoListId: id,
+						setTodoListColour,
+						showUpsell,
+					}}
 				/>
 			</span>
 			<span className="settings-todo-list-name">{title}</span>
@@ -171,7 +192,7 @@ const TodoList = ({
 						<>
 							<span
 								className="todo-rename-list action"
-								onClick={(event) => editTodoListTitle(event, id)}
+								onClick={(event) => todoListRenameClickHandler(event, id)}
 							>
 								Rename
 							</span>
@@ -191,9 +212,18 @@ const TodoList = ({
 	);
 };
 
-const AddList = ({ createTodoList }) => {
+const AddList = ({ hasPlus, createTodoList, showUpsell }) => {
 	const [isCreatingTodoList, setIsCreatingTodoList] = useState(false);
 	const listInputRef = useRef(null);
+
+	const handleClick = async () => {
+		if (hasPlus) {
+			await setIsCreatingTodoList(true);
+			listInputRef.current.focus();
+		} else {
+			showUpsell();
+		}
+	};
 
 	const newListEnterHandler = async (event) => {
 		if (event.key !== "Enter") {
@@ -234,10 +264,7 @@ const AddList = ({ createTodoList }) => {
 				className={`button toggle-form toggle-add-list ${
 					isCreatingTodoList ? "" : "show"
 				}`}
-				onClick={async () => {
-					await setIsCreatingTodoList(true);
-					listInputRef.current.focus();
-				}}
+				onClick={handleClick}
 			>
 				<i className="icon icon-plus"></i>Add List
 			</button>
@@ -246,6 +273,8 @@ const AddList = ({ createTodoList }) => {
 };
 
 const ContextMemo = memo((props) => {
+	const hasPlus = !!props.plan;
+	const showUpsell = () => props.setUpsellApp(UPSELL_PLUS_GATE);
 	const todoApp = GENERAL_SETTING_APP_LIST.find((app) => app.name === TODO);
 	const toggleShowTodo = () => props.toggleShowApp(todoApp);
 	const stayOpenSetting = TODO_FEED_SETTING_LIST[0];
@@ -350,19 +379,30 @@ const ContextMemo = memo((props) => {
 											>
 												{(provided) => (
 													<TodoList
-														{...todoList}
-														deleteTodoList={props.deleteTodoList}
-														editTodoListTitle={props.editTodoListTitle}
-														getTodoListItemsCount={props.getTodoListItemsCount}
-														moveAllTodoItems={props.moveAllTodoItems}
-														setTodoListColour={props.setTodoListColour}
-														provided={provided}
+														{...{
+															...todoList,
+															hasPlus,
+															deleteTodoList: props.deleteTodoList,
+															editTodoListTitle: props.editTodoListTitle,
+															getTodoListItemsCount:
+																props.getTodoListItemsCount,
+															moveAllTodoItems: props.moveAllTodoItems,
+															setTodoListColour: props.setTodoListColour,
+															showUpsell,
+															provided,
+														}}
 													/>
 												)}
 											</Draggable>
 										))}
 										{provided.placeholder}
-										<AddList createTodoList={props.createTodoList} />
+										<AddList
+											{...{
+												hasPlus,
+												createTodoList: props.createTodoList,
+												showUpsell,
+											}}
+										/>
 									</ul>
 								)}
 							</Droppable>
@@ -375,6 +415,11 @@ const ContextMemo = memo((props) => {
 });
 
 const Todo = () => {
+	const {
+		storageAuth: {
+			subscriptionSummary: { plan },
+		},
+	} = useAuth();
 	const {
 		storageUserCustomization: {
 			todoLists,
@@ -391,6 +436,7 @@ const Todo = () => {
 		setNetworkRequestPayload,
 		setTodoListColour,
 		setTodoListOrder,
+		setUpsellApp,
 		toggleTodoSetting,
 		toggleShowApp,
 	} = useUserActions();
@@ -399,6 +445,7 @@ const Todo = () => {
 		<ContextMemo
 			{...{
 				keepTodoState,
+				plan,
 				showTodoList,
 				todoLists,
 				todoVisible,
@@ -410,6 +457,7 @@ const Todo = () => {
 				setNetworkRequestPayload,
 				setTodoListColour,
 				setTodoListOrder,
+				setUpsellApp,
 				toggleTodoSetting,
 				toggleShowApp,
 			}}

@@ -14,9 +14,11 @@ const isTransparentColour = (colour) =>
 	trimSpacesWithin(colour) === trimSpacesWithin(TRANSPARENT_COLOUR);
 
 export const ColourPaletteWrapper = ({
+	hasPlus,
 	todoListColour,
 	todoListId,
 	setTodoListColour,
+	showUpsell,
 }) => {
 	const swatchRef = useRef(null);
 	const [isFocus, setIsFocus] = useState(false);
@@ -45,7 +47,9 @@ export const ColourPaletteWrapper = ({
 							: ""
 					}`}
 					onClick={(event) => {
-						setTodoListColour(todoListId, paletteColour);
+						hasPlus
+							? setTodoListColour(todoListId, paletteColour)
+							: showUpsell();
 						toggleSwatch(event);
 					}}
 					key={index}
