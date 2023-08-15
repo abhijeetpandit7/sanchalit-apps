@@ -8,10 +8,16 @@ import React, {
 } from "react";
 import {
 	FocusOutHandler,
+	useAuth,
 	useUserActions,
 	useUserCustomization,
 } from "../../hooks";
-import { SOUNDSCAPES, soundWaveIcon, toggleAppPopup } from "../../utils";
+import {
+	SOUNDSCAPES,
+	UPSELL_PLUS_GATE,
+	soundWaveIcon,
+	toggleAppPopup,
+} from "../../utils";
 
 const Loading = () => (
 	<div className="app-wrapper app-placeholder">
@@ -25,7 +31,7 @@ const Loading = () => (
 
 const App = lazy(() => import("./App"));
 
-const ContextMemo = memo(({ setWidgetReady }) => {
+const ContextMemo = memo(({ hasPlus, setWidgetReady, setUpsellApp }) => {
 	const soundscapesRef = useRef(null);
 	const [componentDidMount, setComponentDidMount] = useState(false);
 
@@ -38,6 +44,14 @@ const ContextMemo = memo(({ setWidgetReady }) => {
 		setComponentDidMount(true);
 	};
 
+	const handleClick = () => {
+		if (hasPlus) {
+			toggleSoundscapesApp();
+		} else {
+			setUpsellApp(UPSELL_PLUS_GATE);
+		}
+	};
+
 	return (
 		<div
 			id="soundscapes"
@@ -46,7 +60,7 @@ const ContextMemo = memo(({ setWidgetReady }) => {
 		>
 			<div
 				className="app-dash app-dash-icon add-shadow -toggle toggle"
-				onClick={toggleSoundscapesApp}
+				onClick={handleClick}
 			>
 				{soundWaveIcon}
 				<span className="app-dash-icon-label"></span>
@@ -62,9 +76,20 @@ const ContextMemo = memo(({ setWidgetReady }) => {
 
 export const Soundscapes = () => {
 	const {
+		storageAuth: { subscriptionSummary },
+	} = useAuth();
+	const {
 		storageUserCustomization: { soundscapesVisible },
 	} = useUserCustomization();
-	const { setWidgetReady } = useUserActions();
+	const { setUpsellApp, setWidgetReady } = useUserActions();
+	const hasPlus = !!subscriptionSummary?.plan;
+	const shouldRender = soundscapesVisible || hasPlus === false;
 
-	return <>{soundscapesVisible && <ContextMemo {...{ setWidgetReady }} />}</>;
+	return (
+		<>
+			{shouldRender && (
+				<ContextMemo {...{ hasPlus, setWidgetReady, setUpsellApp }} />
+			)}
+		</>
+	);
 };
