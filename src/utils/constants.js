@@ -458,7 +458,6 @@ export const GENERAL_SETTING_APP_LIST = [
 		name: SOUNDSCAPES,
 		key: SOUNDSCAPES_VISIBLE,
 		plusOnly: true,
-		preview: true,
 		description: SOUNDSCAPES_DESCRIPTION,
 	},
 ];

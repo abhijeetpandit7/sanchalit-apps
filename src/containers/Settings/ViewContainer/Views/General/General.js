@@ -1,6 +1,10 @@
 import React, { memo } from "react";
 import { ToggleOptions, ToggleSlider } from "../../../../../components/";
-import { useUserActions, useUserCustomization } from "../../../../../hooks";
+import {
+	useAuth,
+	useUserActions,
+	useUserCustomization,
+} from "../../../../../hooks";
 import {
 	SEARCH_IN_CENTER,
 	GENERAL_SETTING_APP_LIST,
@@ -19,7 +23,7 @@ const ContextMemo = memo((props) => (
 			{GENERAL_SETTING_APP_LIST.map((app) => (
 				<ToggleSlider
 					key={app.name}
-					toggle={() => props.toggleShowApp(app)}
+					toggle={() => props.toggleShowApp(app, props.hasPlus)}
 					value={props[app.key]}
 					{...app}
 				/>
@@ -41,6 +45,7 @@ const ContextMemo = memo((props) => (
 				<ToggleOptions
 					key={setting.key}
 					keyValue={setting.key}
+					hasPlus={props.hasPlus}
 					value={props[setting.key]}
 					toggle={props.selectGeneralSetting}
 					{...setting}
@@ -61,6 +66,11 @@ const ContextMemo = memo((props) => (
 
 const General = () => {
 	const {
+		storageAuth: {
+			subscriptionSummary: { plan },
+		},
+	} = useAuth();
+	const {
 		storageUserCustomization: {
 			bookmarksVisible,
 			bookmarksSettings: { defaultMostVisited },
@@ -79,6 +89,7 @@ const General = () => {
 	} = useUserCustomization();
 	const { selectGeneralSetting, toggleSearchInCenter, toggleShowApp } =
 		useUserActions();
+	const hasPlus = !!plan;
 
 	return (
 		<ContextMemo
@@ -90,6 +101,7 @@ const General = () => {
 				inCenter,
 				defaultMostVisited,
 				notesVisible,
+				hasPlus,
 				quotesVisible,
 				searchVisible,
 				soundscapesVisible,

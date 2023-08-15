@@ -20,6 +20,7 @@ import {
 	TODO_LIST_DONE_ID,
 	TODO_LIST_INBOX_ID,
 	TODO_LIST_TODAY_ID,
+	UPSELL_PLUS_GATE,
 	isBuildTargetWeb,
 	CUSTOMIZATION_FREEMIUM_CONFIGURATION,
 	TODO_SHOW_SETTING,
@@ -828,15 +829,19 @@ export const useUserActions = () => {
 	);
 
 	const selectGeneralSetting = useCallback(
-		(setting) =>
-			setStorageUserCustomization((prevCustomization) => {
-				const updatedObject = { [setting.keyValue]: setting.newValue };
-				setNetworkRequestPayload(updatedObject);
-				return {
-					...prevCustomization,
-					...updatedObject,
-				};
-			}),
+		({ hasPlus, keyValue, newValue, plusOnly }) => {
+			if (plusOnly && hasPlus !== true) {
+				return setUpsellApp(UPSELL_PLUS_GATE);
+			} else
+				setStorageUserCustomization((prevCustomization) => {
+					const updatedObject = { [keyValue]: newValue };
+					setNetworkRequestPayload(updatedObject);
+					return {
+						...prevCustomization,
+						...updatedObject,
+					};
+				});
+		},
 		[],
 	);
 
@@ -1184,8 +1189,10 @@ export const useUserActions = () => {
 	]);
 
 	const toggleShowApp = useCallback(
-		async (app) => {
-			if (app.requirePermission) {
+		async (app, hasPlus) => {
+			if (app.plusOnly && hasPlus !== true) {
+				return setUpsellApp(UPSELL_PLUS_GATE);
+			} else if (app.requirePermission) {
 				if (isBuildTargetWeb) {
 					alert("This feature is available only on extension.");
 					return;
