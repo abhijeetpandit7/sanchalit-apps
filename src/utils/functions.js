@@ -640,7 +640,7 @@ export const isActiveSubscription = (subscriptionSummary) => {
 		moment(startDate),
 		moment(endDate),
 	);
-	return isPlusAccessibleStatus && isDateWithinValidity;
+	return isDateWithinValidity && isPlusAccessibleStatus;
 };
 
 export const isBoolean = (value) => typeof value === "boolean";
