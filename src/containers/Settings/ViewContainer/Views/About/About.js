@@ -1,10 +1,27 @@
-import React from "react";
-import { brandLogo } from "../../../../../utils";
+import React, { memo } from "react";
+import { useAuth, useAuthActions } from "../../../../../hooks";
+import { brandLogo, ON_TRIAL } from "../../../../../utils";
 
-const About = () => {
+const ContextMemo = memo(({ plan, setSubscriptionSummary }) => {
+	const hasPlus = !!plan;
+
+	const handleMagicClick = async (event) => {
+		if (hasPlus) return;
+		switch (event.detail) {
+			case 5: {
+				await setSubscriptionSummary({ plan: ON_TRIAL });
+				alert(
+					"We've unlocked our premium dashboard features to help you get more organized, motivated, and focused to beat distractions!",
+				);
+			}
+		}
+	};
+
 	return (
 		<div id="settings-about" className="settings-view settings-about">
-			<div className="logo logo-white">{brandLogo}</div>
+			<div className="logo logo-white" onClick={handleMagicClick}>
+				{brandLogo}
+			</div>
 			<h3>Sanchalit</h3>
 			<p className="made">
 				<span className="version">v{process.env.VERSION}</span>
@@ -31,6 +48,17 @@ const About = () => {
 			</div>
 		</div>
 	);
+});
+
+const About = () => {
+	const {
+		storageAuth: {
+			subscriptionSummary: { plan },
+		},
+	} = useAuth();
+	const { setSubscriptionSummary } = useAuthActions();
+
+	return <ContextMemo {...{ plan, setSubscriptionSummary }} />;
 };
 
 export default About;
