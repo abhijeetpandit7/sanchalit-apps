@@ -1064,6 +1064,18 @@ export const toHourFormat = (hour, getInHour12clock, timePeriod) => {
 	}
 };
 
+export const toggleObjectBooleanValues = (object) => {
+	const result = {};
+	for (const key in object) {
+		if (isBoolean(object[key])) {
+			result[key] = !object[key];
+		} else {
+			result[key] = object[key];
+		}
+	}
+	return result;
+};
+
 export const toPlayerIcon = (icon) => {
 	const iconClassList = Array.from(icon.classList);
 	iconClassList.map((className) => icon.classList.remove(className));

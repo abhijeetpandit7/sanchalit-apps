@@ -40,6 +40,7 @@ import {
 	isValidListOrder,
 	removeRefClassName,
 	requestPermissions,
+	toggleObjectBooleanValues,
 	toggleRefClassName,
 	toDays,
 } from "../utils";
@@ -1142,6 +1143,15 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const toggleOnPlusAddOns = useCallback(
+		() =>
+			setStorageUserCustomization((prevCustomization) => ({
+				...prevCustomization,
+				...toggleObjectBooleanValues(CUSTOMIZATION_FREEMIUM_CONFIGURATION),
+			})),
+		[],
+	);
+
 	const toggleRandomMetricCountdown = useCallback(
 		() =>
 			setStorageUserCustomization((prevCustomization) => {
@@ -1503,6 +1513,7 @@ export const useUserActions = () => {
 		toggleDisplayNameVisible,
 		toggleHour12Clock,
 		toggleOffPlusAddOns,
+		toggleOnPlusAddOns,
 		toggleRandomMetricCountdown,
 		toggleSearchInCenter,
 		toggleShowApp,
