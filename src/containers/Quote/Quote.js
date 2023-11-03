@@ -1,19 +1,31 @@
 import React, { lazy, Suspense } from "react";
-import { useUserActions, useUserCustomization } from "../../hooks";
+import { useAuth, useUserActions, useUserCustomization } from "../../hooks";
 
 const ContextMemo = lazy(() => import("./ContextMemo"));
 
 export const Quote = () => {
 	const {
-		storageUserCustomization: { quotesVisible },
+		storageAuth: { subscriptionSummary },
+	} = useAuth();
+	const {
+		storageUserCustomization: { quotes, quotesVisible },
 	} = useUserCustomization();
-	const { setWidgetReady } = useUserActions();
+	const { setWidgetReady, skipQuote, toggleQuoteFavourite } = useUserActions();
+	const hasPlus = !!subscriptionSummary?.plan;
 
 	return (
 		<>
 			{quotesVisible && (
 				<Suspense fallback={null}>
-					<ContextMemo {...{ setWidgetReady }} />
+					<ContextMemo
+						{...{
+							hasPlus,
+							quotes,
+							setWidgetReady,
+							skipQuote,
+							toggleQuoteFavourite,
+						}}
+					/>
 				</Suspense>
 			)}
 		</>

@@ -1042,6 +1042,12 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const skipQuote = useCallback((hasPlus) => {
+		if (hasPlus !== true) {
+			return setUpsellApp(UPSELL_PLUS_GATE);
+		}
+	}, []);
+
 	const toggleBookmarksSetting = useCallback(
 		(setting) => {
 			if (setting.requirePermission) {
@@ -1149,6 +1155,29 @@ export const useUserActions = () => {
 				...prevCustomization,
 				...toggleObjectBooleanValues(CUSTOMIZATION_FREEMIUM_CONFIGURATION),
 			})),
+		[],
+	);
+
+	const toggleQuoteFavourite = useCallback(
+		(id, isFavourite) =>
+			setStorageUserCustomization((prevCustomization) => {
+				const targetQuote = prevCustomization.quotes.find(
+					(quote) => quote.id === id,
+				);
+				targetQuote.isFavourite = isFavourite;
+
+				let updatedObject = {
+					quotes: [_.pick(targetQuote, ["id", "isFavourite"])],
+				};
+				setNetworkRequestPayload(updatedObject);
+
+				return {
+					...prevCustomization,
+					quotes: prevCustomization.quotes.map((quote) =>
+						quote.id === id ? targetQuote : quote,
+					),
+				};
+			}),
 		[],
 	);
 
@@ -1507,6 +1536,7 @@ export const useUserActions = () => {
 		setTodoListColour,
 		setUpsellApp,
 		setWidgetReady,
+		skipQuote,
 		toggleArchiveCountdown,
 		toggleBookmarksSetting,
 		toggleCountdownPin,
@@ -1514,6 +1544,7 @@ export const useUserActions = () => {
 		toggleHour12Clock,
 		toggleOffPlusAddOns,
 		toggleOnPlusAddOns,
+		toggleQuoteFavourite,
 		toggleRandomMetricCountdown,
 		toggleSearchInCenter,
 		toggleShowApp,

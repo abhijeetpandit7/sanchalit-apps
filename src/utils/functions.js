@@ -113,7 +113,13 @@ export const addOrMergeObjectProperties = (
 	for (const [key, newValue] of Object.entries(newProperties)) {
 		const oldValue = object[key];
 		if (_.isArray(oldValue) && _.isArray(newValue)) {
-			const customKeys = ["countdowns", "notes", "todoLists", "todos"];
+			const customKeys = [
+				"countdowns",
+				"notes",
+				"quotes",
+				"todoLists",
+				"todos",
+			];
 			mergedObject[key] = addOrMergeArrayElements(
 				oldValue,
 				newValue,

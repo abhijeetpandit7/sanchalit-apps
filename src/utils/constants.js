@@ -711,6 +711,84 @@ export const QUICK_TIP_LIST = [
 	"You can change between a 12 hour or 24 hour clock.",
 	"Double-clicking your display name will let you edit it.",
 ];
+export const QUOTE_LIST = [
+	{
+		body: "Life begins at the end of your comfort zone.",
+		source: "Neale Donald Walsch",
+	},
+	{
+		body: "We may encounter many defeats but we must not be defeated.",
+		source: "Maya Angelou",
+	},
+	{
+		body: "Good judgement comes from experience, and a lot of that comes from bad judgement.",
+		source: "Will Rogers",
+	},
+	{
+		body: "Everything you want to be, you already are. You're simply on the path to discovering it.",
+		source: "Alicia Keys",
+	},
+	{
+		body: "Luck is what happens when preparation meets opportunity.",
+		source: "Seneca",
+	},
+	{
+		body: "Your big opportunity may be right where you are now.",
+		source: "Napoleon Hill",
+	},
+	{
+		body: "I would rather die of passion than of boredom.",
+		source: "Vincent Van Gogh",
+	},
+	{
+		body: "A year from now you will wish you had started today.",
+		source: "Karen Lamb",
+	},
+	{
+		body: "The primary cause of unhappiness is never the situation but your thoughts about it.",
+		source: "Eckhart Tolle",
+	},
+	{
+		body: "Everything is possible. The impossible just takes longer.",
+		source: "Dan Brown",
+	},
+	{
+		body: "Be the change you wish to see in the world.",
+		source: "Mahatma Gandhi",
+	},
+	{
+		body: "Do what you feel in your heart to be right. You’ll be criticized anyway.",
+		source: "Eleanor Roosevelt",
+	},
+	{
+		body: "If we wait for the moment when everything, absolutely everything is ready, we shall never begin.",
+		source: "Ivan Turgenev",
+	},
+	{
+		body: "It's not the years in your life that count. It's the life in your years.",
+		source: "Edward J. Stieglitz",
+	},
+	{
+		body: "If you can remember why you started, then you will know why you must continue.",
+		source: "Chris Burkmenn",
+	},
+	{
+		body: "We grow fearless when we do the things we fear.",
+		source: "Robin Sharma",
+	},
+	{
+		body: "Simplicity is the ultimate sophistication.",
+		source: "Leonardo da Vinci",
+	},
+	{
+		body: "Never let your fear decide your fate.",
+		source: 'AWOLNATION, "Kill Your Heroes"',
+	},
+	{
+		body: "Life is a series of building, testing, changing and iterating.",
+		source: "Lauren Mosenthal",
+	},
+];
 export const NOTE_DELIGHTER_LIST = [
 	"Record some wisdom",
 	"This is your canvas",
@@ -904,6 +982,7 @@ export const DEFAULT_CUSTOMIZATION = {
 	notes: [],
 	currentNoteId: null,
 	[NOTES_VISIBLE]: true,
+	quotes: [],
 	[QUOTES_VISIBLE]: true,
 	[SEARCH_VISIBLE]: true,
 	searchSettings: {
