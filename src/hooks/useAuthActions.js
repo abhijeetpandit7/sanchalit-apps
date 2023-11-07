@@ -12,6 +12,8 @@ import {
 	DEFAULT_AUTHENTICATION,
 	DEFAULT_CUSTOMIZATION,
 	DEFAULT_NETWORK_QUEUE,
+	addOrMergeObjectProperties,
+	isObjectEmpty,
 } from "../utils";
 
 const DEBOUNCE_TIME = 1;
@@ -63,6 +65,17 @@ export const useAuthActions = () => {
 			if (!!storageAuth?.token === false) return;
 			try {
 				const response = await axios.post(endpoint, { data: payload });
+				if (response.data?.success) {
+					let { customization } = response.data;
+					if (!!(customization && isObjectEmpty(customization) === false))
+						await setStorageUserCustomization((prevCustomization) =>
+							addOrMergeObjectProperties(
+								prevCustomization,
+								customization,
+								true,
+							),
+						);
+				}
 				return response.data;
 			} catch (error) {
 				setPostUserData(endpoint, JSON.parse(error.config.data));

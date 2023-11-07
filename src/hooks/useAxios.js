@@ -6,6 +6,7 @@ import {
 	URL_ROOT_API,
 	isBuildTargetWeb,
 	getExtensionStorageItem,
+	getInstantDate,
 	getLocalStorageItem,
 } from "./../utils";
 
@@ -35,6 +36,8 @@ const postUserCustomization = async () => {
 		);
 	} catch (error) {}
 };
+
+axios.defaults.headers.common["X-Sanchalit-ClientDate"] = getInstantDate(true);
 
 export const useAxios = () => {
 	const { logOutUser } = useAuthActions();

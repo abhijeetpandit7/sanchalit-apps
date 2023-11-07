@@ -18,6 +18,7 @@ import {
 	BOOKMARKS_BAR_ID,
 	BOOKMARKS_BAR_FIREFOX_ID,
 	CHROME,
+	DATE_ROLLOVER_HOUR,
 	DISPLAY_LEFT,
 	DISPLAY_RIGHT,
 	EDGE,
@@ -385,6 +386,13 @@ export const getDateFullFormat = (timestamp) =>
 	moment(timestamp).format("ddd MMM D, YYYY");
 
 const getDateInUnix = (date) => moment(date).unix();
+
+export const getInstantDate = (toISOString = false) => {
+	const instantDate = new Date();
+	instantDate.getHours() < DATE_ROLLOVER_HOUR &&
+		instantDate.setDate(instantDate.getDate() - 1);
+	return toISOString ? instantDate.toISOString() : instantDate.getTime();
+};
 
 export const getMonthNames = () => moment.monthsShort();
 
