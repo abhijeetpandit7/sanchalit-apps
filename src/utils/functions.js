@@ -387,11 +387,11 @@ export const getDateFullFormat = (timestamp) =>
 
 const getDateInUnix = (date) => moment(date).unix();
 
-export const getInstantDate = (toISOString = false) => {
+export const getInstantDate = () => {
 	const instantDate = new Date();
 	instantDate.getHours() < DATE_ROLLOVER_HOUR &&
 		instantDate.setDate(instantDate.getDate() - 1);
-	return toISOString ? instantDate.toISOString() : instantDate.getTime();
+	return instantDate.toISOString();
 };
 
 export const getMonthNames = () => moment.monthsShort();

@@ -37,10 +37,13 @@ const postUserCustomization = async () => {
 	} catch (error) {}
 };
 
-axios.defaults.headers.common["X-Sanchalit-ClientDate"] = getInstantDate(true);
-
 export const useAxios = () => {
 	const { logOutUser } = useAuthActions();
+
+	axios.interceptors.request.use((config) => {
+		config.headers["X-Sanchalit-ClientDate"] = getInstantDate();
+		return config;
+	});
 
 	const setAxiosBaseURL = ({ baseUrl = URL_ROOT_API } = {}) => {
 		axios.defaults.baseURL = baseUrl;

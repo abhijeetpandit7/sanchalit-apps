@@ -1046,6 +1046,10 @@ export const useUserActions = () => {
 		if (hasPlus !== true) {
 			return setUpsellApp(UPSELL_PLUS_GATE);
 		}
+		const updatedObject = {
+			quoteCollection: { skipQuote: true },
+		};
+		setNetworkRequestPayload(updatedObject);
 	}, []);
 
 	const toggleBookmarksSetting = useCallback(
@@ -1166,8 +1170,10 @@ export const useUserActions = () => {
 				);
 				targetQuote.isFavourite = isFavourite;
 
-				let updatedObject = {
-					quotes: [_.pick(targetQuote, ["id", "isFavourite"])],
+				const updatedObject = {
+					quoteCollection: {
+						favourites: [_.pick(targetQuote, ["id", "isFavourite"])],
+					},
 				};
 				setNetworkRequestPayload(updatedObject);
 
