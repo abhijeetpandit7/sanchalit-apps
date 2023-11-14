@@ -4,12 +4,10 @@ import {
 	ACTIVE,
 	ONE_MINUTE,
 	QUOTES,
-	QUOTE_LIST,
 	heartIcon,
 	skipIcon,
 	twitterIcon,
 	getInstantDate,
-	randomElement,
 	toMilliseconds,
 	toggleRefClassName,
 } from "../../utils";
@@ -35,18 +33,24 @@ const shareHandler =
 		);
 	};
 
-const getActiveQuote = (quotes) =>
-	quotes.find((quote) =>
-		moment(quote.forDate).isSame(moment(getInstantDate()), "day"),
-	) ||
-	(quotes.length &&
-		quotes.sort((a, b) => moment(b.forDate) - moment(a.forDate))[0]) ||
-	randomElement(QUOTE_LIST);
+const getActiveQuote = (quotes) => {
+	const scheduledQuotes = quotes.filter((quote) => quote.forDate);
+	return (
+		scheduledQuotes.find((quote) =>
+			moment(quote.forDate).isSame(moment(getInstantDate()), "day"),
+		) ||
+		(quotes.length &&
+			(scheduledQuotes.sort(
+				(a, b) => moment(b.forDate) - moment(a.forDate),
+			)[0] ||
+				quotes[0]))
+	);
+};
 
 const ContextMemo = memo(
 	({ hasPlus, quotes, setWidgetReady, skipQuote, toggleQuoteFavourite }) => {
 		const heartIconRef = useRef(null);
-		const [activeQuote, setActiveQuote] = useState(getActiveQuote(quotes));
+		const [activeQuote, setActiveQuote] = useState({});
 
 		useEffect(() => {
 			let quoteInterval;

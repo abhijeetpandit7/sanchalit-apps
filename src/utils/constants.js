@@ -39,6 +39,7 @@ import {
 	trainIcon,
 	windIcon,
 } from "./assets";
+import { randomElement } from "./functions";
 
 export const _LEFT = "--left";
 export const _NIPPLE_DISPLACEMENT = "--nipple-displacement";
@@ -711,7 +712,7 @@ export const QUICK_TIP_LIST = [
 	"You can change between a 12 hour or 24 hour clock.",
 	"Double-clicking your display name will let you edit it.",
 ];
-export const QUOTE_LIST = [
+const QUOTE_LIST = [
 	{
 		body: "Life begins at the end of your comfort zone.",
 		source: "Neale Donald Walsch",
@@ -982,7 +983,7 @@ export const DEFAULT_CUSTOMIZATION = {
 	notes: [],
 	currentNoteId: null,
 	[NOTES_VISIBLE]: true,
-	quotes: [],
+	quotes: [randomElement(QUOTE_LIST)],
 	[QUOTES_VISIBLE]: true,
 	[SEARCH_VISIBLE]: true,
 	searchSettings: {
