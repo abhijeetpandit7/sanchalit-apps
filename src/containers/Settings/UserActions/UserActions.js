@@ -42,6 +42,66 @@ const redirectToAccountPage = () => {
 	}
 };
 
+const UserContainer = ({ userContainerRef, toggleUserContainer, ...props }) => (
+	<div
+		className={`user-container ${props.plan ? "has-plus" : ""}`}
+		ref={userContainerRef}
+	>
+		<div className="user" title={props.email}>
+			<div className="user-row" onClick={toggleUserContainer}>
+				<div className="user-avatar-wrapper">
+					<div className="user-avatar">
+						<img
+							className="user-avatar-img"
+							src={props.profilePictureUrl ?? defaultAvatarBase64Source}
+						/>
+						<div className="user-badge-wrapper">
+							<span className="badge badge-plus">PLUS</span>
+							<span className="badge badge-team">TEAM</span>
+						</div>
+					</div>
+				</div>
+				<span className="user-name-wrapper">
+					<span className="user-info-name">{props.displayName}</span>
+					<span className="anim-caret">
+						{caretLeft}
+						{caretRight}
+					</span>
+				</span>
+			</div>
+			<div className="user-nav-desktop">
+				<ul className="user-nav">
+					<li className="action action-profile" onClick={redirectToAccountPage}>
+						Profile
+					</li>
+					<li className="action action-logout" onClick={props.logOutUser}>
+						Log Out
+					</li>
+				</ul>
+				<div className="user-close"></div>
+			</div>
+			<div className="user-nav-mobile">
+				<nav className="user-nav dropdown nipple nipple-top-right">
+					<ul className="dropdown-list">
+						<li
+							className="dropdown-list-item action action-profile"
+							onClick={redirectToAccountPage}
+						>
+							Profile
+						</li>
+						<li
+							className="dropdown-list-item action action-logout"
+							onClick={props.logOutUser}
+						>
+							Log Out
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+);
+
 const ContextMemo = memo((props) => {
 	const userContainerRef = useRef(null);
 
@@ -49,6 +109,7 @@ const ContextMemo = memo((props) => {
 
 	const toggleUserContainer = () => toggleRefClassName(userContainerRef, OPEN);
 
+	const { activeNav, toggleSettingsApp, toggleViewContainer, ...rest } = props;
 	const isLoggedIn = !!props.email;
 
 	const LogInButton = () => (
@@ -64,82 +125,25 @@ const ContextMemo = memo((props) => {
 		</div>
 	);
 
-	const UserContainer = () => (
-		<div
-			className={`user-container ${props.plan ? "has-plus" : ""}`}
-			ref={userContainerRef}
-		>
-			<div className="user" title={props.email}>
-				<div className="user-row" onClick={toggleUserContainer}>
-					<div className="user-avatar-wrapper">
-						<div className="user-avatar">
-							<img
-								className="user-avatar-img"
-								src={props.profilePictureUrl ?? defaultAvatarBase64Source}
-							/>
-							<div className="user-badge-wrapper">
-								<span className="badge badge-plus">PLUS</span>
-								<span className="badge badge-team">TEAM</span>
-							</div>
-						</div>
-					</div>
-					<span className="user-name-wrapper">
-						<span className="user-info-name">{props.displayName}</span>
-						<span className="anim-caret">
-							{caretLeft}
-							{caretRight}
-						</span>
-					</span>
-				</div>
-				<div className="user-nav-desktop">
-					<ul className="user-nav">
-						<li
-							className="action action-profile"
-							onClick={redirectToAccountPage}
-						>
-							Profile
-						</li>
-						<li className="action action-logout" onClick={props.logOutUser}>
-							Log Out
-						</li>
-					</ul>
-					<div className="user-close"></div>
-				</div>
-				<div className="user-nav-mobile">
-					<nav className="user-nav dropdown nipple nipple-top-right">
-						<ul className="dropdown-list">
-							<li
-								className="dropdown-list-item action action-profile"
-								onClick={redirectToAccountPage}
-							>
-								Profile
-							</li>
-							<li
-								className="dropdown-list-item action action-logout"
-								onClick={props.logOutUser}
-							>
-								Log Out
-							</li>
-						</ul>
-					</nav>
-				</div>
-			</div>
-		</div>
-	);
-
 	return (
 		<div className="settings-nav-header">
-			<div className="settings-nav-chooser" onClick={props.toggleViewContainer}>
-				<span className="settings-nav-active">{props.activeNav}</span>
+			<div className="settings-nav-chooser" onClick={toggleViewContainer}>
+				<span className="settings-nav-active">{activeNav}</span>
 				{angleDownIcon}
 			</div>
 			<div className="settings-nav-user">
-				{isLoggedIn ? <UserContainer /> : <LogInButton />}
+				{isLoggedIn ? (
+					<UserContainer
+						{...{ userContainerRef, toggleUserContainer, ...rest }}
+					/>
+				) : (
+					<LogInButton />
+				)}
 			</div>
 			<span className="mobile-close">
 				<span
 					className="icon-wrapper u--mobile-show-bg hide"
-					onClick={props.toggleSettingsApp}
+					onClick={toggleSettingsApp}
 				>
 					{hideIcon}
 				</span>
@@ -164,7 +168,7 @@ export const UserActions = (props) => {
 	return (
 		<ContextMemo
 			{...props}
-			{...{ displayName, email, profilePictureUrl, plan, logOutUser }}
+			{...{ displayName, email, plan, profilePictureUrl, logOutUser }}
 		/>
 	);
 };
