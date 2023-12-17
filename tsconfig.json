@@ -1,17 +1,17 @@
 {
-  "compilerOptions": {
-    "outDir": "dist",
-    "target": "es5",
-    "module": "es6",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "jsx": "react",
-    "lib": ["esnext", "dom"],
-    "sourceMap": true,
-    "strict": true,
-    "typeRoots": ["node_modules/@types", "types"],
-    "allowSyntheticDefaultImports": true,
-    "allowJs": true,
-  },
-  "exclude": ["node_modules", "dist"]
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"jsx": "react",
+		"lib": ["esnext", "dom"],
+		"module": "esnext",
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"sourceMap": true,
+		"strict": true,
+		"target": "es2017",
+		"types": ["jest", "react", "react-dom"],
+		"typeRoots": ["node_modules/@types", "src/@types"]
+	},
+	"include": ["src"],
+	"exclude": ["**/*.test"]
 }

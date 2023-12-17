@@ -51,10 +51,6 @@ const config = {
 				},
 			},
 			{
-				test: /\.mjs$/,
-				type: "javascript/auto",
-			},
-			{
 				test: /\.sass$/,
 				use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
 			},
@@ -99,13 +95,8 @@ const config = {
 			VERSION: version,
 		}),
 	],
-	devServer: {
-		overlay: true,
-	},
-	devtool: isWeb ? "source-map" : false,
-	stats: {
-		warnings: false,
-	},
+	devtool: isProduction ? false : "source-map",
+	stats: { warnings: false },
 };
 
 if (isProduction) {

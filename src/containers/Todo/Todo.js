@@ -33,12 +33,14 @@ const ContextMemo = memo(
 	}) => {
 		const [componentDidMount, setComponentDidMount] = useState(false);
 
-		useEffect(async () => {
-			if (showTodoList) {
-				await toggleAppPopup(todoAppRef);
-				await setComponentDidMount(true);
-			}
-			setWidgetReady({ widget: TODO });
+		useEffect(() => {
+			(async () => {
+				if (showTodoList) {
+					await toggleAppPopup(todoAppRef);
+					await setComponentDidMount(true);
+				}
+				setWidgetReady({ widget: TODO });
+			})();
 		}, []);
 
 		useEffect(() => {
