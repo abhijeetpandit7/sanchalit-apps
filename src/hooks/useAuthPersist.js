@@ -42,7 +42,7 @@ import {
 
 const DEBOUNCE_TIME = 1;
 const MAX_DEBOUNCE_TIME = 10;
-const SERVER_TIMEOUT = 1;
+const SERVER_TIMEOUT = 0.5;
 
 const getStorageItem = isBuildTargetWeb
 	? getLocalStorageItem

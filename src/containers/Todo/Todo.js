@@ -35,6 +35,7 @@ const ContextMemo = memo(
 
 		useEffect(() => {
 			(async () => {
+				// NOTE: React 18 StrictMode breaks showTodoList logic by running Effects an extra time
 				if (showTodoList) {
 					await toggleAppPopup(todoAppRef);
 					await setComponentDidMount(true);

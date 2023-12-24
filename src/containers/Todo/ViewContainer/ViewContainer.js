@@ -295,6 +295,11 @@ export const ViewContainer = (props) => {
 		<>
 			<div className="todo-list-wrapper" ref={todoListWrapper}>
 				<DragDropContext onDragEnd={handleDragEnd}>
+					{/*
+					 * NOTE: The following <Droppable> component may encounter issues in React 18 StrictMode rendering,
+					 * leading to an error similar to "Unable to find draggable with id:". For more details, refer to
+					 * GitHub issue: https://github.com/atlassian/react-beautiful-dnd/issues/2350
+					 */}
 					<Droppable droppableId="droppable" direction="vertical">
 						{(provided) => (
 							<ol
