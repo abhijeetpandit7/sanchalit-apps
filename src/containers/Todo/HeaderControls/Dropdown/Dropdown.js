@@ -21,7 +21,9 @@ const Dropdown = ({
 	toggleSettingsTodo,
 	updateAppHeight,
 }) => {
-	useEffect(() => updateAppHeight(), [isFocus]);
+	useEffect(() => {
+		updateAppHeight();
+	}, [isFocus]);
 
 	const { id: activeTodoListId } = activeTodoList;
 	const isAnyTodo = processedTodos.length > 0;
@@ -86,7 +88,7 @@ const Dropdown = ({
 								? archiveAllDoneTodoItemsFrom({
 										listId: activeTodoListId,
 										onNewDay: false,
-								  })
+									})
 								: showUpsell();
 							toggleHeaderControl();
 						}}

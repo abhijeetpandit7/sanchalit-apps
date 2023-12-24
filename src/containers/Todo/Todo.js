@@ -33,12 +33,15 @@ const ContextMemo = memo(
 	}) => {
 		const [componentDidMount, setComponentDidMount] = useState(false);
 
-		useEffect(async () => {
-			if (showTodoList) {
-				await toggleAppPopup(todoAppRef);
-				await setComponentDidMount(true);
-			}
-			setWidgetReady({ widget: TODO });
+		useEffect(() => {
+			(async () => {
+				// NOTE: React 18 StrictMode breaks showTodoList logic by running Effects an extra time
+				if (showTodoList) {
+					await toggleAppPopup(todoAppRef);
+					await setComponentDidMount(true);
+				}
+				setWidgetReady({ widget: TODO });
+			})();
 		}, []);
 
 		useEffect(() => {

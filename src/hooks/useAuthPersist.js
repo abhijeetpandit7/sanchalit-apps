@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { debounce } from "lodash";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import * as amplitude from "@amplitude/analytics-browser";
 import {
 	useAuth,
@@ -42,7 +42,7 @@ import {
 
 const DEBOUNCE_TIME = 1;
 const MAX_DEBOUNCE_TIME = 10;
-const SERVER_TIMEOUT = 1;
+const SERVER_TIMEOUT = 0.5;
 
 const getStorageItem = isBuildTargetWeb
 	? getLocalStorageItem
@@ -346,7 +346,7 @@ export const useAuthPersist = () => {
 
 			let decodedPayload;
 			try {
-				decodedPayload = jwt_decode(storageAuth.token);
+				decodedPayload = jwtDecode(storageAuth.token);
 			} catch (error) {
 				decodedPayload = { subscriptionSummary: {} };
 			}

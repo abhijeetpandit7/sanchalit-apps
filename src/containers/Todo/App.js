@@ -49,12 +49,16 @@ const ContextMemo = memo((props) => {
 	const updateAppHeight = (appHeight) =>
 		updateTodoAppHeight(todoAppRef, appHeight);
 
-	useEffect(() => updateAppHeight(), [todos, activeTodoList]);
+	useEffect(() => {
+		updateAppHeight();
+	}, [todos, activeTodoList]);
 
-	useEffect(async () => {
-		await archiveAllDoneTodoItemsFrom();
-		await validateTodoListTodoItemsOrder();
-		validateTodoListsOrder();
+	useEffect(() => {
+		(async () => {
+			await archiveAllDoneTodoItemsFrom();
+			await validateTodoListTodoItemsOrder();
+			validateTodoListsOrder();
+		})();
 	}, []);
 
 	const toggleSettingsTodo = async () => {

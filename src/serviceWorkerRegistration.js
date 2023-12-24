@@ -1,8 +1,8 @@
 import { Workbox } from "workbox-window";
-import { PRODUCTION } from "./utils";
+import { PRODUCTION, isBuildTargetWeb } from "./utils";
 
 export default function registerServiceWorker() {
-	if (process.env.NODE_ENV !== PRODUCTION) return;
+	if (process.env.NODE_ENV !== PRODUCTION || isBuildTargetWeb === false) return;
 
 	if ("serviceWorker" in navigator) {
 		const wb = new Workbox("serviceWorker.js");

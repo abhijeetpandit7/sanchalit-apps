@@ -11,11 +11,7 @@ const ContextMemo = memo(
 		const bookmarksListRef = useRef(null);
 		const [bookmarksList, setBookmarksList] = useState(bookmarks);
 
-		const {
-			iconsOnly,
-			openInNewTab,
-			defaultMostVisited,
-		} = bookmarksSettings;
+		const { iconsOnly, openInNewTab, defaultMostVisited } = bookmarksSettings;
 
 		const [mostVisitedView, setMostVisitedView] = useState(defaultMostVisited);
 
@@ -24,22 +20,24 @@ const ContextMemo = memo(
 			[defaultMostVisited],
 		);
 
-		useEffect(async () => {
-			const parsedBookmarksList = parseBookmarksList(
-				bookmarks,
-				bookmarksSettings,
-				mostVisitedView && defaultMostVisited,
-				topSites,
-			);
-			await setBookmarksList(parsedBookmarksList);
-			await setBookmarksList(
-				parseBookmarksOverflow(
-					parsedBookmarksList,
+		useEffect(() => {
+			(async () => {
+				const parsedBookmarksList = parseBookmarksList(
+					bookmarks,
+					bookmarksSettings,
 					mostVisitedView && defaultMostVisited,
-					bookmarksListRef,
-				),
-			);
-			setWidgetReady({ widget: BOOKMARKS });
+					topSites,
+				);
+				await setBookmarksList(parsedBookmarksList);
+				await setBookmarksList(
+					parseBookmarksOverflow(
+						parsedBookmarksList,
+						mostVisitedView && defaultMostVisited,
+						bookmarksListRef,
+					),
+				);
+				setWidgetReady({ widget: BOOKMARKS });
+			})();
 		}, [bookmarksSettings, mostVisitedView]);
 
 		const toggleMostVisitedView = () =>

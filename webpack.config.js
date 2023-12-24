@@ -9,6 +9,7 @@ const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const workbox = require("workbox-webpack-plugin");
 const webpack = require("webpack");
@@ -31,6 +32,9 @@ const config = {
 		path: path.resolve("dist", buildTarget),
 		publicPath: "/",
 		filename: isWeb ? "[name].[contenthash:12].js" : "[name].js",
+		assetModuleFilename: isWeb
+			? "[name].[contenthash:12].[ext]"
+			: "[name].[ext]",
 	},
 	mode: isProduction ? PRODUCTION : DEVELOPMENT,
 	resolve: {
@@ -44,33 +48,20 @@ const config = {
 			},
 			{
 				test: /\.(gif|jpe?g|png)$/,
-				loader: "url-loader",
-				options: {
-					limit: 10000,
-					name: isWeb ? "[name].[contenthash:12].[ext]" : "[name].[ext]",
-				},
+				loader: "asset",
 			},
 			{
-				test: /\.mjs$/,
-				type: "javascript/auto",
-			},
-			{
-				test: /\.sass$/,
-				use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+				test: /\.(woff|woff2|eot|ttf|otf)$/i,
+				type: "asset/resource",
 			},
 			{
 				test: /\.svg$/,
-				loader: "raw-loader",
+				loader: "asset/source",
 			},
 			{
 				test: /\.(js|jsx)$/,
 				include: path.resolve("./src"),
 				loader: "babel-loader",
-			},
-			{
-				test: /\.(ts|tsx)$/,
-				include: path.resolve("./src"),
-				loader: "ts-loader",
 			},
 		],
 	},
@@ -92,6 +83,7 @@ const config = {
 		new MiniCssExtractPlugin({
 			filename: isWeb ? "[name].[contenthash:12].css" : "[name].css",
 		}),
+		new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
 		new webpack.EnvironmentPlugin({
 			BUILD_TARGET: JSON.stringify(buildTarget),
 			MANIFEST_VERSION: JSON.stringify(manifestVersion),
@@ -99,13 +91,11 @@ const config = {
 			VERSION: version,
 		}),
 	],
-	devServer: {
-		overlay: true,
+	optimization: {
+		minimizer: ["...", new CssMinimizerPlugin()],
 	},
-	devtool: isWeb ? "source-map" : false,
-	stats: {
-		warnings: false,
-	},
+	devtool: isProduction ? false : "source-map",
+	stats: { warnings: false },
 };
 
 if (isProduction) {

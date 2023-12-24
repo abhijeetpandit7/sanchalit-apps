@@ -1,5 +1,5 @@
 import React, { StrictMode } from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 import App from "./App";
 import {
 	AuthProvider,
@@ -10,7 +10,7 @@ import registerServiceWorker from "./serviceWorkerRegistration";
 
 const rootElement = document.getElementById("root");
 
-render(
+createRoot(rootElement).render(
 	<StrictMode>
 		<UserCustomizationProvider>
 			<AuthProvider>
@@ -20,7 +20,6 @@ render(
 			</AuthProvider>
 		</UserCustomizationProvider>
 	</StrictMode>,
-	rootElement,
 );
 
 registerServiceWorker();

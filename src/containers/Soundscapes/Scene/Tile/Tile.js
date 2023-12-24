@@ -21,10 +21,9 @@ const Tile = ({ track, controllerVolume, controllerPlay }) => {
 		return () => audio.pause();
 	}, [controllerPlay, play]);
 
-	useEffect(
-		() => (audio.volume = ((playerVolume / 100) * controllerVolume) / 100),
-		[controllerVolume, playerVolume],
-	);
+	useEffect(() => {
+		audio.volume = ((playerVolume / 100) * controllerVolume) / 100;
+	}, [controllerVolume, playerVolume]);
 
 	return (
 		<div
