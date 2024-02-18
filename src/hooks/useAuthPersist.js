@@ -98,66 +98,6 @@ export const useAuthPersist = () => {
 		})();
 	}, [widgetManager]);
 
-	// Syncs auth and customization with server onReady storage
-	useEffect(() => {
-		let serverTimeout;
-		(async () => {
-			if (widgetManager.data[SERVER].ready) return;
-			if (widgetManager.data[STORAGE].ready) {
-				const setServerReady = () =>
-					setWidgetReady({ widget: SERVER, type: "data" });
-				if (!!storageAuth.token === false) return setServerReady();
-
-				serverTimeout = setTimeout(setServerReady, SERVER_TIMEOUT * 1000);
-				let networkQueue = { ...storageNetworkQueue };
-				if (navigator.onLine) {
-					const processNetworkQueue = async (method, callback) => {
-						for (const [key, object] of Object.entries(networkQueue[method])) {
-							if (isObjectEmpty(object) === false) {
-								const response = await callback(`/${key}`, object);
-								if (response?.success) networkQueue[method][key] = {};
-							}
-						}
-					};
-					await processNetworkQueue("post", postUserData);
-					await processNetworkQueue("delete", deleteUserData);
-					setStorageNetworkQueue(networkQueue);
-				}
-				const response = await getUserSettings(!!isTokenFromCookie.current);
-				if (response?.success) {
-					let { auth, customization } = response;
-					auth = omitObjectProperties(auth, ["subscriptionSummary.plan"]);
-					await setStorageAuth((prevAuth) =>
-						addOrMergeObjectProperties(prevAuth, auth),
-					);
-					if (!!customization) {
-						const hasPlus = !!storageAuth.subscriptionSummary.plan;
-						if (hasPlus === false) {
-							const properties = Object.keys(
-								CUSTOMIZATION_FREEMIUM_CONFIGURATION,
-							);
-							customizationPlusConfiguration.current = _.pick(
-								customization,
-								properties,
-							);
-							customization = omitObjectProperties(customization, properties);
-						}
-						await setStorageUserCustomization((prevCustomization) =>
-							addOrMergeObjectProperties(
-								prevCustomization,
-								customization,
-								true,
-							),
-						);
-					}
-				}
-				setServerReady();
-			}
-		})();
-
-		return () => clearTimeout(serverTimeout);
-	}, [widgetManager.data]);
-
 	// Initializes storageAuth, storageUserCustomization and storageNetworkQueue
 	useEffect(() => {
 		(async () => {
@@ -220,6 +160,114 @@ export const useAuthPersist = () => {
 			initAmplitude(auth);
 		})();
 	}, []);
+
+	// Updates Authorization, cookie and review subscriptionSummary onChange token
+	useEffect(() => {
+		(async () => {
+			if (isObjectEmpty(storageAuth)) return;
+
+			setAxiosAuthHeader(storageAuth.token);
+			setCookieItem(TOKEN, storageAuth?.token ? storageAuth.token : "");
+			amplitude.setUserId(storageAuth.userId);
+
+			let decodedPayload;
+			try {
+				decodedPayload = jwtDecode(storageAuth.token);
+			} catch (error) {
+				decodedPayload = { subscriptionSummary: {} };
+			}
+			const { subscriptionSummary } = decodedPayload;
+			const subscriptionPlanFromStorage = storageAuth.subscriptionSummary.plan;
+			const subscriptionPlanFromToken = subscriptionSummary.plan;
+			const isActiveSubscriptionFromToken =
+				isActiveSubscription(subscriptionSummary);
+			if (subscriptionPlanFromStorage) {
+				if (isActiveSubscriptionFromToken === false) {
+					setSubscriptionSummary({ plan: null });
+					toggleOffPlusAddOns();
+				} else if (subscriptionPlanFromStorage !== subscriptionPlanFromToken) {
+					setSubscriptionSummary({ plan: subscriptionPlanFromToken });
+				}
+			} else if (subscriptionPlanFromToken && isActiveSubscriptionFromToken) {
+				setSubscriptionSummary(subscriptionSummary);
+				if (isObjectEmpty(customizationPlusConfiguration.current) === false)
+					setStorageUserCustomization((prevCustomization) => ({
+						...prevCustomization,
+						...customizationPlusConfiguration.current,
+					}));
+			} else {
+				toggleOffPlusAddOns();
+			}
+		})();
+	}, [storageAuth.token]);
+
+	// Syncs auth and customization with server onReady storage
+	useEffect(() => {
+		let serverTimeout;
+		(async () => {
+			if (widgetManager.data[SERVER].ready) return;
+			if (widgetManager.data[STORAGE].ready) {
+				const setServerReady = () =>
+					setWidgetReady({ widget: SERVER, type: "data" });
+				if (!!storageAuth.token === false) return setServerReady();
+
+				serverTimeout = setTimeout(setServerReady, SERVER_TIMEOUT * 1000);
+				let networkQueue = { ...storageNetworkQueue };
+				if (navigator.onLine) {
+					const processNetworkQueue = async (method, callback) => {
+						for (const [key, object] of Object.entries(networkQueue[method])) {
+							if (isObjectEmpty(object) === false) {
+								const response = await callback(`/${key}`, object);
+								if (response?.success) networkQueue[method][key] = {};
+							}
+						}
+					};
+					await processNetworkQueue("post", postUserData);
+					await processNetworkQueue("delete", deleteUserData);
+					setStorageNetworkQueue(networkQueue);
+				}
+				const response = await getUserSettings(!!isTokenFromCookie.current);
+				if (response?.success) {
+					let { auth, customization } = response;
+					auth = omitObjectProperties(auth, ["subscriptionSummary.plan"]);
+					await setStorageAuth((prevAuth) =>
+						addOrMergeObjectProperties(prevAuth, auth),
+					);
+					if (!!customization) {
+						const hasPlus = !!storageAuth.subscriptionSummary.plan;
+						if (hasPlus === false) {
+							const properties = Object.keys(
+								CUSTOMIZATION_FREEMIUM_CONFIGURATION,
+							);
+							customizationPlusConfiguration.current = _.pick(
+								customization,
+								properties,
+							);
+							customization = omitObjectProperties(customization, properties);
+						}
+						await setStorageUserCustomization((prevCustomization) =>
+							addOrMergeObjectProperties(
+								prevCustomization,
+								customization,
+								true,
+							),
+						);
+					}
+				}
+				setServerReady();
+			}
+		})();
+
+		return () => clearTimeout(serverTimeout);
+	}, [widgetManager.data]);
+
+	// Publishes customization to server onChange payload
+	useEffect(() => {
+		(async () => {
+			if (isObjectEmpty(networkRequestManager.payload)) return;
+			debouncedPostUserData("/userData", networkRequestManager.payload);
+		})();
+	}, [networkRequestManager.payload]);
 
 	// Updates auth in storage onChange storageAuth
 	useEffect(() => {
@@ -334,54 +382,6 @@ export const useAuthPersist = () => {
 			};
 		})();
 	}, []);
-
-	// Updates Authorization, cookie and review subscriptionSummary onChange token
-	useEffect(() => {
-		(async () => {
-			if (isObjectEmpty(storageAuth)) return;
-
-			setAxiosAuthHeader(storageAuth.token);
-			setCookieItem(TOKEN, storageAuth?.token ? storageAuth.token : "");
-			amplitude.setUserId(storageAuth.userId);
-
-			let decodedPayload;
-			try {
-				decodedPayload = jwtDecode(storageAuth.token);
-			} catch (error) {
-				decodedPayload = { subscriptionSummary: {} };
-			}
-			const { subscriptionSummary } = decodedPayload;
-			const subscriptionPlanFromStorage = storageAuth.subscriptionSummary.plan;
-			const subscriptionPlanFromToken = subscriptionSummary.plan;
-			const isActiveSubscriptionFromToken =
-				isActiveSubscription(subscriptionSummary);
-			if (subscriptionPlanFromStorage) {
-				if (isActiveSubscriptionFromToken === false) {
-					setSubscriptionSummary({ plan: null });
-					toggleOffPlusAddOns();
-				} else if (subscriptionPlanFromStorage !== subscriptionPlanFromToken) {
-					setSubscriptionSummary({ plan: subscriptionPlanFromToken });
-				}
-			} else if (subscriptionPlanFromToken && isActiveSubscriptionFromToken) {
-				setSubscriptionSummary(subscriptionSummary);
-				if (isObjectEmpty(customizationPlusConfiguration.current) === false)
-					setStorageUserCustomization((prevCustomization) => ({
-						...prevCustomization,
-						...customizationPlusConfiguration.current,
-					}));
-			} else {
-				toggleOffPlusAddOns();
-			}
-		})();
-	}, [storageAuth.token]);
-
-	// Publishes customization to server onChange payload
-	useEffect(() => {
-		(async () => {
-			if (isObjectEmpty(networkRequestManager.payload)) return;
-			debouncedPostUserData("/userData", networkRequestManager.payload);
-		})();
-	}, [networkRequestManager.payload]);
 };
 
 // TODO: Hotkey for toggling bookmars
