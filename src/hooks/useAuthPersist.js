@@ -78,9 +78,10 @@ export const useAuthPersist = () => {
 		showMainView,
 	} = useUserCustomization();
 	const { setWidgetReady, toggleOffPlusAddOns } = useUserActions();
-	const userCustomizationRef = useRef(storageUserCustomization);
-	const isTokenFromCookie = useRef(false);
+	let userCustomizationRef = useRef(storageUserCustomization);
+	let isTokenFromCookie = useRef(false);
 	let customizationPlusConfiguration = useRef({});
+	let isActiveSubscriptionFromToken = useRef(false);
 
 	// Transits from overlay to main-view onReady widgetManager
 	useEffect(() => {
@@ -179,16 +180,19 @@ export const useAuthPersist = () => {
 			const { subscriptionSummary } = decodedPayload;
 			const subscriptionPlanFromStorage = storageAuth.subscriptionSummary.plan;
 			const subscriptionPlanFromToken = subscriptionSummary.plan;
-			const isActiveSubscriptionFromToken =
+			isActiveSubscriptionFromToken.current =
 				isActiveSubscription(subscriptionSummary);
 			if (subscriptionPlanFromStorage) {
-				if (isActiveSubscriptionFromToken === false) {
+				if (isActiveSubscriptionFromToken.current === false) {
 					setSubscriptionSummary({ plan: null });
 					toggleOffPlusAddOns();
 				} else if (subscriptionPlanFromStorage !== subscriptionPlanFromToken) {
 					setSubscriptionSummary({ plan: subscriptionPlanFromToken });
 				}
-			} else if (subscriptionPlanFromToken && isActiveSubscriptionFromToken) {
+			} else if (
+				subscriptionPlanFromToken &&
+				isActiveSubscriptionFromToken.current
+			) {
 				setSubscriptionSummary(subscriptionSummary);
 				if (isObjectEmpty(customizationPlusConfiguration.current) === false)
 					setStorageUserCustomization((prevCustomization) => ({
@@ -234,8 +238,7 @@ export const useAuthPersist = () => {
 						addOrMergeObjectProperties(prevAuth, auth),
 					);
 					if (!!customization) {
-						const hasPlus = !!storageAuth.subscriptionSummary.plan;
-						if (hasPlus === false) {
+						if (isActiveSubscriptionFromToken.current === false) {
 							const properties = Object.keys(
 								CUSTOMIZATION_FREEMIUM_CONFIGURATION,
 							);
