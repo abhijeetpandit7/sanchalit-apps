@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
-import { debounce } from "lodash";
-import { jwtDecode } from "jwt-decode";
 import * as amplitude from "@amplitude/analytics-browser";
+import { jwtDecode } from "jwt-decode";
+import { debounce } from "lodash";
+import { useEffect, useRef } from "react";
 import {
 	useAuth,
 	useAuthActions,
@@ -14,10 +14,10 @@ import {
 	AUTH,
 	CUSTOMIZATION,
 	CUSTOMIZATION_FREEMIUM_CONFIGURATION,
-	NETWORK_QUEUE,
 	DEFAULT_AUTHENTICATION,
 	DEFAULT_CUSTOMIZATION,
 	DEFAULT_NETWORK_QUEUE,
+	NETWORK_QUEUE,
 	SERVER,
 	STORAGE,
 	TOKEN,

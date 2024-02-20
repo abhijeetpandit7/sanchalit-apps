@@ -4,10 +4,10 @@ import {
 	AUTH,
 	CUSTOMIZATION,
 	URL_ROOT_API,
-	isBuildTargetWeb,
 	getExtensionStorageItem,
 	getInstantDate,
 	getLocalStorageItem,
+	isBuildTargetWeb,
 } from "./../utils";
 
 const PARTIAL_CONTENT_STATUS = 206;

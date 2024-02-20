@@ -1,9 +1,10 @@
-import { useCallback } from "react";
 import _ from "lodash";
+import { useCallback } from "react";
 import { useAuthActions, useUserCustomization } from "../hooks";
 import {
 	BOOKMARKS,
 	BOOKMARKS_PERMISSION,
+	CUSTOMIZATION_FREEMIUM_CONFIGURATION,
 	DATE_ROLLOVER_HOUR,
 	EDITING,
 	EMPTY_NAME,
@@ -15,19 +16,17 @@ import {
 	SEARCH,
 	SHOW_TOP_SITES,
 	START_IN_TOP_SITES,
-	TOP_SITES,
-	TOP_SITES_PERMISSION,
 	TODO_LIST_DONE_ID,
 	TODO_LIST_INBOX_ID,
 	TODO_LIST_TODAY_ID,
-	UPSELL_PLUS_GATE,
-	isBuildTargetWeb,
-	CUSTOMIZATION_FREEMIUM_CONFIGURATION,
 	TODO_SHOW_SETTING,
+	TOP_SITES,
+	TOP_SITES_PERMISSION,
+	UPSELL_PLUS_GATE,
 	createCountdown,
+	createNewTodoList,
 	createNote,
 	createTodo,
-	createNewTodoList,
 	focusCursorAtEnd,
 	focusDisplayName,
 	focusNotesInput,
@@ -37,12 +36,13 @@ import {
 	getNewOrderValue,
 	getPermissionAllowed,
 	getTopSites,
+	isBuildTargetWeb,
 	isValidListOrder,
 	removeRefClassName,
 	requestPermissions,
+	toDays,
 	toggleObjectBooleanValues,
 	toggleRefClassName,
-	toDays,
 } from "../utils";
 
 export const useUserActions = () => {
@@ -1306,7 +1306,6 @@ export const useUserActions = () => {
 				const updatedObject = {
 					[app.key]: !prevCustomization[app.key],
 				};
-				setNetworkRequestPayload(updatedObject);
 				return {
 					...prevCustomization,
 					...updatedObject,
@@ -1435,7 +1434,8 @@ export const useUserActions = () => {
 						[setting.key]: !prevCustomization.bookmarksSettings[setting.key],
 					},
 				};
-				setNetworkRequestPayload(updatedObject);
+				if (!!setting?.requirePermission === false)
+					setNetworkRequestPayload(updatedObject);
 				return {
 					...prevCustomization,
 					topSites: fetchedTopSites || prevCustomization.topSites,
