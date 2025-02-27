@@ -31,7 +31,7 @@
 		"moment": "^2.30.1",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
-		"uuid": "^11.0.5",
+		"uuid": "^11.1.0",
 		"workbox-cacheable-response": "^7.1.0",
 		"workbox-core": "^7.1.0",
 		"workbox-expiration": "^7.1.0",
