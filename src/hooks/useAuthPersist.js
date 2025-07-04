@@ -1,5 +1,4 @@
 import * as amplitude from "@amplitude/analytics-browser";
-import { jwtDecode } from "jwt-decode";
 import { debounce } from "lodash";
 import { useEffect, useRef } from "react";
 import {
@@ -13,7 +12,6 @@ import {
 import {
 	AUTH,
 	CUSTOMIZATION,
-	CUSTOMIZATION_FREEMIUM_CONFIGURATION,
 	DEFAULT_AUTHENTICATION,
 	DEFAULT_CUSTOMIZATION,
 	DEFAULT_NETWORK_QUEUE,
@@ -25,7 +23,6 @@ import {
 	getBookmarks,
 	getBrowserCookieItem,
 	getExtensionStorageItem,
-	getLocalCookieItem,
 	getLocalStorageItem,
 	getTopSites,
 	initAmplitude,
@@ -33,10 +30,7 @@ import {
 	isBuildTargetWeb,
 	isDeepEqual,
 	isObjectEmpty,
-	omitObjectProperties,
-	setBrowserCookieItem,
 	setExtensionStorageItem,
-	setLocalCookieItem,
 	setLocalStorageItem,
 } from "../utils";
 
@@ -50,12 +44,6 @@ const getStorageItem = isBuildTargetWeb
 const setStorageItem = isBuildTargetWeb
 	? setLocalStorageItem
 	: setExtensionStorageItem;
-const getCookieItem = isBuildTargetWeb
-	? getLocalCookieItem
-	: getBrowserCookieItem;
-const setCookieItem = isBuildTargetWeb
-	? setLocalCookieItem
-	: setBrowserCookieItem;
 
 export const useAuthPersist = () => {
 	const { storageAuth, setStorageAuth } = useAuth();
@@ -67,7 +55,7 @@ export const useAuthPersist = () => {
 		setSubscriptionSummary,
 		signUpUser,
 	} = useAuthActions();
-	const { setAxiosAuthHeader, setAxiosBaseURL, setAxiosIntercept } = useAxios();
+	const { setAxiosBaseURL, setAxiosIntercept } = useAxios();
 	const { storageNetworkQueue, setStorageNetworkQueue } = useNetworkQueue();
 	const {
 		storageUserCustomization,
@@ -79,9 +67,6 @@ export const useAuthPersist = () => {
 	} = useUserCustomization();
 	const { setWidgetReady, toggleOffPlusAddOns } = useUserActions();
 	let userCustomizationRef = useRef(storageUserCustomization);
-	let isTokenFromCookie = useRef(false);
-	let customizationPlusConfiguration = useRef({});
-	let isActiveSubscriptionFromToken = useRef(false);
 
 	// Transits from overlay to main-view onReady widgetManager
 	useEffect(() => {
@@ -114,29 +99,15 @@ export const useAuthPersist = () => {
 			setAxiosBaseURL();
 			setAxiosIntercept();
 
-			/*
-				For extension, if token doesn't exist in storage
-					if tokenFromCookie exists, reset storage and set isTokenFromCookie which fetches profileDetails
-					else signUpUser
-				For web, even if token exists in storage
-						if tokenFromCookie exists, comapre both tokens
-							if different, reset storage and set isTokenFromCookie which fetches profileDetails
-			*/
-			if (!!auth?.token === false || isBuildTargetWeb) {
-				const tokenFromCookie = await getCookieItem(TOKEN);
-				if (tokenFromCookie) {
-					const isWebAndMismatchedToken =
-						isBuildTargetWeb && auth?.token !== tokenFromCookie;
-					if (isBuildTargetWeb === false || isWebAndMismatchedToken) {
-						isTokenFromCookie.current = true;
-						auth = DEFAULT_AUTHENTICATION;
-						auth.token = tokenFromCookie;
-						userCustomization = DEFAULT_CUSTOMIZATION;
-					}
-				} else if (isBuildTargetWeb === false) {
-					const response = await signUpUser();
-					if (response?.success) {
-						auth = { ...auth, ...response.auth };
+			// signUpUser in extension, if userId absent in storage and token absent in cookies
+			if (!!auth?.userId === false) {
+				if (isBuildTargetWeb === false) {
+					const token = await getBrowserCookieItem(TOKEN);
+					if (!token) {
+						const response = await signUpUser();
+						if (response?.success) {
+							auth = { ...auth, ...response.auth };
+						}
 					}
 				}
 			}
@@ -162,48 +133,25 @@ export const useAuthPersist = () => {
 		})();
 	}, []);
 
-	// Updates Authorization, cookie and review subscriptionSummary onChange token
+	// Review subscriptionSummary onChange userId
 	useEffect(() => {
 		(async () => {
 			if (isObjectEmpty(storageAuth)) return;
 
-			setAxiosAuthHeader(storageAuth.token);
-			setCookieItem(TOKEN, storageAuth?.token ? storageAuth.token : "");
 			amplitude.setUserId(storageAuth.userId);
 
-			let decodedPayload;
-			try {
-				decodedPayload = jwtDecode(storageAuth.token);
-			} catch (error) {
-				decodedPayload = { subscriptionSummary: {} };
-			}
-			const { subscriptionSummary } = decodedPayload;
-			const subscriptionPlanFromStorage = storageAuth.subscriptionSummary.plan;
-			const subscriptionPlanFromToken = subscriptionSummary.plan;
-			isActiveSubscriptionFromToken.current =
-				isActiveSubscription(subscriptionSummary);
-			if (subscriptionPlanFromStorage) {
-				if (isActiveSubscriptionFromToken.current === false) {
+			const { subscriptionSummary } = storageAuth;
+			if (subscriptionSummary.plan) {
+				const isActive = isActiveSubscription(subscriptionSummary);
+				if (isActive === false) {
 					setSubscriptionSummary({ plan: null });
 					toggleOffPlusAddOns();
-				} else if (subscriptionPlanFromStorage !== subscriptionPlanFromToken) {
-					setSubscriptionSummary({ plan: subscriptionPlanFromToken });
 				}
-			} else if (
-				subscriptionPlanFromToken &&
-				isActiveSubscriptionFromToken.current
-			) {
-				setSubscriptionSummary(subscriptionSummary);
-				if (isObjectEmpty(customizationPlusConfiguration.current) === false)
-					setStorageUserCustomization((prevCustomization) => ({
-						...prevCustomization,
-						...customizationPlusConfiguration.current,
-					}));
 			} else {
 				toggleOffPlusAddOns();
 			}
 		})();
-	}, [storageAuth.token]);
+	}, [storageAuth.userId]);
 
 	// Syncs auth and customization with server onReady storage
 	useEffect(() => {
@@ -213,7 +161,6 @@ export const useAuthPersist = () => {
 			if (widgetManager.data[STORAGE].ready) {
 				const setServerReady = () =>
 					setWidgetReady({ widget: SERVER, type: "data" });
-				if (!!storageAuth.token === false) return setServerReady();
 
 				serverTimeout = setTimeout(setServerReady, SERVER_TIMEOUT * 1000);
 				let networkQueue = { ...storageNetworkQueue };
@@ -230,24 +177,16 @@ export const useAuthPersist = () => {
 					await processNetworkQueue("delete", deleteUserData);
 					setStorageNetworkQueue(networkQueue);
 				}
-				const response = await getUserSettings(!!isTokenFromCookie.current);
+				const isProfileDetailsRequested = storageAuth.email
+					? !storageAuth.profilePictureUrl && !storageAuth.fullName
+					: true;
+				const response = await getUserSettings(isProfileDetailsRequested);
 				if (response?.success) {
 					let { auth, customization } = response;
-					auth = omitObjectProperties(auth, ["subscriptionSummary.plan"]);
 					await setStorageAuth((prevAuth) =>
 						addOrMergeObjectProperties(prevAuth, auth),
 					);
 					if (!!customization) {
-						if (isActiveSubscriptionFromToken.current === false) {
-							const properties = Object.keys(
-								CUSTOMIZATION_FREEMIUM_CONFIGURATION,
-							);
-							customizationPlusConfiguration.current = _.pick(
-								customization,
-								properties,
-							);
-							customization = omitObjectProperties(customization, properties);
-						}
 						await setStorageUserCustomization((prevCustomization) =>
 							addOrMergeObjectProperties(
 								prevCustomization,
@@ -361,9 +300,9 @@ export const useAuthPersist = () => {
 								isDeepEqual(userCustomizationRef.current, newValue) === false
 							) {
 								setStorageUserCustomization(newValue);
-							} else if (key === NETWORK_QUEUE) {
-								setStorageNetworkQueue(parsedValue);
 							}
+						} else if (key === NETWORK_QUEUE) {
+							setStorageNetworkQueue(newValue);
 						}
 					}
 				}

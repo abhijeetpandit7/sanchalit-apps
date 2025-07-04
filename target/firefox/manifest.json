@@ -9,7 +9,7 @@
 	"chrome_url_overrides": { "newtab": "index.html" },
 	"content_scripts": [
 		{
-			"matches": ["https://*.sanchalit.com/*"],
+			"matches": ["https://sanchalithome.netlify.app/*"],
 			"js": ["content_script.js"],
 			"run_at": "document_end"
 		}
@@ -25,7 +25,7 @@
 		"storage",
 		"cookies",
 		"unlimitedStorage",
-		"*://*.sanchalit.com/*"
+		"https://sanchalit.onrender.com/*"
 	],
 	"optional_permissions": ["topSites", "bookmarks"]
 }

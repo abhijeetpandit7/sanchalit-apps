@@ -9,7 +9,7 @@
 	"chrome_url_overrides": { "newtab": "index.html" },
 	"content_scripts": [
 		{
-			"matches": ["https://*.sanchalit.com/*"],
+			"matches": ["https://sanchalithome.netlify.app/*"],
 			"js": ["content_script.js"],
 			"run_at": "document_end"
 		}
@@ -23,7 +23,7 @@
 		"48": "icons/favicon-48.png",
 		"144": "icons/favicon-144.png"
 	},
-	"host_permissions": ["*://*.sanchalit.com/*"],
+	"host_permissions": ["https://sanchalit.onrender.com/*"],
 	"permissions": ["storage", "cookies", "unlimitedStorage"],
 	"optional_permissions": ["topSites", "bookmarks"],
 	"offline_enabled": true

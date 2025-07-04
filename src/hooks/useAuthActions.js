@@ -28,7 +28,7 @@ export const useAuthActions = () => {
 
 	const deleteUserData = useCallback(
 		async (endpoint, payload) => {
-			if (!!storageAuth?.token === false) return;
+			if (!!storageAuth?.userId === false) return;
 			try {
 				const response = await axios.delete(endpoint, { data: payload });
 				return response.data;
@@ -39,7 +39,7 @@ export const useAuthActions = () => {
 				);
 			}
 		},
-		[storageAuth.token],
+		[storageAuth.userId],
 	);
 
 	const getUserSettings = useCallback(async (isProfileDetailsRequested) => {
@@ -54,15 +54,20 @@ export const useAuthActions = () => {
 	}, []);
 
 	const logOutUser = useCallback(async () => {
-		setStorageAuth(DEFAULT_AUTHENTICATION);
-		setStorageUserCustomization(DEFAULT_CUSTOMIZATION);
-		setStorageNetworkQueue(DEFAULT_NETWORK_QUEUE);
-		amplitude.reset();
+		try {
+			const response = await axios.post("/user/logout");
+			if (response.data?.success) {
+				setStorageAuth(DEFAULT_AUTHENTICATION);
+				setStorageUserCustomization(DEFAULT_CUSTOMIZATION);
+				setStorageNetworkQueue(DEFAULT_NETWORK_QUEUE);
+				amplitude.reset();
+			}
+		} catch (error) {}
 	}, []);
 
 	const postUserData = useCallback(
 		async (endpoint, payload) => {
-			if (!!storageAuth?.token === false) return;
+			if (!!storageAuth?.userId === false) return;
 			try {
 				const response = await axios.post(endpoint, { data: payload });
 				if (response.data?.success) {
@@ -81,7 +86,7 @@ export const useAuthActions = () => {
 				setPostUserData(endpoint, JSON.parse(error.config.data));
 			}
 		},
-		[storageAuth.token],
+		[storageAuth.userId],
 	);
 
 	const debouncedPostUserData = useCallback(
@@ -97,7 +102,7 @@ export const useAuthActions = () => {
 				maxWait: MAX_DEBOUNCE_TIME * 1000,
 			},
 		),
-		[storageAuth.token],
+		[storageAuth.userId],
 	);
 
 	const setSubscriptionSummary = useCallback(

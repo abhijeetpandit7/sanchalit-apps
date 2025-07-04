@@ -956,7 +956,6 @@ export const DEFAULT_AUTHENTICATION = {
 		plan: null,
 		status: null,
 	},
-	[TOKEN]: null,
 	userId: null,
 };
 
