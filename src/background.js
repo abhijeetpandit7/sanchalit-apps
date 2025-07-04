@@ -43,29 +43,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			if (!auth) return;
 
 			return (
-				new Promise((resolve, reject) => {
-					const token = auth.token;
-					fetch(`${URL_ROOT_API}/user`, {
-						headers: {
-							Authorization: token,
-						},
-					})
-						.then((response) => response.json())
-						.then(async (response) => {
-							if (response?.success) {
-								const storageAuth = await getExtensionStorageItem(AUTH);
-								await setExtensionStorageItem(AUTH, {
-									...storageAuth,
-									token,
-									...response.auth,
-								});
-								resolve();
-							}
-							reject();
-						})
-						.catch((error) => {
-							reject(error);
-						});
+				new Promise(async (resolve, reject) => {
+					const storageAuth = await getExtensionStorageItem(AUTH);
+					await setExtensionStorageItem(AUTH, {
+						...storageAuth,
+						...auth,
+					});
+					resolve();
 				})
 					.then(() => {
 						const closeSenderTab = sender.url.includes("oneTimeLogin");
@@ -87,11 +71,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 			return (
 				new Promise((resolve, reject) => {
-					const token = auth.token;
 					fetch(`${URL_ROOT_API}/userData/settings?profileDetails=1`, {
-						headers: {
-							Authorization: token,
-						},
+						credentials: "include",
 					})
 						.then((response) => response.json())
 						.then(async (response) => {
@@ -99,14 +80,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 								await chrome.storage.local.set({
 									[AUTH]: {
 										...DEFAULT_AUTHENTICATION,
-										token,
 										...response.auth,
 									},
 									[CUSTOMIZATION]: response.customization
 										? addOrMergeObjectProperties(
 												DEFAULT_CUSTOMIZATION,
 												response.customization,
-										  )
+											)
 										: DEFAULT_CUSTOMIZATION,
 									[NETWORK_QUEUE]: DEFAULT_NETWORK_QUEUE,
 								});

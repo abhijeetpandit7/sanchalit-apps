@@ -23,16 +23,12 @@ const getStorageItem = isBuildTargetWeb
 const postUserCustomization = async () => {
 	const auth = await getStorageItem(AUTH);
 	const userCustomization = await getStorageItem(CUSTOMIZATION);
-	if (!!auth?.token === false) return;
+	if (!!auth?.userId === false) return;
 	try {
 		axios.post(
 			"/userData",
 			{ data: userCustomization },
-			{
-				headers: {
-					Authorization: auth.token,
-				},
-			},
+			{ withCredentials: true },
 		);
 	} catch (error) {}
 };
@@ -47,13 +43,15 @@ export const useAxios = () => {
 
 	const setAxiosBaseURL = ({ baseUrl = URL_ROOT_API } = {}) => {
 		axios.defaults.baseURL = baseUrl;
+		// TODO: Remove withCredentials, this allows cross-site Access-Control requests with credentials
+		axios.defaults.withCredentials = true;
 	};
 
 	const setAxiosIntercept = () => {
 		axios.interceptors.response.use(
 			(response) => {
 				if (response?.status === PARTIAL_CONTENT_STATUS) {
-					if ((response.data.message = ERROR_NO_CUSTOMIZATION)) {
+					if (response.data.message === ERROR_NO_CUSTOMIZATION) {
 						postUserCustomization();
 					}
 				}
@@ -81,14 +79,8 @@ export const useAxios = () => {
 		);
 	};
 
-	const setAxiosAuthHeader = (token) => {
-		if (token) axios.defaults.headers.common["Authorization"] = token;
-		else delete axios.defaults.headers.common["Authorization"];
-	};
-
 	return {
 		setAxiosBaseURL,
-		setAxiosAuthHeader,
 		setAxiosIntercept,
 	};
 };

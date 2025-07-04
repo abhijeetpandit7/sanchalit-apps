@@ -196,7 +196,7 @@ const UNPAID = "unpaid";
 export const UPSELL_PLUS_GATE = "upsellPlusGate";
 export const UPSELL_UPGRADE_PLUS = "upsell.upgrade.plus";
 export const URL_ROOT_API = "https://sanchalit.onrender.com";
-export const URL_ROOT_DOMAIN = "https://sanchalit.com";
+export const URL_ROOT_DOMAIN = "https://sanchalithome.netlify.app";
 export const URL_ACCOUNT_PAGE = `${URL_ROOT_DOMAIN}/account`;
 const WAREHOUSE = "warehouse";
 const WEB = "web";
@@ -956,7 +956,6 @@ export const DEFAULT_AUTHENTICATION = {
 		plan: null,
 		status: null,
 	},
-	[TOKEN]: null,
 	userId: null,
 };
 
