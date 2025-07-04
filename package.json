@@ -3,6 +3,9 @@
 	"version": "0.2.0",
 	"private": false,
 	"description": "Sanchalit application suite",
+	"engines": {
+    "node": ">=22.12.0"
+  },
 	"scripts": {
 		"analyze": "webpack --profile --json=stats.json --analyze",
 		"build": "npm run build:web",
