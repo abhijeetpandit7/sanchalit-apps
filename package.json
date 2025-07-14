@@ -4,8 +4,8 @@
 	"private": false,
 	"description": "Sanchalit application suite",
 	"engines": {
-    "node": ">=20"
-  },
+		"node": ">=20"
+	},
 	"scripts": {
 		"analyze": "webpack --profile --json=stats.json --analyze",
 		"build": "npm run build:web",
@@ -54,7 +54,6 @@
 		"css-minimizer-webpack-plugin": "^7.0.2",
 		"dotenv": "^16.5.0",
 		"html-webpack-plugin": "^5.6.3",
-		"jest": "^30.0.4",
 		"lodash": "^4.17.21",
 		"mini-css-extract-plugin": "^2.9.2",
 		"prettier": "3.6.2",
@@ -66,3 +65,4 @@
 		"workbox-webpack-plugin": "^7.3.0"
 	}
 }
+
