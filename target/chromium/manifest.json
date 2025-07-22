@@ -24,7 +24,7 @@
 		"144": "icons/favicon-144.png"
 	},
 	"host_permissions": ["https://sanchalit.onrender.com/*"],
-	"permissions": ["storage", "cookies", "unlimitedStorage"],
+	"permissions": ["storage", "cookies", "unlimitedStorage", "favicon"],
 	"optional_permissions": ["topSites", "bookmarks"],
 	"offline_enabled": true
 }

@@ -211,7 +211,7 @@ export const ensureTodoItemDropdownVisible = (
 	if (differenceHeight < 4) {
 		dropdownRef.current.style.top = `${Math.max(
 			todoList.getBoundingClientRect().top -
-				todoItem.getBoundingClientRect().top,
+			todoItem.getBoundingClientRect().top,
 			differenceHeight + 18,
 		)}px`;
 		dropdownRef.current.style.right = "40px";
@@ -327,13 +327,12 @@ export const getDashAppStyles = (metricRef, topRight) => {
 		window.innerWidth - (metricOffsetLeft + metricWidth);
 
 	dashAppStyles[_NIPPLE_DISPLACEMENT] = `${topRight ? 9 : 33}px`;
-	dashAppStyles[_TOP] = `${
-		metricOffsetTop === 0
-			? metricHeight
-			: metricOffsetTop > BOOKMARKS_BAR_HEIGHT
-				? metricHeight + metricOffsetTop
-				: metricHeight
-	}px`;
+	dashAppStyles[_TOP] = `${metricOffsetTop === 0
+		? metricHeight
+		: metricOffsetTop > BOOKMARKS_BAR_HEIGHT
+			? metricHeight + metricOffsetTop
+			: metricHeight
+		}px`;
 	dashAppStyles[_RIGHT] = `${metricOffsetRight}px`;
 
 	return dashAppStyles;
@@ -350,8 +349,8 @@ export const getBodyTitle = (body) => {
 	let t, e, i;
 	return (
 		-1 !=
-			(i = (t =
-				-1 != (e = body.indexOf("\n")) ? body.slice(0, e) : body).indexOf(
+		(i = (t =
+			-1 != (e = body.indexOf("\n")) ? body.slice(0, e) : body).indexOf(
 				" ",
 				titleLengthGuide - 1,
 			)) && (t = t.slice(0, i)),
@@ -463,6 +462,17 @@ export const getPermissionAllowed = (permission) =>
 		),
 	);
 
+export const getFaviconUrl = (url, size = 16) => {
+	const browserType = getBrowserType().name;
+	const isChromium = browserType === CHROME || browserType === EDGE;
+
+	if (isChromium && chrome && chrome.runtime) {
+		return `chrome-extension://${chrome.runtime.id}/_favicon/?pageUrl=${encodeURIComponent(url)}&size=${size}`;
+	}
+
+	return `https://www.google.com/s2/favicons?domain=${url}&sz=${size}`;
+};
+
 export const getNewOrderValue = (items, listId) => {
 	let newOrderValue;
 	try {
@@ -559,18 +569,16 @@ export const getTimeDifferenceFormat = (timestamp, hasHours) => {
 		else if (hourDifference > 0 && hourDifference < 24)
 			return `${hourDifference}h`;
 		else
-			return `${
-				daysDifference < 0 ? `${-daysDifference}d ago` : `${daysDifference}d`
-			}`;
+			return `${daysDifference < 0 ? `${-daysDifference}d ago` : `${daysDifference}d`
+				}`;
 	} else {
 		const daysDifference = date
 			.startOf("day")
 			.diff(moment().startOf("day"), "days");
 		if (daysDifference == 0) return "Today";
 		else
-			return `${
-				daysDifference < 0 ? `${-daysDifference}d ago` : `${daysDifference}d`
-			}`;
+			return `${daysDifference < 0 ? `${-daysDifference}d ago` : `${daysDifference}d`
+				}`;
 	}
 };
 
@@ -767,9 +775,9 @@ export const parseBookmarksOverflow = (
 		let structuredBookmarksList = _.cloneDeep(bookmarksList);
 		structuredBookmarksList.map(
 			(bookmark) =>
-				(bookmark.width = bookmarksListRef.current.querySelector(
-					`[id='${bookmark.id}']`,
-				).offsetWidth),
+			(bookmark.width = bookmarksListRef.current.querySelector(
+				`[id='${bookmark.id}']`,
+			).offsetWidth),
 		);
 
 		const mapBookmarkHierarchyOverflow = (bookmark) => {
@@ -852,7 +860,7 @@ export const updateTodoAppHeight = (todoAppRef, appHeight) => {
 				(offset = appHeight + "px"),
 				(todoList.parentElement.style.minHeight = offset))
 			: ((todoList.parentElement.style.minHeight =
-					Math.max(visibleHeight, appHeight, 30) + "px"),
+				Math.max(visibleHeight, appHeight, 30) + "px"),
 				(offset = Math.max(visibleHeight, appHeight, 30) + "px")),
 			(todoList.style.minHeight = offset),
 			(todoList.parentElement.style.maxHeight =
@@ -915,12 +923,12 @@ export const processTodoLists = (todoLists) =>
 export const processTodos = (todos, activeTodoListId) =>
 	activeTodoListId === TODO_LIST_DONE_ID
 		? todos
-				.filter((todo) => todo.done)
-				.sort((a, b) => b.completedDate - a.completedDate)
+			.filter((todo) => todo.done)
+			.sort((a, b) => b.completedDate - a.completedDate)
 		: todos
-				.filter((todo) => todo.listId === activeTodoListId)
-				.sort((a, b) => b.ts - a.ts)
-				.sort((a, b) => a.order - b.order);
+			.filter((todo) => todo.listId === activeTodoListId)
+			.sort((a, b) => b.ts - a.ts)
+			.sort((a, b) => a.order - b.order);
 
 export const randomElement = (array) =>
 	array[Math.floor(Math.random() * array.length)];
