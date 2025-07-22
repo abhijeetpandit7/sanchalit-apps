@@ -1,4 +1,5 @@
 import React from "react";
+import { getFaviconUrl } from "../../../utils";
 
 export const BookmarksItem = ({
 	bookmark: { id, title, url, imgSrc, svg },
@@ -23,7 +24,7 @@ export const BookmarksItem = ({
 					<img
 						className="bookmark-icon"
 						src={
-							imgSrc || `https://www.google.com/s2/favicons?domain=${url}&sz=16`
+							imgSrc || getFaviconUrl(url)
 						}
 						draggable="false"
 						data-v-00c414ea

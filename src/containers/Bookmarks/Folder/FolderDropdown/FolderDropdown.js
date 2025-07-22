@@ -1,6 +1,6 @@
 import React from "react";
 import { Folder } from "../Folder";
-import { FOLDER_DROPDOWN } from "../../../../utils";
+import { FOLDER_DROPDOWN, getFaviconUrl } from "../../../../utils";
 
 const FolderBookmark = ({ bookmark: { id, title, url }, openInNewTab }) => (
 	<li id={id} className="dropdown-item" data-v-5504764e>
@@ -18,7 +18,7 @@ const FolderBookmark = ({ bookmark: { id, title, url }, openInNewTab }) => (
 			<span className="bookmark-icon-wrapper" data-v-5504764e>
 				<img
 					className="bookmark-icon bookmark-child-icon"
-					src={`https://www.google.com/s2/favicons?domain=${url}&sz=16`}
+					src={getFaviconUrl(url)}
 					draggable="false"
 					data-v-5504764e
 				/>
