@@ -213,6 +213,21 @@ const isExtensionBuildTargetSafari = process.env.BUILD_TARGET === "safari";
 const isExtensionBuildTargetChromium = process.env.BUILD_TARGET === CHROMIUM;
 export const isBuildTargetWeb = process.env.BUILD_TARGET === WEB;
 
+// TODO: Replace placeholder audio URLs with actual soundscape audio files
+// Current URLs use silent audio to prevent fetch errors. For proper functionality:
+// 
+// OPTION 1: Use local audio files (recommended)
+// 1. Create src/assets/audio/ folder
+// 2. Add MP3 files for each sound type (e.g., fire.mp3, rain.mp3, etc.)
+// 3. Import them like: import fireAudio from "../assets/audio/fire.mp3"
+// 4. Use imported paths instead of URLs: url: fireAudio
+//
+// OPTION 2: Use external hosting
+// 1. Host audio files on a reliable CDN with CORS support
+// 2. Ensure audio files are royalty-free and web-optimized
+// 3. Update URLs below with full HTTPS paths
+//
+// Current placeholder prevents fetch errors but provides silent audio only
 const SOUNDS = {
 	fire: {
 		name: "Fire",
