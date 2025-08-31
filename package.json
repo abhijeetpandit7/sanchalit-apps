@@ -43,7 +43,7 @@
 		"workbox-window": "^7.1.0"
 	},
 	"devDependencies": {
-		"@amplitude/analytics-browser": "^2.23.1",
+		"@amplitude/analytics-browser": "^2.23.5",
 		"@babel/preset-env": "^7.28.3",
 		"@babel/preset-react": "^7.27.1",
 		"axios": "^1.11.0",
