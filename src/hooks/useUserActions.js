@@ -826,27 +826,28 @@ export const useUserActions = () => {
 		[],
 	);
 
-	const selectBackgroundsSetting = useCallback(
-		(setting) =>
-			setStorageUserCustomization((prevCustomization) => {
-				const updatedObject = {
-					backgroundsSettings: {
-						[setting.keyValue]: setting.newValue,
-					},
-				};
-				setNetworkRequestPayload({
-					backgroundCollection: { ...updatedObject },
-				});
-				return {
-					...prevCustomization,
-					backgroundsSettings: {
-						...prevCustomization.backgroundsSettings,
-						...updatedObject.backgroundsSettings,
-					},
-				};
-			}),
-		[],
-	);
+	const selectBackgroundsSetting = useCallback(({ hasPlus, ...setting }) => {
+		if (setting.plusOnly && hasPlus !== true) {
+			return setUpsellApp(UPSELL_PLUS_GATE);
+		}
+		setStorageUserCustomization((prevCustomization) => {
+			const updatedObject = {
+				backgroundsSettings: {
+					[setting.keyValue]: setting.newValue,
+				},
+			};
+			setNetworkRequestPayload({
+				backgroundCollection: { ...updatedObject },
+			});
+			return {
+				...prevCustomization,
+				backgroundsSettings: {
+					...prevCustomization.backgroundsSettings,
+					...updatedObject.backgroundsSettings,
+				},
+			};
+		});
+	}, []);
 
 	const selectBookmarksSetting = useCallback(
 		(setting) =>
@@ -1641,4 +1642,3 @@ export const useUserActions = () => {
 		validateTodoListTodoItemsOrder,
 	};
 };
-

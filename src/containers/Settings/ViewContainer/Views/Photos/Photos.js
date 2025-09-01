@@ -4,7 +4,11 @@ import {
 	CollapsibleHeaderWrapper,
 	ToggleOptions,
 } from "../../../../../components";
-import { useUserActions, useUserCustomization } from "../../../../../hooks";
+import {
+	useAuth,
+	useUserActions,
+	useUserCustomization,
+} from "../../../../../hooks";
 import { BACKGROUNDS_FREQUENCY_OPTIONS, toCSSUrl } from "../../../../../utils";
 
 const ContextMemo = memo((props) => {
@@ -28,6 +32,7 @@ const ContextMemo = memo((props) => {
 				<ToggleOptions
 					name="Frequency"
 					description="How often a new photo is shown"
+					hasPlus={props.hasPlus}
 					keyValue="frequency"
 					options={BACKGROUNDS_FREQUENCY_OPTIONS}
 					plusOnly
@@ -110,6 +115,9 @@ const ContextMemo = memo((props) => {
 
 const Photos = () => {
 	const {
+		storageAuth: { subscriptionSummary },
+	} = useAuth();
+	const {
 		storageUserCustomization: {
 			backgrounds: [{ id: activeBackgroundId }],
 			backgroundsSettings: { frequency },
@@ -117,12 +125,14 @@ const Photos = () => {
 	} = useUserCustomization();
 	const { getBackgroundsFavourites, selectBackgroundsSetting } =
 		useUserActions();
+	const hasPlus = !!subscriptionSummary?.plan;
 
 	return (
 		<ContextMemo
 			{...{
 				activeBackgroundId,
 				frequency,
+				hasPlus,
 				getBackgroundsFavourites,
 				selectBackgroundsSetting,
 			}}
