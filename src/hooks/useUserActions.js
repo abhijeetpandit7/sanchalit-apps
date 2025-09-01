@@ -1,5 +1,7 @@
+import axios from "axios";
 import _ from "lodash";
 import { useCallback } from "react";
+
 import { useAuthActions, useUserCustomization } from "../hooks";
 import {
 	BACKGROUNDS_FAVOURITES,
@@ -407,6 +409,20 @@ export const useUserActions = () => {
 		[storageUserCustomization.todoLists],
 	);
 
+	const getBackgroundsFavourites = useCallback(async () => {
+		try {
+			const data = sessionStorage.getItem(BACKGROUNDS_FAVOURITES);
+			if (data) return JSON.parse(data);
+
+			const response = await axios.get("/backgrounds/favourites");
+			sessionStorage.setItem(
+				BACKGROUNDS_FAVOURITES,
+				JSON.stringify(response.data),
+			);
+			return response.data;
+		} catch (error) {}
+	}, []);
+
 	const getTodoListItemsCount = useCallback(
 		(id) =>
 			storageUserCustomization.todos.filter((todo) => todo.listId === id)
@@ -807,6 +823,28 @@ export const useUserActions = () => {
 				...prevCustomization,
 				currentNoteId: id,
 			})),
+		[],
+	);
+
+	const selectBackgroundsSetting = useCallback(
+		(setting) =>
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					backgroundsSettings: {
+						[setting.keyValue]: setting.newValue,
+					},
+				};
+				setNetworkRequestPayload({
+					backgroundCollection: { ...updatedObject },
+				});
+				return {
+					...prevCustomization,
+					backgroundsSettings: {
+						...prevCustomization.backgroundsSettings,
+						...updatedObject.backgroundsSettings,
+					},
+				};
+			}),
 		[],
 	);
 
@@ -1558,6 +1596,7 @@ export const useUserActions = () => {
 		editDisplayName,
 		editTodoItemTitle,
 		editTodoListTitle,
+		getBackgroundsFavourites,
 		getTodoListItemsCount,
 		hideTodoApp,
 		moveAllTodoItems,
@@ -1566,6 +1605,7 @@ export const useUserActions = () => {
 		restoreNote,
 		saveCountdown,
 		saveNote,
+		selectBackgroundsSetting,
 		selectBookmarksSetting,
 		selectGeneralSetting,
 		setActiveTodoListId,
@@ -1601,3 +1641,4 @@ export const useUserActions = () => {
 		validateTodoListTodoItemsOrder,
 	};
 };
+

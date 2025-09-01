@@ -529,6 +529,7 @@ export const SEARCH_PROVIDER_LIST = [
 export const SETTINGS_NAV_LIST = [
 	{ value: GENERAL },
 	{ value: TODO },
+	{ value: "Photos" },
 	{ value: BOOKMARKS },
 	{ value: HELP, secondary: true },
 	{ value: ABOUT, secondary: true },
