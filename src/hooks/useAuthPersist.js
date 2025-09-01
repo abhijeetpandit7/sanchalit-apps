@@ -30,8 +30,10 @@ import {
 	isBuildTargetWeb,
 	isDeepEqual,
 	isObjectEmpty,
+	preCacheFutureBackgroundImages,
 	setExtensionStorageItem,
 	setLocalStorageItem,
+	shouldShiftBackgrounds,
 } from "../utils";
 
 const DEBOUNCE_TIME = 1;
@@ -113,6 +115,8 @@ export const useAuthPersist = () => {
 			}
 
 			const {
+				backgrounds,
+				backgroundsSettings,
 				bookmarksVisible,
 				bookmarksSettings: { defaultMostVisited, includeMostVisited },
 			} = userCustomization;
@@ -120,10 +124,21 @@ export const useAuthPersist = () => {
 				userCustomization = {
 					...userCustomization,
 					bookmarks: await getBookmarks(),
-					topSites: defaultMostVisited || includeMostVisited
-						? await getTopSites()
-						: userCustomization.topSites,
+					topSites:
+						defaultMostVisited || includeMostVisited
+							? await getTopSites()
+							: userCustomization.topSites,
 				};
+			const shiftBackgrounds = shouldShiftBackgrounds(
+				backgrounds,
+				backgroundsSettings,
+			);
+			if (shiftBackgrounds) {
+				backgrounds.shift();
+				// Fallback purpose in offline scenario
+				userCustomization.backgroundsSettings.updatedDate =
+					new Date().toISOString();
+			}
 
 			setStorageAuth(auth);
 			setStorageUserCustomization(userCustomization);
@@ -160,7 +175,7 @@ export const useAuthPersist = () => {
 		})();
 	}, [storageAuth.userId]);
 
-	// Syncs auth and customization with server onReady storage
+	// Syncs auth and customization with server onReady storage, and pre-caches backgrounds
 	useEffect(() => {
 		let serverTimeout;
 		(async () => {
@@ -184,32 +199,36 @@ export const useAuthPersist = () => {
 					await processNetworkQueue("post", postUserData);
 					await processNetworkQueue("delete", deleteUserData);
 					setStorageNetworkQueue(networkQueue);
-				}
-				const isProfileDetailsRequested = storageAuth.email
-					? !storageAuth.profilePictureUrl && !storageAuth.fullName
-					: true;
-				const response = await getUserSettings(isProfileDetailsRequested);
-				if (response?.success) {
-					let { auth, customization } = response;
-					await setStorageAuth((prevAuth) =>
-						addOrMergeObjectProperties(prevAuth, auth),
-					);
-					if (!!customization) {
-						await setStorageUserCustomization((prevCustomization) =>
-							addOrMergeObjectProperties(
-								prevCustomization,
-								customization,
-								true,
-							),
+					const isProfileDetailsRequested = storageAuth.email
+						? !storageAuth.profilePictureUrl && !storageAuth.fullName
+						: true;
+					setServerReady();
+					const response = await getUserSettings(isProfileDetailsRequested);
+					if (response?.success) {
+						let { auth, customization } = response;
+						await setStorageAuth((prevAuth) =>
+							addOrMergeObjectProperties(prevAuth, auth),
 						);
+						if (!!customization) {
+							await setStorageUserCustomization((prevCustomization) =>
+								addOrMergeObjectProperties(
+									prevCustomization,
+									customization,
+									true,
+								),
+							);
+							preCacheFutureBackgroundImages(
+								customization.backgrounds,
+								isBuildTargetWeb,
+							);
+						}
 					}
 				}
-				setServerReady();
 			}
 		})();
 
 		return () => clearTimeout(serverTimeout);
-	}, [widgetManager.data]);
+	}, [widgetManager.data[STORAGE].ready]);
 
 	// Publishes customization to server onChange payload
 	useEffect(() => {

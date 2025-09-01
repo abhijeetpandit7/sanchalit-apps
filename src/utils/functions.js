@@ -18,6 +18,7 @@ import {
 	BOOKMARKS_BAR_FIREFOX_ID,
 	CHROME,
 	DATE_ROLLOVER_HOUR,
+	DAY,
 	DISPLAY_LEFT,
 	DISPLAY_RIGHT,
 	EDGE,
@@ -28,6 +29,7 @@ import {
 	FULLSCREEN_TEXTAREA,
 	HIDDEN,
 	HIDE_CONTENT,
+	HOUR,
 	NIPPLE,
 	NIPPLE_BOTTOM_RIGHT,
 	NIPPLE_TOP_LEFT,
@@ -38,6 +40,7 @@ import {
 	OVERFLOW,
 	PM,
 	POPUP,
+	PRE_CACHE_BACKGROUNDS,
 	SHOW_ANYWAY,
 	SAFARI,
 	SHIFT_TO_LEFT,
@@ -47,6 +50,7 @@ import {
 	URL_ROOT_API,
 	BROWSER_LIST,
 	NOTE_DELIGHTER_LIST,
+	PAUSE,
 	SUBSCRIPTION_STATUS_LIST,
 	THEME_COLOUR_OPTIONS,
 	THEME_FONT_OPTIONS,
@@ -59,6 +63,7 @@ import {
 	DEFAULT_TODO_LIST_OBJ,
 	HOME_TAB_OBJ,
 	OVERFLOW_FOLDER_OBJ,
+	TAB,
 	TOP_SITES_FOLDER_OBJ,
 	chromeIcon,
 	edgeIcon,
@@ -113,6 +118,7 @@ export const addOrMergeObjectProperties = (
 		const oldValue = object[key];
 		if (_.isArray(oldValue) && _.isArray(newValue)) {
 			const customKeys = [
+				"backgrounds",
 				"countdowns",
 				"notes",
 				"quotes",
@@ -211,7 +217,7 @@ export const ensureTodoItemDropdownVisible = (
 	if (differenceHeight < 4) {
 		dropdownRef.current.style.top = `${Math.max(
 			todoList.getBoundingClientRect().top -
-			todoItem.getBoundingClientRect().top,
+				todoItem.getBoundingClientRect().top,
 			differenceHeight + 18,
 		)}px`;
 		dropdownRef.current.style.right = "40px";
@@ -327,12 +333,13 @@ export const getDashAppStyles = (metricRef, topRight) => {
 		window.innerWidth - (metricOffsetLeft + metricWidth);
 
 	dashAppStyles[_NIPPLE_DISPLACEMENT] = `${topRight ? 9 : 33}px`;
-	dashAppStyles[_TOP] = `${metricOffsetTop === 0
-		? metricHeight
-		: metricOffsetTop > BOOKMARKS_BAR_HEIGHT
-			? metricHeight + metricOffsetTop
-			: metricHeight
-		}px`;
+	dashAppStyles[_TOP] = `${
+		metricOffsetTop === 0
+			? metricHeight
+			: metricOffsetTop > BOOKMARKS_BAR_HEIGHT
+				? metricHeight + metricOffsetTop
+				: metricHeight
+	}px`;
 	dashAppStyles[_RIGHT] = `${metricOffsetRight}px`;
 
 	return dashAppStyles;
@@ -349,8 +356,8 @@ export const getBodyTitle = (body) => {
 	let t, e, i;
 	return (
 		-1 !=
-		(i = (t =
-			-1 != (e = body.indexOf("\n")) ? body.slice(0, e) : body).indexOf(
+			(i = (t =
+				-1 != (e = body.indexOf("\n")) ? body.slice(0, e) : body).indexOf(
 				" ",
 				titleLengthGuide - 1,
 			)) && (t = t.slice(0, i)),
@@ -569,16 +576,18 @@ export const getTimeDifferenceFormat = (timestamp, hasHours) => {
 		else if (hourDifference > 0 && hourDifference < 24)
 			return `${hourDifference}h`;
 		else
-			return `${daysDifference < 0 ? `${-daysDifference}d ago` : `${daysDifference}d`
-				}`;
+			return `${
+				daysDifference < 0 ? `${-daysDifference}d ago` : `${daysDifference}d`
+			}`;
 	} else {
 		const daysDifference = date
 			.startOf("day")
 			.diff(moment().startOf("day"), "days");
 		if (daysDifference == 0) return "Today";
 		else
-			return `${daysDifference < 0 ? `${-daysDifference}d ago` : `${daysDifference}d`
-				}`;
+			return `${
+				daysDifference < 0 ? `${-daysDifference}d ago` : `${daysDifference}d`
+			}`;
 	}
 };
 
@@ -775,9 +784,9 @@ export const parseBookmarksOverflow = (
 		let structuredBookmarksList = _.cloneDeep(bookmarksList);
 		structuredBookmarksList.map(
 			(bookmark) =>
-			(bookmark.width = bookmarksListRef.current.querySelector(
-				`[id='${bookmark.id}']`,
-			).offsetWidth),
+				(bookmark.width = bookmarksListRef.current.querySelector(
+					`[id='${bookmark.id}']`,
+				).offsetWidth),
 		);
 
 		const mapBookmarkHierarchyOverflow = (bookmark) => {
@@ -855,17 +864,17 @@ export const updateTodoAppHeight = (todoAppRef, appHeight) => {
 			visibleHeight = Math.min(appHeight, heightLimit);
 		}
 
-		appHeight >= todoList.scrollHeight
+		(appHeight >= todoList.scrollHeight
 			? ((appHeight = Math.min(appHeight, heightLimit)),
 				(offset = appHeight + "px"),
 				(todoList.parentElement.style.minHeight = offset))
 			: ((todoList.parentElement.style.minHeight =
-				Math.max(visibleHeight, appHeight, 30) + "px"),
+					Math.max(visibleHeight, appHeight, 30) + "px"),
 				(offset = Math.max(visibleHeight, appHeight, 30) + "px")),
 			(todoList.style.minHeight = offset),
 			(todoList.parentElement.style.maxHeight =
 				(flag ? appHeight : heightLimit) + "px"),
-			(todoList.style.maxHeight = (flag ? appHeight : heightLimit) + "px");
+			(todoList.style.maxHeight = (flag ? appHeight : heightLimit) + "px"));
 	}
 };
 
@@ -897,6 +906,21 @@ const getHeightLimit = (todoAppRef) => {
 	return heightLimit;
 };
 
+export const preCacheFutureBackgroundImages = (backgrounds, isWeb) => {
+	if (isWeb) {
+		if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+			const urls = backgrounds.map((item) => item.filename);
+			navigator.serviceWorker.controller.postMessage({
+				type: PRE_CACHE_BACKGROUNDS,
+				payload: { urls },
+			});
+		}
+	} else {
+		const backgroundImage = new Image();
+		backgroundImage.src = backgrounds[1]?.filename;
+	}
+};
+
 export const precedeZero = (number, size) => {
 	let numString = number.toString();
 	while (numString.length < (size || 2)) {
@@ -923,12 +947,12 @@ export const processTodoLists = (todoLists) =>
 export const processTodos = (todos, activeTodoListId) =>
 	activeTodoListId === TODO_LIST_DONE_ID
 		? todos
-			.filter((todo) => todo.done)
-			.sort((a, b) => b.completedDate - a.completedDate)
+				.filter((todo) => todo.done)
+				.sort((a, b) => b.completedDate - a.completedDate)
 		: todos
-			.filter((todo) => todo.listId === activeTodoListId)
-			.sort((a, b) => b.ts - a.ts)
-			.sort((a, b) => a.order - b.order);
+				.filter((todo) => todo.listId === activeTodoListId)
+				.sort((a, b) => b.ts - a.ts)
+				.sort((a, b) => a.order - b.order);
 
 export const randomElement = (array) =>
 	array[Math.floor(Math.random() * array.length)];
@@ -1006,6 +1030,23 @@ export const setExtensionStorageItem = (key, value) =>
 
 export const setLocalStorageItem = (key, value) =>
 	localStorage.setItem(key, JSON.stringify(value));
+
+export const shouldShiftBackgrounds = (backgrounds, backgroundsSettings) => {
+	const { frequency, updatedDate } = backgroundsSettings;
+
+	if (frequency === PAUSE || backgrounds?.length === 1) return false;
+	const now = moment(getInstantDate()).utc();
+	if (frequency === TAB) {
+		return true;
+	} else if (frequency === HOUR) {
+		const hourAgo = now.clone().subtract(1, "hour");
+		if (moment(updatedDate).isBefore(hourAgo)) return true;
+	} else if (frequency === DAY) {
+		const startOfToday = now.clone().startOf("day");
+		if (moment(updatedDate).isBefore(startOfToday)) return true;
+	}
+	return false;
+};
 
 export const toCSSUrl = (link) => `url("${link}")`;
 

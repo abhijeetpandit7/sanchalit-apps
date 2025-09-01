@@ -84,6 +84,7 @@ export const CUSTOMIZATION = "customization";
 export const DARK = "dark";
 export const DASH = "Dash";
 export const DATE_ROLLOVER_HOUR = 4;
+export const DAY = "day";
 export const DEFAULT = "default";
 const DEFAULT_MOST_VISITED = "defaultMostVisited";
 export const DELETE_CONF_ACTIVE = "delete-conf-active";
@@ -115,6 +116,7 @@ export const HIDE_CONTENT = "hide-content";
 export const HOME = "Home";
 const HOME_TAB_LOCATION = "homeTabLocation";
 export const HOTKEY_HOVER = "hotkey-hover";
+export const HOUR = "hour";
 const ICONS_ONLY = "iconsOnly";
 export const IMAGES = "images";
 const INCLUDE_BOOKMARKS_MANAGER = "includeBookmarksManager";
@@ -143,6 +145,7 @@ export const OPEN = "open";
 const OPEN_IN_NEW_TAB = "openInNewTab";
 export const OVERFLOW = "overflow";
 const PAST_DUE = "past_due";
+export const PAUSE = "pause";
 export const PHOTOS = "Photos";
 export const PHOTO_INFO = "Photo Info";
 export const PM = "PM";
@@ -178,6 +181,7 @@ const STARTUP = "startup";
 export const STATIC_RESOURCES = "static-resources";
 export const STORAGE = "storage";
 export const SYSTEM = "system";
+export const TAB = "tab";
 const THEME_COLOUR = "themeColour";
 const THEME_FONT = "themeFont";
 export const TODAY = "Today";
@@ -213,6 +217,16 @@ export const NOTE_DELETE_TIMEOUT = ONE_WEEK * 2;
 const isExtensionBuildTargetSafari = process.env.BUILD_TARGET === "safari";
 const isExtensionBuildTargetChromium = process.env.BUILD_TARGET === CHROMIUM;
 export const isBuildTargetWeb = process.env.BUILD_TARGET === WEB;
+
+const BACKGROUNDS_LIST = [
+	{
+		filename:
+			"https://images.unsplash.com/photo-1548354911-457c10eaf236?ixlib=rb-1.2.1&q=99&fm=jpg&crop=entropy&cs=tinysrgb&w=2048&fit=max",
+		source: "Daniil Silantev / Unsplash",
+		sourceUrl: "https://unsplash.com/photos/jrbyQId7KxU",
+		title: "Abkhazia",
+	},
+];
 
 const SOUNDS = {
 	fire: {
@@ -331,6 +345,13 @@ const APP_LOCATION_OPTIONS = [
 	{ name: BOOKMARKS, key: BOOKMARKS },
 	{ name: DASH, key: DASH },
 	{ name: NONE, key: NONE },
+];
+
+export const BACKGROUNDS_FREQUENCY_OPTIONS = [
+	{ name: DAY, key: DAY },
+	{ name: HOUR, key: HOUR },
+	{ name: TAB, key: TAB },
+	{ name: PAUSE, key: PAUSE },
 ];
 export const SUBSCRIPTION_STATUS_LIST = [
 	{ name: ACTIVE, key: ACTIVE, hasPlus: true },
@@ -961,6 +982,11 @@ export const DEFAULT_AUTHENTICATION = {
 };
 
 export const DEFAULT_CUSTOMIZATION = {
+	backgrounds: [randomElement(BACKGROUNDS_LIST)],
+	backgroundsSettings: {
+		frequency: DAY,
+		updatedDate: null,
+	},
 	bookmarks: [],
 	bookmarksSettings: {
 		[ICONS_ONLY]: false,
