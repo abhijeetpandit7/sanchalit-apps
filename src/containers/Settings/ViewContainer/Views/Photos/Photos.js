@@ -18,7 +18,7 @@ const ContextMemo = memo((props) => {
 	useEffect(() => {
 		(async () => {
 			const response = await props.getBackgroundsFavourites();
-			if (response.success) {
+			if (response?.success) {
 				setFavouriteList(response.favouriteList);
 			}
 			setIsLoading(false);
