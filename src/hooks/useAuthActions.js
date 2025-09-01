@@ -44,10 +44,11 @@ export const useAuthActions = () => {
 
 	const getUserSettings = useCallback(async (isProfileDetailsRequested) => {
 		try {
+			const params = new URLSearchParams();
+			if (isProfileDetailsRequested) params.append("profileDetails", "1");
+
 			const response = await axios.get(
-				`/userData/settings${
-					isProfileDetailsRequested ? "?profileDetails=1" : ""
-				}`,
+				`/userData/settings?${params.toString()}`,
 			);
 			return response.data;
 		} catch (error) {}

@@ -152,24 +152,17 @@ export const useAuthPersist = () => {
 	useEffect(() => {
 		(async () => {
 			if (isObjectEmpty(storageAuth)) return;
-			console.log("review subscriptionSummary");
 
 			amplitude.setUserId(storageAuth.userId);
 
 			const { subscriptionSummary } = storageAuth;
 			if (subscriptionSummary.plan) {
 				const isActive = isActiveSubscription(subscriptionSummary);
-				console.table({
-					subscriptionSummary,
-					isActive,
-				});
 				if (isActive === false) {
 					setSubscriptionSummary({ plan: null });
 					toggleOffPlusAddOns();
-					console.log("setSubscriptionSummary({plan:null})");
 				}
 			} else {
-				console.log("subscriptionPlan NA");
 				toggleOffPlusAddOns();
 			}
 		})();
@@ -181,7 +174,6 @@ export const useAuthPersist = () => {
 		(async () => {
 			if (widgetManager.data[SERVER].ready) return;
 			if (widgetManager.data[STORAGE].ready) {
-				console.log("syncs auth and customization");
 				const setServerReady = () =>
 					setWidgetReady({ widget: SERVER, type: "data" });
 
@@ -234,7 +226,6 @@ export const useAuthPersist = () => {
 	useEffect(() => {
 		(async () => {
 			if (isObjectEmpty(networkRequestManager.payload)) return;
-			console.log("networkRequestManager", networkRequestManager.payload);
 			debouncedPostUserData("/userData", networkRequestManager.payload);
 		})();
 	}, [networkRequestManager.payload]);
@@ -244,9 +235,7 @@ export const useAuthPersist = () => {
 		(async () => {
 			if (isObjectEmpty(storageAuth)) return;
 			const localStorageAuth = await getStorageItem(AUTH);
-			console.log("onChange storageAuth");
 			if (isDeepEqual(storageAuth, localStorageAuth) === false) {
-				console.log("setStorageItem", storageAuth.subscriptionSummary);
 				await setStorageItem(AUTH, storageAuth);
 			}
 		})();
@@ -258,12 +247,10 @@ export const useAuthPersist = () => {
 			if (isObjectEmpty(storageUserCustomization)) return;
 			userCustomizationRef.current = storageUserCustomization;
 			const localStorageUserCustomization = await getStorageItem(CUSTOMIZATION);
-			console.log("onChange storageUserCustomization");
 			if (
 				isDeepEqual(storageUserCustomization, localStorageUserCustomization) ===
 				false
 			) {
-				console.log("setStorageItem.CUSTOMIZATION");
 				await setStorageItem(CUSTOMIZATION, storageUserCustomization);
 			}
 		})();
@@ -323,10 +310,8 @@ export const useAuthPersist = () => {
 
 			const storageChangeHandler = (changes, namespace) => {
 				if (namespace !== "local") return;
-				console.log("storageChangeHandler");
 				for (let [key, { newValue }] of Object.entries(changes)) {
 					if ([AUTH, CUSTOMIZATION, NETWORK_QUEUE].includes(key)) {
-						console.log({ key });
 						if (key === AUTH) {
 							setStorageAuth(newValue);
 						} else if (key === CUSTOMIZATION) {
