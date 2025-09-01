@@ -147,6 +147,7 @@ export const PHOTOS = "Photos";
 export const PHOTO_INFO = "Photo Info";
 export const PM = "PM";
 export const POPUP = "popup";
+export const PRE_CACHE_BACKGROUNDS = "PRE_CACHE_BACKGROUNDS";
 export const PRODUCTION = "production";
 export const PULSE = "pulse";
 export const QUERY_PARAM = "q";
