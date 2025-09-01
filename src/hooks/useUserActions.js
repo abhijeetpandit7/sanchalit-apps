@@ -1,7 +1,10 @@
+import axios from "axios";
 import _ from "lodash";
 import { useCallback } from "react";
+
 import { useAuthActions, useUserCustomization } from "../hooks";
 import {
+	BACKGROUNDS_FAVOURITES,
 	BOOKMARKS,
 	BOOKMARKS_PERMISSION,
 	CUSTOMIZATION_FREEMIUM_CONFIGURATION,
@@ -406,6 +409,20 @@ export const useUserActions = () => {
 		[storageUserCustomization.todoLists],
 	);
 
+	const getBackgroundsFavourites = useCallback(async () => {
+		try {
+			const data = sessionStorage.getItem(BACKGROUNDS_FAVOURITES);
+			if (data) return JSON.parse(data);
+
+			const response = await axios.get("/backgrounds/favourites");
+			sessionStorage.setItem(
+				BACKGROUNDS_FAVOURITES,
+				JSON.stringify(response.data),
+			);
+			return response.data;
+		} catch (error) {}
+	}, []);
+
 	const getTodoListItemsCount = useCallback(
 		(id) =>
 			storageUserCustomization.todos.filter((todo) => todo.listId === id)
@@ -809,6 +826,29 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const selectBackgroundsSetting = useCallback(({ hasPlus, ...setting }) => {
+		if (setting.plusOnly && hasPlus !== true) {
+			return setUpsellApp(UPSELL_PLUS_GATE);
+		}
+		setStorageUserCustomization((prevCustomization) => {
+			const updatedObject = {
+				backgroundsSettings: {
+					[setting.keyValue]: setting.newValue,
+				},
+			};
+			setNetworkRequestPayload({
+				backgroundCollection: { ...updatedObject },
+			});
+			return {
+				...prevCustomization,
+				backgroundsSettings: {
+					...prevCustomization.backgroundsSettings,
+					...updatedObject.backgroundsSettings,
+				},
+			};
+		});
+	}, []);
+
 	const selectBookmarksSetting = useCallback(
 		(setting) =>
 			setStorageUserCustomization((prevCustomization) => {
@@ -1042,6 +1082,23 @@ export const useUserActions = () => {
 		[],
 	);
 
+	const skipBackground = useCallback((hasPlus) => {
+		if (hasPlus !== true) {
+			return setUpsellApp(UPSELL_PLUS_GATE);
+		}
+		setStorageUserCustomization((prevCustomization) => ({
+			...prevCustomization,
+			backgrounds:
+				prevCustomization.backgrounds?.length > 1
+					? prevCustomization.backgrounds?.slice(1)
+					: prevCustomization.backgrounds,
+		}));
+		const updatedObject = {
+			backgroundCollection: { skipBackground: true },
+		};
+		setNetworkRequestPayload(updatedObject);
+	}, []);
+
 	const skipQuote = useCallback((hasPlus) => {
 		if (hasPlus !== true) {
 			return setUpsellApp(UPSELL_PLUS_GATE);
@@ -1051,6 +1108,27 @@ export const useUserActions = () => {
 		};
 		setNetworkRequestPayload(updatedObject);
 	}, []);
+
+	const toggleBackgroundFavourite = useCallback(
+		(id, isFavourite) =>
+			setStorageUserCustomization((prevCustomization) => {
+				const updatedObject = {
+					backgroundCollection: {
+						favourites: [{ id, isFavourite }],
+					},
+				};
+				setNetworkRequestPayload(updatedObject);
+				sessionStorage.removeItem(BACKGROUNDS_FAVOURITES);
+
+				return {
+					...prevCustomization,
+					backgrounds: prevCustomization.backgrounds.map((background) =>
+						background.id === id ? { ...background, isFavourite } : background,
+					),
+				};
+			}),
+		[],
+	);
 
 	const toggleBookmarksSetting = useCallback(
 		(setting) => {
@@ -1519,6 +1597,7 @@ export const useUserActions = () => {
 		editDisplayName,
 		editTodoItemTitle,
 		editTodoListTitle,
+		getBackgroundsFavourites,
 		getTodoListItemsCount,
 		hideTodoApp,
 		moveAllTodoItems,
@@ -1527,6 +1606,7 @@ export const useUserActions = () => {
 		restoreNote,
 		saveCountdown,
 		saveNote,
+		selectBackgroundsSetting,
 		selectBookmarksSetting,
 		selectGeneralSetting,
 		setActiveTodoListId,
@@ -1542,8 +1622,10 @@ export const useUserActions = () => {
 		setTodoListColour,
 		setUpsellApp,
 		setWidgetReady,
+		skipBackground,
 		skipQuote,
 		toggleArchiveCountdown,
+		toggleBackgroundFavourite,
 		toggleBookmarksSetting,
 		toggleCountdownPin,
 		toggleDisplayNameVisible,

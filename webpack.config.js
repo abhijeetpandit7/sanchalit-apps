@@ -104,11 +104,15 @@ if (isProduction) {
 			minimize: true,
 			debug: false,
 		}),
-		new workbox.InjectManifest({
-			swSrc: "./src/serviceWorker.js",
-			swDest: "serviceWorker.js",
-		}),
 	);
+	if (isWeb) {
+		config.plugins.push(
+			new workbox.InjectManifest({
+				swSrc: "./src/serviceWorker.js",
+				swDest: "serviceWorker.js",
+			}),
+		);
+	}
 }
 
 if (!isWeb) {

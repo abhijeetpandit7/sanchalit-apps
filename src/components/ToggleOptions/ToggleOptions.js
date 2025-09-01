@@ -5,8 +5,12 @@ export const ToggleOptions = (props) => {
 	const Plus = () =>
 		props.plusOnly ? <span className="badge badge-plus">PLUS</span> : null;
 	const Divider = () => <span className="toggle-divider">|</span>;
+	const Description = () =>
+		props.description ? (
+			<span className="option-message">{props.description}</span>
+		) : null;
 
-	const optionBreakCount = 3;
+	const optionBreakCount = 4;
 	const totalOptions = props.options.length;
 	const lastOptionIndex = totalOptions - 1;
 
@@ -39,6 +43,7 @@ export const ToggleOptions = (props) => {
 					</Fragment>
 				))}
 			</span>
+			<Description />
 			<div className="option-clear"></div>
 		</li>
 	);

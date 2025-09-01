@@ -3,7 +3,12 @@ import { ExpirationPlugin } from "workbox-expiration";
 import { registerRoute } from "workbox-routing";
 import { StaleWhileRevalidate, CacheFirst } from "workbox-strategies";
 import { CacheableResponsePlugin } from "workbox-cacheable-response";
-import { IMAGES, STATIC_RESOURCES, ONE_YEAR, isBuildTargetWeb } from "./utils";
+import {
+	IMAGES,
+	ONE_DAY,
+	PRE_CACHE_BACKGROUNDS,
+	STATIC_RESOURCES,
+} from "./utils";
 
 clientsClaim();
 self.skipWaiting();
@@ -19,18 +24,38 @@ registerRoute(
 				statuses: [0, 200],
 			}),
 			new ExpirationPlugin({
-				maxAgeSeconds: ONE_YEAR,
+				maxAgeSeconds: ONE_DAY * 7,
+				purgeOnQuotaError: true,
 			}),
 		],
 	}),
 );
 
-if (isBuildTargetWeb)
-	registerRoute(
-		({ request }) =>
-			request.destination === "script" || request.destination === "style",
-		new StaleWhileRevalidate({
-			cacheName: STATIC_RESOURCES,
-		}),
-	);
+self.addEventListener("message", (event) => {
+	if (event.data && event.data.type === PRE_CACHE_BACKGROUNDS) {
+		const { urls } = event.data.payload;
+		preCacheBackgrounds(urls);
+	}
+});
 
+async function preCacheBackgrounds(urls) {
+	const cache = await caches.open(IMAGES);
+
+	for (const url of urls) {
+		try {
+			const cachedResponse = await cache.match(url);
+			if (cachedResponse) continue;
+
+			const networkResponse = await fetch(url, { mode: "no-cors" });
+			await cache.put(url, networkResponse);
+		} catch (error) {}
+	}
+}
+
+registerRoute(
+	({ request }) =>
+		request.destination === "script" || request.destination === "style",
+	new StaleWhileRevalidate({
+		cacheName: STATIC_RESOURCES,
+	}),
+);

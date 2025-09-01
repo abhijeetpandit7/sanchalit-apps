@@ -12,6 +12,7 @@ const About = lazy(() => import("./Views/About/About"));
 const Bookmarks = lazy(() => import("./Views/Bookmarks/Bookmarks"));
 const General = lazy(() => import("./Views/General/General"));
 const Help = lazy(() => import("./Views/Help/Help"));
+const Photos = lazy(() => import("./Views/Photos/Photos"));
 const Todo = lazy(() => import("./Views/Todo/Todo"));
 
 const getNavItemValue = (navItem) =>
@@ -23,6 +24,7 @@ const SETTINGS_VIEW_LIST = [
 		component: <General />,
 	},
 	{ value: getNavItemValue(TODO), component: <Todo /> },
+	{ value: getNavItemValue("Photos"), component: <Photos /> },
 	{
 		value: getNavItemValue(BOOKMARKS),
 		component: <Bookmarks />,
