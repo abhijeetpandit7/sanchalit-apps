@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import { useUserActions, useUserCustomization } from "../../hooks";
+import { useAuth, useUserActions, useUserCustomization } from "../../hooks";
 import {
+	ACTIVE,
 	ADD_SHADOW,
 	HOTKEY_HOVER,
 	PHOTO_INFO,
@@ -9,9 +10,19 @@ import {
 	skipIcon,
 	addRefClassName,
 	removeRefClassName,
+	toggleRefClassName,
 } from "../../utils";
 
-const ContextMemo = ({ hideApps, setWidgetReady, showApps }) => {
+const ContextMemo = ({
+	hideApps,
+	setWidgetReady,
+	showApps,
+	skipBackground,
+	toggleBackgroundFavourite,
+	hasPlus,
+	...activeBackground
+}) => {
+	const heartIconRef = useRef(null);
 	const photoInfoRef = useRef(null);
 	const appDashRef = useRef(null);
 	const controlRef = useRef(null);
@@ -44,6 +55,12 @@ const ContextMemo = ({ hideApps, setWidgetReady, showApps }) => {
 		removeRefClassName(appDashRef, HOTKEY_HOVER);
 	};
 
+	const toggleFavouriteBackground = () => {
+		const isFavourite = toggleRefClassName(heartIconRef, ACTIVE);
+		activeBackground.id &&
+			toggleBackgroundFavourite(activeBackground.id, isFavourite);
+	};
+
 	return (
 		<div
 			className="app-container photo-info"
@@ -53,15 +70,35 @@ const ContextMemo = ({ hideApps, setWidgetReady, showApps }) => {
 		>
 			<div className="app-dash" ref={appDashRef}>
 				<div className="title" data-v-1040273e>
-					Phuket, Thailand
+					{activeBackground.title}
 				</div>
 				<div className="source" data-v-1040273e>
-					<span className="source-link">Cody Wilson</span>
+					<a
+						className="source-link"
+						href={activeBackground.sourceUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						{activeBackground.source}
+					</a>
 					<span ref={controlRef}>
-						<span title="Favorite" className="favorite control" data-v-1040273e>
+						<span
+							title={`${activeBackground.isFavourite ? "Unfavourite" : "Favourite"}`}
+							className={`control favorite ${
+								activeBackground.isFavourite ? ACTIVE : ""
+							}`}
+							onClick={toggleFavouriteBackground}
+							ref={heartIconRef}
+							data-v-1040273e
+						>
 							{heartIcon}
 						</span>
-						<span title="Skip" className="skip control" data-v-1040273e>
+						<span
+							title="Skip"
+							className="skip control"
+							onClick={() => skipBackground(hasPlus)}
+							data-v-1040273e
+						>
 							{skipIcon}
 						</span>
 					</span>
@@ -72,8 +109,31 @@ const ContextMemo = ({ hideApps, setWidgetReady, showApps }) => {
 };
 
 export const PhotoInfo = () => {
-	const { hideApps, showApps } = useUserCustomization();
-	const { setWidgetReady } = useUserActions();
+	const {
+		storageAuth: { subscriptionSummary },
+	} = useAuth();
+	const {
+		hideApps,
+		showApps,
+		storageUserCustomization: { backgrounds },
+	} = useUserCustomization();
+	const { setWidgetReady, skipBackground, toggleBackgroundFavourite } =
+		useUserActions();
 
-	return <ContextMemo {...{ hideApps, setWidgetReady, showApps }} />;
+	const [activeBackground] = backgrounds ?? [{}];
+	const hasPlus = !!subscriptionSummary?.plan;
+
+	return (
+		<ContextMemo
+			{...{
+				hideApps,
+				setWidgetReady,
+				showApps,
+				skipBackground,
+				toggleBackgroundFavourite,
+				hasPlus,
+				...activeBackground,
+			}}
+		/>
+	);
 };
