@@ -57,9 +57,10 @@ export const useAxios = () => {
 				}
 				return response;
 			},
-			(error) => {
+			async (error) => {
 				if (error?.response?.status === UNAUTHORIZED_STATUS) {
-					logOutUser();
+					const auth = await getStorageItem(AUTH);
+					if (!!auth?.userId) logOutUser();
 				} else if (error?.response?.status === NOT_FOUND_STATUS) {
 					switch (error.response.data.message) {
 						case ERROR_NO_USER: {
@@ -84,3 +85,4 @@ export const useAxios = () => {
 		setAxiosIntercept,
 	};
 };
+
