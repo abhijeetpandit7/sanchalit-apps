@@ -43,10 +43,10 @@
 		"workbox-window": "^7.1.0"
 	},
 	"devDependencies": {
-		"@amplitude/analytics-browser": "^2.30.0",
+		"@amplitude/analytics-browser": "^2.30.1",
 		"@babel/preset-env": "^7.28.5",
 		"@babel/preset-react": "^7.28.5",
-		"axios": "^1.13.1",
+		"axios": "^1.13.2",
 		"babel-loader": "^10.0.0",
 		"clean-webpack-plugin": "^4.0.0",
 		"copy-webpack-plugin": "^13.0.1",
