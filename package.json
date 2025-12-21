@@ -43,7 +43,7 @@
 		"workbox-window": "^7.1.0"
 	},
 	"devDependencies": {
-		"@amplitude/analytics-browser": "^2.32.1",
+		"@amplitude/analytics-browser": "^2.32.2",
 		"@babel/preset-env": "^7.28.5",
 		"@babel/preset-react": "^7.28.5",
 		"axios": "^1.13.2",
@@ -58,7 +58,7 @@
 		"mini-css-extract-plugin": "^2.9.4",
 		"prettier": "3.7.4",
 		"react-beautiful-dnd": "^13.1.1",
-		"webpack": "^5.103.0",
+		"webpack": "^5.104.1",
 		"webpack-bundle-analyzer": "^5.1.0",
 		"webpack-cli": "^6.0.1",
 		"webpack-dev-server": "^5.2.2",
