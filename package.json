@@ -1,6 +1,6 @@
 {
 	"name": "sanchalit-apps",
-	"version": "0.2.0",
+	"version": "0.9.1",
 	"private": false,
 	"description": "Sanchalit application suite",
 	"engines": {
