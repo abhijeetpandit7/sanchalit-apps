@@ -43,8 +43,8 @@
 		"workbox-window": "^7.4.1"
 	},
 	"devDependencies": {
-		"@amplitude/analytics-browser": "^2.42.0",
-		"@babel/preset-env": "^7.29.3",
+		"@amplitude/analytics-browser": "^2.42.1",
+		"@babel/preset-env": "^7.29.5",
 		"@babel/preset-react": "^7.28.5",
 		"axios": "^1.16.0",
 		"babel-loader": "^10.1.1",
@@ -62,7 +62,7 @@
 		"webpack-bundle-analyzer": "^5.3.0",
 		"webpack-cli": "^7.0.2",
 		"webpack-dev-server": "^5.2.3",
-		"workbox-webpack-plugin": "^7.4.0"
+		"workbox-webpack-plugin": "^7.4.1"
 	}
 }
 
