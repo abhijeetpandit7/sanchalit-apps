@@ -46,7 +46,7 @@
 		"@amplitude/analytics-browser": "^2.44.1",
 		"@babel/preset-env": "^7.29.7",
 		"@babel/preset-react": "^7.29.7",
-		"axios": "^1.17.0",
+		"axios": "^1.18.0",
 		"babel-loader": "^10.1.1",
 		"clean-webpack-plugin": "^4.0.0",
 		"copy-webpack-plugin": "^14.0.0",
